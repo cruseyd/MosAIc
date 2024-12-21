@@ -398,11 +398,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 666129054}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed571f2f7a2a0284e90c48542884bc6c, type: 3}
+  m_Script: {fileID: 11500000, guid: 6878e4edd21333d45a262b3fc93a17b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   dynamicEnum: {fileID: 11400000, guid: 286e39c449f26cd4d9812de59474afa2, type: 2}
-  selectedValueIndex: 1
+  selectedValueIndex: 2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

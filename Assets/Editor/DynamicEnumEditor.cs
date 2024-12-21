@@ -1,26 +1,18 @@
-using UnityEditor;
 using UnityEngine;
+using UnityEditor;
 
-[CustomEditor(typeof(DynamicEnumSelector), true)]
-public class DynamicEnumExampleEditor : Editor
+[CustomEditor(typeof(DynamicEnum), true)]
+public class DynamicEnumEditor : Editor
 {
-    public override void OnInspectorGUI()
+     public override void OnInspectorGUI()
     {
-        DynamicEnumSelector script = (DynamicEnumSelector)target;
-        
-        if (script.dynamicEnum != null)
-        {
-            script.selectedValueIndex = EditorGUILayout.Popup(
-                "Selected Value",
-                script.selectedValueIndex,
-                script.dynamicEnum.values.ToArray()
-            );
-        }
-        else
-        {
-            EditorGUILayout.HelpBox("Assign a DynamicEnum asset.", MessageType.Warning);
-        }
-
         DrawDefaultInspector();
+        DynamicEnum dynamicEnum = (DynamicEnum)target;
+
+        if (GUILayout.Button("Update Values"))
+        {
+            dynamicEnum.UpdateValues();
+            EditorUtility.SetDirty(dynamicEnum);
+        }
     }
 }
