@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CardData {
-    public string name;
+[CreateAssetMenu(fileName = "NewCardData", menuName = "ScriptableObjects/CardData", order = 1)]
+public class CardData : ScriptableObject {
+    public new string name;
+    public SerializableDictionary<string, int> stats;
 }
