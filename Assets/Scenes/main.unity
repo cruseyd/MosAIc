@@ -350,6 +350,7 @@ GameObject:
   m_Component:
   - component: {fileID: 666129056}
   - component: {fileID: 666129055}
+  - component: {fileID: 666129057}
   m_Layer: 0
   m_Name: GameParams
   m_TagString: Untagged
@@ -369,7 +370,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 874589a5cc5c98549b73b3af97c030f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardStats: []
+  cardStats:
+  - name: 
+    minValue: 0
+    maxValue: 0
 --- !u!4 &666129056
 Transform:
   m_ObjectHideFlags: 0
@@ -385,6 +389,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &666129057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 666129054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed571f2f7a2a0284e90c48542884bc6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dynamicEnum: {fileID: 11400000, guid: 286e39c449f26cd4d9812de59474afa2, type: 2}
+  selectedValueIndex: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
