@@ -28,4 +28,19 @@ public class Card
         }
     }
     private CardOrientation _orientation;
+    public CardData data {get; private set;}
+
+    public Card(CardData data_)
+    {
+        data = data_;
+        faceUp = false;
+        orientation = CardOrientation.UP;
+    }
+
+    public Card(Card card)
+    {
+        data = card.data;
+        faceUp = card.faceUp;
+        orientation = card.orientation;
+    }
 }

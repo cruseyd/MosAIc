@@ -10,5 +10,17 @@ public class CardZone
     {
         name = name_;
         player = playerID_;
+        cards = new List<Card>();
+    }
+
+    public CardZone(CardZone zone)
+    {
+        name = zone.name;
+        player = zone.player;
+        cards = new List<Card>();
+        foreach (Card card in zone.cards)
+        {
+            cards.Add(new Card(card));
+        }
     }
 }
