@@ -10,10 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7103f24014822034ba66c5bf7578ab78, type: 3}
-  m_Name: Stats
+  m_Name: CardType
   m_EditorClassIdentifier: 
-  name: Stats
-  values:
-  - Attack
-  - Defense
-  - Cost
+  name: 
+  values: []
