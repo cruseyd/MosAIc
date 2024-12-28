@@ -1,9 +1,8 @@
-
-
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
-public abstract class GameState
+public class GameState
 {
     private Dictionary<PhaseName, Phase> phases;
     private Dictionary<Pair<CardZoneName, int>, CardZone> zones;
@@ -14,9 +13,10 @@ public abstract class GameState
         zones = new Dictionary<Pair<CardZoneName, int>, CardZone>();
         players = new Dictionary<int, Player>();
         phases = new Dictionary<PhaseName, Phase>();
-        foreach (PhaseName phase in Enum.GetValues(typeof(PhaseName)))
+        foreach (PhaseName phaseName in Enum.GetValues(typeof(PhaseName)))
         {
-            //TODO: Implement enum reflection using ClassMapping
+            phases[phaseName] = (Phase)phaseName.GetAssociatedClass();
+            Debug.Log("Added phase " + phaseName);
         }
     }
 

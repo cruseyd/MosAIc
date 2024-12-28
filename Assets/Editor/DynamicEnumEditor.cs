@@ -9,7 +9,7 @@ public class DynamicEnumEditor : Editor
         DrawDefaultInspector();
         DynamicEnum dynamicEnum = (DynamicEnum)target;
 
-        if (GUILayout.Button("Update Values"))
+        if (GUILayout.Button("Generate"))
         {
             dynamicEnum.UpdateValues();
             EditorUtility.SetDirty(dynamicEnum);

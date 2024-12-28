@@ -1,24 +1,64 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using Unity.IO.LowLevel.Unsafe;
 
 [CreateAssetMenu(menuName = "ScriptableObjects/DynamicEnum")]
 public class DynamicEnum : ScriptableObject
 {
     public List<string> values = new List<string>();
-
-    public void UpdateValues()
+    protected bool generateClassMaps = false;
+    protected string classMapFileName = "NAME_VALUE";
+    public virtual void UpdateValues()
     {
+        if (generateClassMaps)
+        {
+            GenerateClassMaps();
+        }
         GenerateEnumCode();
     }
 
-    private void GenerateEnumCode()
+    protected virtual string GenerateClassName(string name, string value)
     {
-        // Generate the enum code based on the values array
+        string className = classMapFileName;
+        className = className.Replace("NAME", SanitizeName(name));
+        className = className.Replace("VALUE", SanitizeName(value));
+        return SanitizeName(className);
+    }
+
+    protected virtual string GenerateClassCode(string classname)
+    {
+        string code = ($"public class {classname}" + "{}");
+        return code;
+    }
+    protected virtual void GenerateClassMaps()
+    {
+        foreach (var value in values)
+        {
+            string classname = GenerateClassName(name, value);
+            string GeneratedFilePath = $"Assets/Generated/{classname}.cs";
+            if (File.Exists(GeneratedFilePath)) { continue; }
+
+            string code = GenerateClassCode(classname);
+            
+            File.WriteAllText(GeneratedFilePath, code);
+            Debug.Log($"DynamicEnum generated class map at {GeneratedFilePath}");
+
+            UnityEditor.AssetDatabase.Refresh();
+        }
+    }
+
+    protected virtual void GenerateEnumCode()
+    {
         string GeneratedFilePath = $"Assets/Generated/{name}.cs";
         string enumCode = ($"public enum {name}" + "{\n");
         foreach (var value in values)
         {
+            if (generateClassMaps)
+            {
+                string classname = GenerateClassName(name, value);
+                enumCode += $"    [ClassMapping(typeof({classname}))]\n";
+            }
             if (!string.IsNullOrWhiteSpace(value))
             {
                 enumCode += $"    {SanitizeName(value)},\n";
@@ -26,17 +66,13 @@ public class DynamicEnum : ScriptableObject
         }
         enumCode += "}";
 
-        // Write the code to a file
         File.WriteAllText(GeneratedFilePath, enumCode);
         Debug.Log($"DynamicEnum generated at {GeneratedFilePath}");
-
-        // Refresh the AssetDatabase so Unity recognizes the new file
         UnityEditor.AssetDatabase.Refresh();
     }
 
     private string SanitizeName(string name)
     {
-        // Sanitize the name to ensure it is a valid C# enum identifier
         return name.Replace(" ", "_").Replace("-", "_").Replace(".", "_");
     }
 }
