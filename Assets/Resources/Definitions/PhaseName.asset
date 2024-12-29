@@ -12,4 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51739a408c5274840bb800b7d78a06a7, type: 3}
   m_Name: PhaseName
   m_EditorClassIdentifier: 
-  values: []
+  values:
+  - Main
+  - Draw
+  - End
