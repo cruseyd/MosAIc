@@ -7,6 +7,8 @@ public class GameState
     private Dictionary<PhaseName, Phase> phases;
     private Dictionary<Pair<CardZoneName, int>, CardZone> zones;
     private Dictionary<int, Player> players;
+    public Player activePlayer {get; set; }
+
 
     public GameState()
     {
@@ -18,6 +20,7 @@ public class GameState
             phases[phaseName] = (Phase)phaseName.GetAssociatedClass();
             Debug.Log("Added phase " + phaseName);
         }
+        activePlayer = null;
     }
 
     public GameState(GameState state)
@@ -32,5 +35,14 @@ public class GameState
         {
             players[key] = new Player(state.players[key]);
         }
+    }
+
+    public Phase GetPhase(PhaseName name)
+    {
+        if (phases.ContainsKey(name))
+        {
+            return phases[name];
+        }
+        return null;
     }
 }

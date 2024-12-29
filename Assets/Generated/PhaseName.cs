@@ -3,6 +3,8 @@ public enum PhaseName{
     Main,
     [ClassMapping(typeof(DrawPhase))]
     Draw,
+    [ClassMapping(typeof(ActionPhase))]
+    Action,
     [ClassMapping(typeof(EndPhase))]
     End,
 }
