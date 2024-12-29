@@ -3,22 +3,22 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Player
+public class Agent
 {
     public int ID {get; private set;}
-    public PlayerType type {get; private set;}
+    public AgentType type {get; private set;}
 
 
-    public Player(PlayerType type_, int id_)
+    public Agent(AgentType type_, int id_)
     {
         type = type_;
         ID = id_;
     }
 
-    public Player(Player player)
+    public Agent(Agent agent)
     {
-        type = player.type;
-        ID = player.ID;
+        type = agent.type;
+        ID = agent.ID;
     }
 
 }

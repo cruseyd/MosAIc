@@ -6,43 +6,36 @@ public class GameState
 {
     private Dictionary<PhaseName, Phase> phases;
     private Dictionary<Pair<CardZoneName, int>, CardZone> zones;
-    private Dictionary<int, Player> players;
-    public Player activePlayer {get; set; }
+    private Dictionary<int, Agent> agents;
+    public Agent activeAgent {get; set; }
+    public Phase currentPhase {get; set; }
 
 
     public GameState()
     {
         zones = new Dictionary<Pair<CardZoneName, int>, CardZone>();
-        players = new Dictionary<int, Player>();
+        agents = new Dictionary<int, Agent>();
         phases = new Dictionary<PhaseName, Phase>();
         foreach (PhaseName phaseName in Enum.GetValues(typeof(PhaseName)))
         {
             phases[phaseName] = (Phase)phaseName.GetAssociatedClass();
             Debug.Log("Added phase " + phaseName);
         }
-        activePlayer = null;
+        activeAgent = null;
+        currentPhase = null;
     }
 
     public GameState(GameState state)
     {
         zones = new Dictionary<Pair<CardZoneName, int>, CardZone>();
-        players = new Dictionary<int, Player>();
+        agents = new Dictionary<int, Agent>();
         foreach (Pair<CardZoneName, int> key in state.zones.Keys)
         {
             zones[key] = new CardZone(state.zones[key]);
         }
-        foreach (int key in state.players.Keys)
+        foreach (int key in state.agents.Keys)
         {
-            players[key] = new Player(state.players[key]);
+            agents[key] = new Agent(state.agents[key]);
         }
-    }
-
-    public Phase GetPhase(PhaseName name)
-    {
-        if (phases.ContainsKey(name))
-        {
-            return phases[name];
-        }
-        return null;
     }
 }
