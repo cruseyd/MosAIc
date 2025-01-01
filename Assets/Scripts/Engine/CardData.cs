@@ -3,8 +3,8 @@ using UnityEngine;
 
 [System.Serializable]
 public struct StatValuePair {
-    [SerializeField] StatName stat;
-    [SerializeField] int value;
+    [SerializeField] public StatName stat;
+    [SerializeField] public int value;
 }
 
 [CreateAssetMenu(fileName = "NewCardData", menuName = "ScriptableObjects/CardData", order = 1)]

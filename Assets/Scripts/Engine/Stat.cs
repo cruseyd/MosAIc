@@ -1,27 +1,24 @@
 using UnityEngine;
 
-public abstract class Stat {
+public class Stat {
     public StatName name;
     public virtual int value { get; set; }
-    private int _value;
     public virtual int minValue { get; protected set; }
     public virtual int maxValue { get; protected set; }
 
-    public Stat(StatName name_, int minValue_, int maxValue_)
+    public Stat(StatName name_)
     {
         name = name_;
-        minValue = minValue_;
-        maxValue = maxValue_;
+        minValue = GameParams.Instance().MinValue(name_);
+        maxValue = GameParams.Instance().MaxValue(name_);
         value = minValue;
     }
-}
 
-public class CardStat : Stat {
-    public override int value { get; set; }
-    public Card card {get; protected set;}
-    public CardStat(StatName name_, int minValue_, int maxValue_, Card card_)
-    : base(name_, minValue_, maxValue_)
+    public Stat(StatName name_, int initialValue)
     {
-        card = card_;
+        name = name_;
+        minValue = GameParams.Instance().MinValue(name_);
+        maxValue = GameParams.Instance().MaxValue(name_);
+        value = initialValue;
     }
 }

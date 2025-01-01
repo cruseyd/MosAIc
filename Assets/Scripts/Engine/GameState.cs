@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GameState
 {
+    public static GameState main = null;
     private Dictionary<PhaseName, Phase> phases;
     private Dictionary<Pair<CardZoneName, int>, CardZone> zones;
     private Dictionary<int, Agent> agents;
@@ -23,6 +24,7 @@ public class GameState
         }
         activeAgent = null;
         currentPhase = null;
+        if (main == null) { main = this; }
     }
 
     public GameState(GameState state)
@@ -37,5 +39,15 @@ public class GameState
         {
             agents[key] = new Agent(state.agents[key]);
         }
+    }
+
+    public void AddAgent(Agent agent, int id)
+    {
+        if (agents.ContainsKey(id))
+        {
+            Debug.LogError($"GameState.AddAgent | Error: Tried to add agent with existing id {id}");
+            return;
+        }
+        agents[id] = agent;
     }
 }

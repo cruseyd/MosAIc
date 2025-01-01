@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum CardOrientation
@@ -29,12 +30,17 @@ public class Card
     }
     private CardOrientation _orientation;
     public CardData data {get; private set;}
-
+    private Dictionary<StatName, Stat> stats;
     public Card(CardData data_)
     {
         data = data_;
         faceUp = false;
         orientation = CardOrientation.UP;
+        stats = new Dictionary<StatName, Stat>();
+        foreach (StatValuePair def in data_.stats)
+        {
+            stats.Add(def.stat, new Stat(def.stat, def.value));
+        }
     }
 
     public Card(Card card)
@@ -42,5 +48,6 @@ public class Card
         data = card.data;
         faceUp = card.faceUp;
         orientation = card.orientation;
+        stats = card.stats;
     }
 }

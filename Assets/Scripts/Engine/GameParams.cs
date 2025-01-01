@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEditorInternal;
 using UnityEngine;
 
 [System.Serializable]
@@ -19,9 +20,18 @@ public class ParamValue
 [CreateAssetMenu(fileName = "GameParams", menuName = "Scriptable Objects/GameParams")]
 public class GameParams : ScriptableObject
 {
+    private static GameParams _instance;
     [SerializeField] public List<StatRange> statRanges;
     [SerializeField] public List<ParamValue> paramValues;
 
+    public static GameParams Instance()
+    {
+        if (_instance == null)
+        {
+            _instance = Resources.Load<GameParams>("Definitions");
+        }
+        return _instance;
+    }
     public int Get(Parameter param)
     {
         foreach (ParamValue paramValue in paramValues)

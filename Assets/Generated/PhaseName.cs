@@ -1,10 +1,14 @@
 public enum PhaseName{
-    [ClassMapping(typeof(MainPhase))]
-    Main,
+    [ClassMapping(typeof(GameStartPhase))]
+    GameStart,
+    [ClassMapping(typeof(ReadyPhase))]
+    Ready,
+    [ClassMapping(typeof(SetPhase))]
+    Set,
     [ClassMapping(typeof(DrawPhase))]
     Draw,
-    [ClassMapping(typeof(ActionPhase))]
-    Action,
+    [ClassMapping(typeof(MainPhase))]
+    Main,
     [ClassMapping(typeof(EndPhase))]
     End,
 }
