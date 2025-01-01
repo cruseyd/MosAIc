@@ -13,9 +13,11 @@ public class PhaseGenerator : DynamicEnum
     protected override string GenerateClassCode(string classname)
     {
         string code = ($"public class {classname} : Phase" + "{\n");
-        code += "    public override void Enter(Phase prevPhase){}\n";
-        code += "    public override void Exit(Phase nextPhase){}\n";
-        code += "};";
+        code += ($"    public {classname}(PhaseName name_) : base(name_)" + "{}\n");
+        code += @"
+            public override void Enter(Phase prevPhase){}
+            public override void Exit(Phase nextPhase){}
+        }";
         return code;
     }
 }

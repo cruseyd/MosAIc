@@ -5,11 +5,12 @@ using UnityEngine;
 public class GameState
 {
     public static GameState main = null;
+    public Agent activeAgent {get; set; }
+    public Phase currentPhase {get; set; }
     private Dictionary<PhaseName, Phase> phases;
     private Dictionary<Pair<CardZoneName, int>, CardZone> zones;
     private Dictionary<int, Agent> agents;
-    public Agent activeAgent {get; set; }
-    public Phase currentPhase {get; set; }
+
 
 
     public GameState()

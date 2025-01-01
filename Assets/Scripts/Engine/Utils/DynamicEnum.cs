@@ -3,7 +3,7 @@ using UnityEngine;
 using System.IO;
 using Unity.IO.LowLevel.Unsafe;
 
-[CreateAssetMenu(menuName = "ScriptableObjects/DynamicEnum")]
+[CreateAssetMenu(menuName = "Scriptable Objects/DynamicEnum")]
 public class DynamicEnum : ScriptableObject
 {
     public List<string> values = new List<string>();
@@ -36,7 +36,7 @@ public class DynamicEnum : ScriptableObject
         foreach (var value in values)
         {
             string classname = GenerateClassName(name, value);
-            string GeneratedFilePath = $"Assets/Generated/{classname}.cs";
+            string GeneratedFilePath = $"Assets/Resources/Definitions/Generated/{classname}.cs";
             if (File.Exists(GeneratedFilePath)) { continue; }
 
             string code = GenerateClassCode(classname);
@@ -50,7 +50,7 @@ public class DynamicEnum : ScriptableObject
 
     protected virtual void GenerateEnumCode()
     {
-        string GeneratedFilePath = $"Assets/Generated/{name}.cs";
+        string GeneratedFilePath = $"Assets/Resources/Definitions/Generated/{name}.cs";
         string enumCode = ($"public enum {name}" + "{\n");
         foreach (var value in values)
         {
