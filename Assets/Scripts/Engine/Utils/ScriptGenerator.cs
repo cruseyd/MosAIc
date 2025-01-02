@@ -1,8 +1,41 @@
 using UnityEditor;
 using System.IO;
+using UnityEngine;
 
-public class CustomScriptGenerator
+public class ScriptGenerator
 {
+    private static string generatedScriptsPath = "Assets/Resources/Definitions/Generated";
+
+    public static void GenerateDefinitions()
+    {
+                CreateGenerationDirectory();
+        ClearGeneratedScripts();
+
+        foreach (DynamicEnum def in Resources.LoadAll<DynamicEnum>("Definitions"))
+        {
+            def.UpdateValues();
+        }
+        AssetDatabase.Refresh();
+    }
+
+    private static void CreateGenerationDirectory()
+    {
+        if (!Directory.Exists(generatedScriptsPath))
+        {
+            Directory.CreateDirectory(generatedScriptsPath);
+        }
+    }
+    private static void ClearGeneratedScripts()
+    {
+        if (Directory.Exists(generatedScriptsPath))
+        {
+            foreach (string file in Directory.GetFiles(generatedScriptsPath, "*.cs"))
+            {
+                File.Delete(file);
+            }
+        }
+    }
+
     [MenuItem("Assets/Create/MosAIc/Initializer", false, 80)]
     public static void CreateInitializer()
     {
