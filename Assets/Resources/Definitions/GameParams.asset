@@ -12,5 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 853f96a147b6f044d8bf925ce74d7035, type: 3}
   m_Name: GameParams
   m_EditorClassIdentifier: 
-  statRanges: []
-  paramValues: []
+  statRanges:
+  - stat: 0
+    minValue: 0
+    maxValue: 0
+  paramValues:
+  - paramName: 0
+    paramValue: 0
