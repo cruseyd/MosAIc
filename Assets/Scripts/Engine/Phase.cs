@@ -1,8 +1,15 @@
 
+using System;
+
 public class Phase
 {
-    public virtual PhaseName name {get; protected set;}
-    public Phase(PhaseName name_) { name = name_; }
-    public virtual void Enter(Phase prevPhase){}
-    public virtual void Exit(Phase nextPhase){}
+    public PhaseName name 
+    {
+        get {
+            string typeString = this.GetType().ToString().Replace("Phase","");
+            return (PhaseName)Enum.Parse(typeof(PhaseName), typeString);
+        }
+    }
+    public virtual void Enter(Phase prevPhase, GameState state){}
+    public virtual void Exit(Phase nextPhase, GameState state){}
 }

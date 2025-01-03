@@ -15,6 +15,7 @@ public class GameState
 
     public GameState()
     {
+        Debug.Log("GameState constructor");
         zones = new Dictionary<Pair<CardZoneName, int>, CardZone>();
         agents = new Dictionary<int, Agent>();
         phases = new Dictionary<PhaseName, Phase>();
@@ -24,7 +25,6 @@ public class GameState
             Debug.Log("Added phase " + phaseName);
         }
         activeAgent = null;
-        currentPhase = null;
         if (main == null) { main = this; }
     }
 
@@ -32,6 +32,8 @@ public class GameState
     {
         zones = new Dictionary<Pair<CardZoneName, int>, CardZone>();
         agents = new Dictionary<int, Agent>();
+        phases = state.phases;
+
         foreach (Pair<CardZoneName, int> key in state.zones.Keys)
         {
             zones[key] = new CardZone(state.zones[key]);
@@ -40,6 +42,8 @@ public class GameState
         {
             agents[key] = new Agent(state.agents[key]);
         }
+        currentPhase = phases[state.currentPhase.name];
+        activeAgent = agents[state.activeAgent.ID];
     }
 
     public void AddAgent(Agent agent, int id)

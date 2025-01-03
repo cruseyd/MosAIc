@@ -15,7 +15,24 @@ MonoBehaviour:
   statRanges:
   - stat: 0
     minValue: 0
-    maxValue: 0
+    maxValue: 99
+  - stat: 1
+    minValue: 0
+    maxValue: 99
+  - stat: 2
+    minValue: 0
+    maxValue: 99
+  - stat: 3
+    minValue: 0
+    maxValue: 99
+  - stat: 4
+    minValue: 0
+    maxValue: 99
+  - stat: 5
+    minValue: 0
+    maxValue: 1
   paramValues:
   - paramName: 0
-    paramValue: 0
+    paramValue: 7
+  - paramName: 1
+    paramValue: 20

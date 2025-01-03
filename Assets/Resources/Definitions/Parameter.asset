@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: Parameter
   m_EditorClassIdentifier: 
   values:
-  - HandSize
+  - StartingHandSize
+  - LoreTarget

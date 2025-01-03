@@ -13,7 +13,10 @@ MonoBehaviour:
   m_Name: PhaseName
   m_EditorClassIdentifier: 
   values:
-  - Main
+  - Ready
+  - Set
   - Draw
-  - Action
+  - Main
   - End
+  - GameStart
+  - GameEnd

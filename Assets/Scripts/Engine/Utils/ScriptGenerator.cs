@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class ScriptGenerator
 {
-    private static string generatedScriptsPath = "Assets/Resources/Definitions/Generated";
+    private static string generatedScriptsPath = "Assets/Resources/Definitions/Generated/";
 
     public static void GenerateDefinitions()
     {
-                CreateGenerationDirectory();
+        CreateGenerationDirectory();
         ClearGeneratedScripts();
 
         foreach (DynamicEnum def in Resources.LoadAll<DynamicEnum>("Definitions"))
@@ -18,6 +18,16 @@ public class ScriptGenerator
         AssetDatabase.Refresh();
     }
 
+    public static string GeneratePhaseScript(string className)
+    {
+        
+        string code = ($"public class {className} : Phase" + "{\n");
+        code += @"
+    public override void Enter(Phase prevPhase, GameState state){}
+    public override void Exit(Phase nextPhase, GameState state){}
+}";
+        return code;
+    }
     private static void CreateGenerationDirectory()
     {
         if (!Directory.Exists(generatedScriptsPath))

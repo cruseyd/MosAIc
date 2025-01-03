@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7103f24014822034ba66c5bf7578ab78, type: 3}
   m_Name: StatName
   m_EditorClassIdentifier: 
-  name: StatName
   values:
-  - StatName1
-  - StatName2
-  - StatName3
+  - Strength
+  - Willpower
+  - QuestValue
+  - Lore
+  - Cost
+  - Inkable

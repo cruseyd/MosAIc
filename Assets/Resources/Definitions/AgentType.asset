@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: AgentType
   m_EditorClassIdentifier: 
   values:
-  - Human
+  - Player
+  - Enemy

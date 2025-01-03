@@ -13,4 +13,6 @@ MonoBehaviour:
   m_Name: CardType
   m_EditorClassIdentifier: 
   values:
-  - CardType1
+  - Character
+  - Action
+  - Item
