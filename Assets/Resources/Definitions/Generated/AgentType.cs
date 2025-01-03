@@ -1,3 +1,4 @@
 public enum AgentType{
-    Human,
+    Player,
+    Enemy,
 }

@@ -1,3 +1,5 @@
 public enum CardType{
-    CardType1,
+    Character,
+    Action,
+    Item,
 }

@@ -1,5 +1,8 @@
 public enum StatName{
-    StatName1,
-    StatName2,
-    StatName3,
+    Strength,
+    Willpower,
+    QuestValue,
+    Lore,
+    Cost,
+    Inkable,
 }

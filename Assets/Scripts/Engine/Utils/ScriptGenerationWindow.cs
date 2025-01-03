@@ -12,6 +12,9 @@ public class ScriptGenerationWindow : EditorWindow
     
     void OnGUI()
     {
-        
+        if(GUILayout.Button("Generate Definitions"))
+        {
+            ScriptGenerator.GenerateDefinitions();
+        }
     }
 }
