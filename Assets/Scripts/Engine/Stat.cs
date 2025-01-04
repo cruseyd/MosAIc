@@ -9,16 +9,16 @@ public class Stat {
     public Stat(StatName name_)
     {
         name = name_;
-        minValue = GameParams.Instance().MinValue(name_);
-        maxValue = GameParams.Instance().MaxValue(name_);
+        minValue = GameParams.MinValue(name_);
+        maxValue = GameParams.MaxValue(name_);
         value = minValue;
     }
 
     public Stat(StatName name_, int initialValue)
     {
         name = name_;
-        minValue = GameParams.Instance().MinValue(name_);
-        maxValue = GameParams.Instance().MaxValue(name_);
+        minValue = GameParams.MinValue(name_);
+        maxValue = GameParams.MaxValue(name_);
         value = initialValue;
     }
 }

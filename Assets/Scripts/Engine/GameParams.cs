@@ -21,20 +21,23 @@ public class ParamValue
 public class GameParams : ScriptableObject
 {
     private static GameParams _instance;
-    [SerializeField] public List<StatRange> statRanges;
-    [SerializeField] public List<ParamValue> paramValues;
+    [SerializeField] private GameMode gameMode;
+    [SerializeField] private List<StatRange> statRanges;
+    [SerializeField] private List<ParamValue> paramValues;
 
+    public static GameMode GameMode() { return Instance().gameMode; }
     public static GameParams Instance()
     {
         if (_instance == null)
         {
-            _instance = Resources.Load<GameParams>("Definitions");
+            _instance = Resources.Load<GameParams>("Definitions/GameParams");
+            Debug.Log("GameMode " + _instance.gameMode.ToString());
         }
         return _instance;
     }
-    public int Get(Parameter param)
+    public static int Get(Parameter param)
     {
-        foreach (ParamValue paramValue in paramValues)
+        foreach (ParamValue paramValue in Instance().paramValues)
         {
             if (paramValue.paramName == param)
             {
@@ -44,9 +47,9 @@ public class GameParams : ScriptableObject
         Debug.LogError($"Missing definition for parameter: {param.ToString()}");
         return 0;
     }
-    public int MinValue(StatName stat)
+    public static int MinValue(StatName stat)
     {
-        foreach (StatRange range in statRanges)
+        foreach (StatRange range in Instance().statRanges)
         {
             if (range.stat == stat)
             {
@@ -55,9 +58,9 @@ public class GameParams : ScriptableObject
         }
         return int.MinValue;
     } 
-    public int MaxValue(StatName stat)
+    public static int MaxValue(StatName stat)
     {
-        foreach (StatRange range in statRanges)
+        foreach (StatRange range in Instance().statRanges)
         {
             if (range.stat == stat)
             {

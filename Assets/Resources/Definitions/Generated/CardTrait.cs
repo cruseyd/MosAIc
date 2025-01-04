@@ -1,4 +1,5 @@
-public enum CardTrait{
+public enum CardTrait {
+    Default,
     Song,
     Hero,
     Villain,

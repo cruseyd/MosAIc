@@ -10,6 +10,9 @@ public class UnitTester : MonoBehaviour
 
     void TestGameState()
     {
-        GameState state = new GameState();
+        GameMode mode = GameParams.GameMode();
+        Initializer initializer = (Initializer)mode.GetAssociatedClass();
+        Debug.Log("Initializer is null: " + initializer == null);
+        GameState state = initializer.Initialize();
     }
 }

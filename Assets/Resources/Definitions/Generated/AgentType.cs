@@ -1,4 +1,5 @@
-public enum AgentType{
+public enum AgentType {
+    Default,
     Player,
     Enemy,
 }

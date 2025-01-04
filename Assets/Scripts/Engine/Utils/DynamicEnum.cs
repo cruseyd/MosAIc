@@ -51,7 +51,7 @@ public class DynamicEnum : ScriptableObject
     protected virtual void GenerateEnumCode()
     {
         string GeneratedFilePath = $"Assets/Resources/Definitions/Generated/{name}.cs";
-        string enumCode = ($"public enum {name}" + "{\n");
+        string enumCode = ($"public enum {name}" + " {\n    Default,\n");
         foreach (var value in values)
         {
             if (generateClassMaps)

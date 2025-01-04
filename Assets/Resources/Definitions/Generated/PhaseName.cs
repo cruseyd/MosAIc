@@ -1,4 +1,5 @@
-public enum PhaseName{
+public enum PhaseName {
+    Default,
     [ClassMapping(typeof(ReadyPhase))]
     Ready,
     [ClassMapping(typeof(SetPhase))]

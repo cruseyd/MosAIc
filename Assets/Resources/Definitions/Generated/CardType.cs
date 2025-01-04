@@ -1,4 +1,5 @@
-public enum CardType{
+public enum CardType {
+    Default,
     Character,
     Action,
     Item,

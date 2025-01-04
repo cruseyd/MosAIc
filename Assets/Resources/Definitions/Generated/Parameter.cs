@@ -1,4 +1,5 @@
-public enum Parameter{
+public enum Parameter {
+    Default,
     StartingHandSize,
     LoreTarget,
 }

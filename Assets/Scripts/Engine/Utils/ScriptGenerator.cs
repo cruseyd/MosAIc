@@ -28,6 +28,21 @@ public class ScriptGenerator
 }";
         return code;
     }
+    public static string GenerateInitializerScript(string className)
+    {
+        
+        string code = ($"using UnityEngine;\npublic class {className} : Initializer" + "{\n");
+        code += @"
+    // Initialize a GameState
+    public override GameState Initialize()
+    {
+        GameState state = new GameState();
+        // Initialization logic here
+        return state;
+    }
+}";
+        return code;
+    }
     private static void CreateGenerationDirectory()
     {
         if (!Directory.Exists(generatedScriptsPath))

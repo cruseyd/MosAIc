@@ -1,4 +1,5 @@
-public enum StatName{
+public enum StatName {
+    Default,
     Strength,
     Willpower,
     QuestValue,
