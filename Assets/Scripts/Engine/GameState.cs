@@ -4,58 +4,25 @@ using UnityEngine;
 
 public class GameState
 {
-    public static GameState main = null;
-    public Agent activeAgent {get; set; }
-    public PhaseName currentPhase
-    {
-        get {
-            if (currentPhase_ == null) { return PhaseName.Default; }
-            return currentPhase_.name;
-        } 
-        set {
-            if (!phases.ContainsKey(value))
-            {
-                Debug.LogError($"Invalid PhaseName: {value.ToString()}");
-            }
-            Phase nextPhase = phases[value];
-            Phase prevPhase = currentPhase_;
-            if (prevPhase != null && (nextPhase.name != prevPhase.name))
-            {
-                prevPhase?.Exit(nextPhase, this);
-            }
-            currentPhase_ = nextPhase;
-            nextPhase.Enter(prevPhase, this);
-        }
-    }
-    private Phase currentPhase_;
+    public int activeAgentID;
+    public PhaseName phase {get; set;}
     private Dictionary<PhaseName, Phase> phases;
     private Dictionary<Pair<CardZoneName, int>, CardZone> zones;
     private Dictionary<int, Agent> agents;
-
-
 
     public GameState()
     {
         Debug.Log("GameState constructor");
         zones = new Dictionary<Pair<CardZoneName, int>, CardZone>();
         agents = new Dictionary<int, Agent>();
-        phases = new Dictionary<PhaseName, Phase>();
-        foreach (PhaseName phaseName in Enum.GetValues(typeof(PhaseName)))
-        {
-            if (phaseName == PhaseName.Default) { continue; }
-            phases[phaseName] = (Phase)phaseName.GetAssociatedClass();
-            Debug.Log("Added phase " + phaseName);
-        }
-        activeAgent = null;
-        currentPhase_ = null;
-        if (main == null) { main = this; }
+        activeAgentID = -1;
+        phase = PhaseName.Default;
     }
 
     public GameState(GameState state)
     {
         zones = new Dictionary<Pair<CardZoneName, int>, CardZone>();
         agents = new Dictionary<int, Agent>();
-        phases = state.phases;
 
         foreach (Pair<CardZoneName, int> key in state.zones.Keys)
         {
@@ -65,8 +32,8 @@ public class GameState
         {
             agents[key] = new Agent(state.agents[key]);
         }
-        currentPhase = state.currentPhase;
-        activeAgent = agents[state.activeAgent.ID];
+        phase = state.phase;
+        activeAgentID = state.activeAgentID;
     }
 
     public void AddAgent(Agent agent)
@@ -87,5 +54,18 @@ public class GameState
             Debug.LogError($"GameState.GetAgent | Error: Could not find Agent with id {id}");
         }
         return agents[id];
+    }
+
+    public void AddCardZone(CardZoneName name, int agent)
+    {
+        var key = new Pair<CardZoneName, int>();
+        key.first = name;
+        key.second = agent;
+        if (zones.ContainsKey(key))
+        {
+            Debug.LogError($"GameState.AddCardZone | Error: Key already exists ({name},{agent})");
+        }
+        var zone = new CardZone(name, agent);
+        zones[key] = zone;
     }
 }
