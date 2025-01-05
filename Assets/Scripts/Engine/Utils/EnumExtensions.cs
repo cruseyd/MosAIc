@@ -19,4 +19,15 @@ public static class EnumExtensions
         // Return an instance of the mapped type if it exists
         return attribute != null ? Activator.CreateInstance(attribute.MappedType) : null;
     }
+    public static T GetNext<T>(this T enumValue) where T : Enum
+    {
+        // Get all values of the enum
+        T[] values = (T[])Enum.GetValues(enumValue.GetType());
+        // Find the index of the current value
+        int currentIndex = Array.IndexOf(values, enumValue);
+        // Compute the index of the next value, looping back to zero if at the end
+        int nextIndex = (currentIndex + 1) % values.Length;
+        // Return the next value
+        return values[nextIndex];
+    }
 }

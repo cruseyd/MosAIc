@@ -5,10 +5,7 @@ public class MainInitializer : Initializer{
     public override GameState Initialize()
     {
         GameState state = new GameState();
-        state.AddAgent(new Agent(AgentType.Player, 0));
-        state.AddAgent(new Agent(AgentType.Enemy, 1));
-        state.currentPhase = PhaseName.GameStart;
-        state.activeAgent = state.GetAgentWithID(0);
+        // Initialization logic here
         return state;
     }
 }

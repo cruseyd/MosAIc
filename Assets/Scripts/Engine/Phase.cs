@@ -1,7 +1,7 @@
 
 using System;
 
-public class Phase
+public abstract class Phase
 {
     public PhaseName name 
     {
@@ -12,4 +12,9 @@ public class Phase
     }
     public virtual void Enter(Phase prevPhase, GameState state){}
     public virtual void Exit(Phase nextPhase, GameState state){}
+    public virtual Phase Next(GameState state)
+    {
+        PhaseName nextPhase = name.GetNext();
+        return (Phase)nextPhase.GetAssociatedClass();
+    }
 }
