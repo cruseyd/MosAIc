@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class GameState
 {
+    public static GameState main;
     public int activeAgentID;
     public PhaseName phase {get; set;}
-    private Dictionary<PhaseName, Phase> phases;
     private Dictionary<Pair<CardZoneName, int>, CardZone> zones;
     private Dictionary<int, Agent> agents;
 
@@ -17,6 +17,7 @@ public class GameState
         agents = new Dictionary<int, Agent>();
         activeAgentID = -1;
         phase = PhaseName.Default;
+        if (main == null) { main = this;}
     }
 
     public GameState(GameState state)
