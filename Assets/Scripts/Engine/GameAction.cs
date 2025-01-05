@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class GameAction
+public abstract class GameAction
 {
-    
+    public abstract void Execute(GameState state);
 }
