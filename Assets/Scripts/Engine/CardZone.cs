@@ -24,16 +24,16 @@ public class CardZone
         }
     }
 
-    public void AddCard(Card card)
+    public void Add(Card card)
     {
-        AddCardAtPosition(card, cards.Count);
+        AddAtPosition(card, cards.Count);
     }
-    public void AddCardAtPosition(Card card, int position)
+    public void AddAtPosition(Card card, int position)
     {
         Debug.Assert(position > cards.Count);
-        if (cards.Contains(card))
+        if (Contains(card))
         {
-            int prevPosition = GetPositionOfCard(card);
+            int prevPosition = GetPosition(card);
             if (position != prevPosition)
             {
                 cards.RemoveAt(prevPosition);
@@ -44,7 +44,7 @@ public class CardZone
             cards.Insert(position, card);
         }
     }
-    public int GetPositionOfCard(Card card)
+    public int GetPosition(Card card)
     {
         if (cards.Contains(card))
         {
@@ -57,11 +57,17 @@ public class CardZone
     {
         return cards.Contains(card);
     }
-    public void RemoveCard(Card card)
+    public void Remove(Card card)
     {
         if (Contains(card))
         {
             cards.Remove(card);
         }
+    }
+    public int NumCards() { return cards.Count; }
+    public override string ToString()
+    {
+        string info = "Card Zone | type: " + name.ToString() + " | agent: " + agent + " | numCards: " + NumCards();
+        return info;
     }
 }

@@ -6,13 +6,19 @@ public class GameState
 {
     public static GameState main;
     public int activeAgentID;
+    public Agent activeAgent
+    {
+        get {
+            Debug.Assert(agents.ContainsKey(activeAgentID));
+            return agents[activeAgentID];
+        }
+    }
     public PhaseName phase {get; set;}
     private Dictionary<Pair<CardZoneName, int>, CardZone> zones;
     private Dictionary<int, Agent> agents;
 
     public GameState()
     {
-        Debug.Log("GameState constructor");
         zones = new Dictionary<Pair<CardZoneName, int>, CardZone>();
         agents = new Dictionary<int, Agent>();
         activeAgentID = -1;
@@ -37,15 +43,14 @@ public class GameState
         activeAgentID = state.activeAgentID;
     }
 
-    public void AddAgent(Agent agent)
+    public void AddAgent(AgentType type, int id)
     {
-        int id = agent.ID;
         if (agents.ContainsKey(id))
         {
             Debug.LogError($"GameState.AddAgent | Error: Tried to add agent with existing id {id}");
             return;
         }
-        agents[id] = agent;
+        agents[id] = new Agent(type, id);
     }
 
     public Agent GetAgentWithID(int id)
@@ -57,6 +62,7 @@ public class GameState
         return agents[id];
     }
 
+    public int NumAgents() { return agents.Count; }
     public void AddCardZone(CardZoneName name, int agent)
     {
         var key = new Pair<CardZoneName, int>();
@@ -68,5 +74,25 @@ public class GameState
         }
         var zone = new CardZone(name, agent);
         zones[key] = zone;
+    }
+    public List<CardZone> GetCardZones()
+    {
+        var cardZones = new List<CardZone>();
+        foreach (CardZone zone in zones.Values)
+        {
+            cardZones.Add(new CardZone(zone));
+        }
+        return cardZones;
+    }
+    public CardZone GetCardZone(CardZoneName name, int agent)
+    {
+        var key = new Pair<CardZoneName, int>();
+        key.first = name;
+        key.second = agent;
+        if (!zones.ContainsKey(key))
+        {
+            Debug.LogError($"GameState.GetCardZone | Error: Key missing ({name},{agent})");
+        }
+        return zones[key];
     }
 }

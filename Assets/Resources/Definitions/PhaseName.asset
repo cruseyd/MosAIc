@@ -14,9 +14,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   values:
   - Ready
-  - Set
-  - Draw
-  - Main
-  - End
-  - GameStart
-  - GameEnd

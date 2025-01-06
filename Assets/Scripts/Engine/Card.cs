@@ -35,7 +35,7 @@ public class Card
     public int zonePosition
     {
         get {
-            int position = zone.GetPositionOfCard(this);
+            int position = zone.GetPosition(this);
             Debug.Assert(position >= 0);
             return position;
         }
@@ -69,7 +69,7 @@ public class Card
     public void Move(int newPosition)
     {
         Debug.Assert(zone != null);
-        zone.AddCardAtPosition(this, newPosition);
+        zone.AddAtPosition(this, newPosition);
     }
     public void Move(CardZone newZone, int newPosition)
     {
@@ -80,7 +80,7 @@ public class Card
         }
         if (zone != null)
         {
-            zone.RemoveCard(this);
+            zone.Remove(this);
         }
         
     }

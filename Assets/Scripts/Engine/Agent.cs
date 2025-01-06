@@ -7,7 +7,6 @@ public class Agent
 {
     public int ID {get; private set;}
     public AgentType type {get; private set;}
-
     private List<Stat> stats;
     public Agent(AgentType type_, int id_)
     {
@@ -23,5 +22,14 @@ public class Agent
         stats = agent.stats;
     }
 
+    public override string ToString()
+    {
+        string info =  "Agent | type: " + type.ToString() + " | ID: " + ID;
+        foreach (Stat stat in stats)
+        {
+            info += " | " + stat.name.ToString() + " = " + stat.value;
+        }
+        return info;
+    }
 
 }
