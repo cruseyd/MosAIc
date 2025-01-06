@@ -31,7 +31,6 @@ public class GameParams : ScriptableObject
         if (_instance == null)
         {
             _instance = Resources.Load<GameParams>("Definitions/GameParams");
-            Debug.Log("GameMode " + _instance.gameMode.ToString());
         }
         return _instance;
     }
