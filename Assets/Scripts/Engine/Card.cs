@@ -31,6 +31,15 @@ public class Card
     private CardOrientation _orientation;
     public CardData data {get; private set;}
     private Dictionary<StatName, Stat> stats;
+    public CardZone zone { get; private set;}
+    public int zonePosition
+    {
+        get {
+            int position = zone.GetPositionOfCard(this);
+            Debug.Assert(position >= 0);
+            return position;
+        }
+    }
     public Card(CardData data_)
     {
         data = data_;
@@ -49,5 +58,30 @@ public class Card
         faceUp = card.faceUp;
         orientation = card.orientation;
         stats = card.stats;
+    }
+
+    public void Move(CardZone newZone)
+    {
+        if (newZone == zone) { return; }
+        int newPosition = newZone.cards.Count;
+        Move(newZone, newPosition);
+    }
+    public void Move(int newPosition)
+    {
+        Debug.Assert(zone != null);
+        zone.AddCardAtPosition(this, newPosition);
+    }
+    public void Move(CardZone newZone, int newPosition)
+    {
+        if (zone == newZone)
+        {
+            Move(newPosition);
+            return;
+        }
+        if (zone != null)
+        {
+            zone.RemoveCard(this);
+        }
+        
     }
 }
