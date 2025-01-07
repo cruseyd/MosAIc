@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class CardZone
 {
-    public CardZoneName name {get; private set;}
-    public int agent {get; private set;}
-    private List<Card> _cards;
+    public CardZoneName name {get; protected set;}
+    public int agent {get; protected set;}
+    protected List<Card> _cards;
     public CardZone(CardZoneName name_, int playerID_)
     {
         name = name_;

@@ -1,25 +1,23 @@
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public enum CardOrientation
 {
-    UP,
-    RIGHT,
-    DOWN,
-    LEFT
+    Up,
+    Right,
+    Down,
+    Left
+}
+public enum CardVisibility
+{
+    Hidden,
+    Owner,
+    Visible
 }
 public class Card
 {
-    public bool faceUp
-    {
-        get
-        {
-            return _faceUp;
-        } set {
-            _faceUp = value;
-        }
-    }
-    private bool _faceUp;
+    private List<int> _visibleTo;
     public CardOrientation orientation
     {
         get {
@@ -32,6 +30,7 @@ public class Card
     public CardData data {get; private set;}
     private Dictionary<StatName, Stat> stats;
     public CardZone zone { get; private set;}
+    public int agent { get { return zone.agent; }}
     public int zonePosition
     {
         get {
@@ -43,8 +42,8 @@ public class Card
     public Card(CardData data_)
     {
         data = data_;
-        faceUp = false;
-        orientation = CardOrientation.UP;
+        _visibleTo = new List<int>();
+        orientation = CardOrientation.Up;
         stats = new Dictionary<StatName, Stat>();
         foreach (StatValuePair def in data_.baseStats)
         {
@@ -54,9 +53,40 @@ public class Card
     public Card(Card card)
     {
         data = card.data;
-        faceUp = card.faceUp;
+        _visibleTo = card._visibleTo;
         orientation = card.orientation;
         stats = card.stats;
+    }
+    public void SetVisibility(CardVisibility visibility)
+    {
+        _visibleTo.Clear();
+        switch (visibility)
+        {
+            case CardVisibility.Hidden: break;
+            case CardVisibility.Owner: _visibleTo.Add(agent); break;
+            case CardVisibility.Visible:
+                for (int id = 0; id < GameState.main.NumAgents(); id++)
+                {
+                    _visibleTo.Add(id);
+                }
+                break;
+        }
+    }
+    public void SetVisibility(int agent)
+    {
+        _visibleTo.Clear();
+        _visibleTo.Add(agent);
+    }
+    public void ShareVisibilityWith(int agent)
+    {
+        if (!_visibleTo.Contains(agent))
+        {
+            _visibleTo.Add(agent);
+        }
+    }
+    public bool VisibleTo(int agent)
+    {
+        return _visibleTo.Contains(agent);
     }
     public void Move(CardZone newZone)
     {
@@ -78,7 +108,7 @@ public class Card
 
     public override string ToString()
     {
-        string info = "Card | name: " + data.name + " | faceUp: " + faceUp.ToString() + " | orient: " + orientation.ToString();
+        string info = "Card | name: " + data.name + " | orient: " + orientation.ToString();
         foreach (StatName stat in stats.Keys)
         {
             info += " | " + stat.ToString() + " : " + stats[stat].value;
