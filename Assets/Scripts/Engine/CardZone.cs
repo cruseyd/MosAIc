@@ -30,7 +30,7 @@ public class CardZone
     }
     public void AddAtPosition(Card card, int position)
     {
-        Debug.Assert(position > cards.Count);
+        Debug.Assert(position <= cards.Count);
         if (Contains(card))
         {
             int prevPosition = GetPosition(card);

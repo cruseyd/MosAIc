@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEditorInternal;
 using UnityEngine;
@@ -8,6 +9,20 @@ public class StatRange
     [SerializeField] public StatName stat;
     [SerializeField] public int minValue;
     [SerializeField] public int maxValue;
+}
+
+[System.Serializable]
+public class CardStatAssignment
+{
+    [SerializeField] public CardType cardType;
+    [SerializeField] public List<StatName> stats;
+}
+
+[System.Serializable]
+public class AgentStatAssignment
+{
+    [SerializeField] public AgentType agentType;
+    [SerializeField] public List<StatName> stats;
 }
 
 [System.Serializable]
@@ -24,6 +39,9 @@ public class GameParams : ScriptableObject
     [SerializeField] private GameMode gameMode;
     [SerializeField] private List<StatRange> statRanges;
     [SerializeField] private List<ParamValue> paramValues;
+
+    [SerializeField] private List<CardStatAssignment> cardStatAssignments;
+    [SerializeField] private List<AgentStatAssignment> agentStatAssignments;
 
     public static GameMode GameMode() { return Instance().gameMode; }
     public static GameParams Instance()
@@ -67,5 +85,88 @@ public class GameParams : ScriptableObject
             }
         }
         return int.MaxValue;
+    }
+    public static List<StatName> CardStats(CardType type)
+    {
+        var stats = new List<StatName>();
+        foreach (var assignment in Instance().cardStatAssignments)
+        {
+            if (assignment.cardType == type)
+            {
+                stats.AddRange(assignment.stats);
+            }
+        }
+        return stats;
+    }
+    public static List<StatName> AgentStats(AgentType type)
+    {
+        var stats = new List<StatName>();
+        foreach (var assignment in Instance().agentStatAssignments)
+        {
+            if (assignment.agentType == type)
+            {
+                stats.AddRange(assignment.stats);
+            }
+        }
+        return stats;
+    }
+    private void OnEnable()
+    {
+        CreateParameterLists();
+        InitializeParameterLists();
+    }
+
+    private void CreateParameterLists()
+    {
+        if (statRanges == null) { statRanges = new List<StatRange>(); }
+        if (paramValues == null) { paramValues = new List<ParamValue>(); }
+        if (cardStatAssignments == null) { cardStatAssignments = new List<CardStatAssignment>(); }
+        if (agentStatAssignments == null) { agentStatAssignments = new List<AgentStatAssignment>(); }
+    }
+    private void InitializeParameterLists()
+    {
+        if (statRanges.Count == 0)
+        {
+            foreach (StatName name in Enum.GetValues(typeof(StatName)))
+            {
+                if (name == StatName.Default) { continue; }
+                var range = new StatRange();
+                range.stat = name;
+                range.minValue = 0;
+                range.maxValue = int.MaxValue;
+                statRanges.Add(range);
+            }
+        }
+        if (paramValues.Count == 0)
+        {
+            foreach (Parameter param in Enum.GetValues(typeof(Parameter)))
+            {
+                if (param == Parameter.Default) { continue; }
+                var paramValue = new ParamValue();
+                paramValue.paramName = param;
+                paramValue.paramValue = 1;
+                paramValues.Add(paramValue);
+            }
+        }
+        if (cardStatAssignments.Count == 0)
+        {
+            foreach (CardType type in Enum.GetValues(typeof(CardType)))
+            {
+                if (type == CardType.Default) { continue; }
+                var assignment = new CardStatAssignment();
+                assignment.cardType = type;
+                cardStatAssignments.Add(assignment);
+            }
+        }
+                if (cardStatAssignments.Count == 0)
+        {
+            foreach (AgentType type in Enum.GetValues(typeof(AgentType)))
+            {
+                if (type == AgentType.Default) { continue; }
+                var assignment = new AgentStatAssignment();
+                assignment.agentType = type;
+                agentStatAssignments.Add(assignment);
+            }
+        }
     }
 }

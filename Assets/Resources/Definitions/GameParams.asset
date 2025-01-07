@@ -14,26 +14,36 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameMode: 1
   statRanges:
-  - stat: 0
-    minValue: 0
-    maxValue: 99
   - stat: 1
     minValue: 0
-    maxValue: 99
+    maxValue: 2147483647
   - stat: 2
     minValue: 0
-    maxValue: 99
+    maxValue: 2147483647
   - stat: 3
     minValue: 0
-    maxValue: 99
+    maxValue: 2147483647
   - stat: 4
     minValue: 0
-    maxValue: 99
+    maxValue: 2147483647
   - stat: 5
+    minValue: 0
+    maxValue: 2147483647
+  - stat: 6
     minValue: 0
     maxValue: 1
   paramValues:
-  - paramName: 0
-    paramValue: 7
   - paramName: 1
+    paramValue: 7
+  - paramName: 2
     paramValue: 20
+  cardStatAssignments:
+  - cardType: 1
+    stats: 05000000010000000200000003000000
+  - cardType: 2
+    stats: 05000000
+  - cardType: 3
+    stats: 05000000
+  agentStatAssignments:
+  - agentType: 1
+    stats: 04000000

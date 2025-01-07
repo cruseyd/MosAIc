@@ -46,12 +46,11 @@ public class Card
         faceUp = false;
         orientation = CardOrientation.UP;
         stats = new Dictionary<StatName, Stat>();
-        foreach (StatValuePair def in data_.stats)
+        foreach (StatValuePair def in data_.baseStats)
         {
             stats.Add(def.stat, new Stat(def.stat, def.value));
         }
     }
-
     public Card(Card card)
     {
         data = card.data;
@@ -59,7 +58,6 @@ public class Card
         orientation = card.orientation;
         stats = card.stats;
     }
-
     public void Move(CardZone newZone)
     {
         if (newZone == zone) { return; }
@@ -83,5 +81,15 @@ public class Card
             zone.Remove(this);
         }
         
+    }
+
+    public override string ToString()
+    {
+        string info = "Card | name: " + data.name + " | faceUp: " + faceUp.ToString() + " | orient: " + orientation.ToString();
+        foreach (StatName stat in stats.Keys)
+        {
+            info += "\n\t" + stat.ToString() + ": " + stats[stat];
+        }
+        return info;
     }
 }

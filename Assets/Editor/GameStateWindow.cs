@@ -25,17 +25,22 @@ public class GameStateWindow : EditorWindow
         } else {
             GUILayout.Label("Current Phase: " + gameState.phase.ToString());
             GUILayout.Label("Active Agent ID: " + gameState.activeAgent.ID + " | type: " + gameState.activeAgent.type.ToString());
-            GUILayout.Label("----------------------------------------------------------------------");
+            GUILayout.Label("======================================================================");
             GUILayout.Label("Agents:",EditorStyles.boldLabel);
             for ( int id = 0; id < gameState.NumAgents(); id++)
             {
                 GUILayout.Label(gameState.GetAgentWithID(id).ToString());
             }
-            GUILayout.Label("----------------------------------------------------------------------");
+            GUILayout.Label("======================================================================");
             GUILayout.Label("Card Zones:",EditorStyles.boldLabel);
             foreach (CardZone zone in gameState.GetCardZones())
             {
+                GUILayout.Label("----------------------------------------------------------------------");
                 GUILayout.Label(zone.ToString());
+                foreach (Card card in zone.cards)
+                {
+                    GUILayout.Label(card.ToString());
+                }
             }
         }
         

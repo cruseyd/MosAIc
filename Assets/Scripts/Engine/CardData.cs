@@ -11,24 +11,47 @@ public struct StatValuePair {
 [CreateAssetMenu(fileName = "NewCardData", menuName = "Scriptable Objects/CardData", order = 1)]
 public class CardData : ScriptableObject {
     public new string name;
-    public List<StatValuePair> stats;
+    public CardType type;
+    public List<StatValuePair> baseStats;
 
-    private void OnEnable()
+    private void OnValidate()
     {
-        if (stats == null)
+        UpdateDefaultStats();
+    }
+    public void GenerateDefaultStats(CardType cardType)
+    {
+        baseStats.Clear();
+        foreach (StatName stat in GameParams.CardStats(cardType))
         {
-            stats = new List<StatValuePair>();
-        }
-        if (stats.Count == 0)
-        {
-            foreach (StatName stat in Enum.GetValues(typeof(StatName)))
-            {
-                var pair = new StatValuePair();
-                pair.stat = stat;
-                pair.value = GameParams.MinValue(stat);
-                stats.Add(pair);
-            }
+            var pair = new StatValuePair();
+            pair.stat = stat;
+            pair.value = GameParams.MinValue(stat);
+            baseStats.Add(pair);
         }
     }
+    public void UpdateDefaultStats()
+    {
+        if (!ValidStats())
+        {
+            GenerateDefaultStats(type);
+        }
 
+    }
+    private bool ValidStats()
+    {
+        var correctStats = GameParams.CardStats(type);
+        var currentStats = new List<StatName>();
+        foreach (var stat in baseStats)
+        {
+            currentStats.Add(stat.stat);
+        }
+        correctStats.Sort();
+        currentStats.Sort();
+        if (correctStats.Count != currentStats.Count) { return false; }
+        for( int ii = 0; ii < currentStats.Count; ii++)
+        {
+            if (correctStats[ii] != currentStats[ii]) { return false; }
+        }
+        return true; 
+    }
 }

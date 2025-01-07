@@ -4,6 +4,7 @@ using UnityEngine;
 public enum TestName
 {
     GameState,
+    MoveCard, 
 }
 
 public class UnitTester : MonoBehaviour
@@ -15,6 +16,7 @@ public class UnitTester : MonoBehaviour
         switch (test)
         {
             case TestName.GameState: InitGameState(); break;
+            case TestName.MoveCard: InitMoveCard(); break;
         }
     }
 
@@ -23,6 +25,7 @@ public class UnitTester : MonoBehaviour
         switch (test)
         {
             case TestName.GameState: TestGameState(); break;
+            case TestName.MoveCard: TestMoveCard(); break;
         }
     }
     void InitGameState()
@@ -33,6 +36,25 @@ public class UnitTester : MonoBehaviour
     }
     void TestGameState() {}
 
-    void InitMoveCard() {}
-    void TestMoveCard() {}
+    void InitMoveCard() 
+    {
+        GameMode mode = GameParams.GameMode();
+        Initializer initializer = (Initializer)mode.GetAssociatedClass();
+        GameState state = initializer.Initialize();
+        GameState.main = state;
+    }
+    void TestMoveCard()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            var card = new Card(ResourceManager.GetRandomCardData());
+            GameState.main.GetCardZone(CardZoneName.Hand,0).AddAtPosition(card, 0);
+        } else if (Input.GetMouseButtonDown(1))
+        {
+            var hand = GameState.main.GetCardZone(CardZoneName.Hand, 0);
+            var chars = GameState.main.GetCardZone(CardZoneName.Characters, 0);
+            Card card = hand.cards[hand.NumCards()-1];
+            card.Move(chars, 0);
+        }
+    }
 }
