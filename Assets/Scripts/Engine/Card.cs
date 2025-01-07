@@ -71,16 +71,9 @@ public class Card
     }
     public void Move(CardZone newZone, int newPosition)
     {
-        if (zone == newZone)
-        {
-            Move(newPosition);
-            return;
-        }
-        if (zone != null)
-        {
-            zone.Remove(this);
-        }
-        
+        zone?.Remove(this);
+        newZone?.AddAtPosition(this, newPosition);
+        zone = newZone;
     }
 
     public override string ToString()
@@ -88,7 +81,7 @@ public class Card
         string info = "Card | name: " + data.name + " | faceUp: " + faceUp.ToString() + " | orient: " + orientation.ToString();
         foreach (StatName stat in stats.Keys)
         {
-            info += "\n\t" + stat.ToString() + ": " + stats[stat];
+            info += " | " + stat.ToString() + " : " + stats[stat].value;
         }
         return info;
     }

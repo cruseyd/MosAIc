@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 
 [System.Serializable]
@@ -48,13 +49,21 @@ public class UnitTester : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             var card = new Card(ResourceManager.GetRandomCardData());
-            GameState.main.GetCardZone(CardZoneName.Hand,0).AddAtPosition(card, 0);
+            var hand = GameState.main.GetCardZone(CardZoneName.Hand,0);
+            card.Move(hand, 0);
+            SceneView.RepaintAll();
         } else if (Input.GetMouseButtonDown(1))
         {
+            
             var hand = GameState.main.GetCardZone(CardZoneName.Hand, 0);
             var chars = GameState.main.GetCardZone(CardZoneName.Characters, 0);
             Card card = hand.cards[hand.NumCards()-1];
+            Debug.Log($"Moving card {card.data.name} from hand to chars");
+            Debug.Log($"There are {hand.NumCards()} cards in hand and {chars.NumCards()} cards in chars");
             card.Move(chars, 0);
+            Debug.Log($"Now there are {hand.NumCards()} cards in hand and {chars.NumCards()} cards in chars");
+
+            SceneView.RepaintAll();
         }
     }
 }
