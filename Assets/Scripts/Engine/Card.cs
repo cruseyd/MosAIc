@@ -61,7 +61,7 @@ public class Card
     public void Move(CardZone newZone)
     {
         if (newZone == zone) { return; }
-        int newPosition = newZone.cards.Count;
+        int newPosition = newZone.NumCards();
         Move(newZone, newPosition);
     }
     public void Move(int newPosition)

@@ -57,11 +57,8 @@ public class UnitTester : MonoBehaviour
             
             var hand = GameState.main.GetCardZone(CardZoneName.Hand, 0);
             var chars = GameState.main.GetCardZone(CardZoneName.Characters, 0);
-            Card card = hand.cards[hand.NumCards()-1];
-            Debug.Log($"Moving card {card.data.name} from hand to chars");
-            Debug.Log($"There are {hand.NumCards()} cards in hand and {chars.NumCards()} cards in chars");
+            Card card = hand.GetLastCard();
             card.Move(chars, 0);
-            Debug.Log($"Now there are {hand.NumCards()} cards in hand and {chars.NumCards()} cards in chars");
 
             SceneView.RepaintAll();
         }

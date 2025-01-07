@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEditor;
-using System.Data.Common;
 
 public class GameStateWindow : EditorWindow
 {
@@ -37,12 +36,11 @@ public class GameStateWindow : EditorWindow
             {
                 GUILayout.Label("----------------------------------------------------------------------");
                 GUILayout.Label(zone.ToString());
-                foreach (Card card in zone.cards)
+                foreach (Card card in zone.Cards())
                 {
                     GUILayout.Label(card.ToString());
                 }
             }
         }
-        
     }
 }
