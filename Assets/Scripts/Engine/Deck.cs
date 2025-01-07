@@ -9,7 +9,13 @@ public class Deck : CardZone
     public Deck(CardZoneName name_, int playerID_) : base(name_, playerID_)
     {
     }
-
+    public Card Draw(CardZone targetZone, int targetPosition)
+    {
+        if (NumCards() == 0) { return null; }
+        Card topCard = GetFirstCard();
+        topCard.Move(targetZone, targetPosition);
+        return topCard;
+    }
     public void Shuffle()
     {
         foreach (var card in Cards())

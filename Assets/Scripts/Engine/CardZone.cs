@@ -35,8 +35,16 @@ public class CardZone
         Debug.Assert(position < NumCards());
         return _cards[position];
     }
-    public Card GetFirstCard() { return GetCardAtPosition(0); }
-    public Card GetLastCard() { return GetCardAtPosition(NumCards()-1); }
+    public Card GetFirstCard()
+    {
+        Debug.Assert(NumCards() > 0);
+        return GetCardAtPosition(0);
+    }
+    public Card GetLastCard()
+    {
+        Debug.Assert(NumCards() > 0);
+        return GetCardAtPosition(NumCards()-1);
+    }
     public void Add(Card card)
     {
         AddAtPosition(card, _cards.Count);

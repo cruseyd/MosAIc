@@ -6,6 +6,7 @@ public enum TestName
 {
     GameState,
     MoveCard, 
+    ShuffleDeck,
 }
 
 public class UnitTester : MonoBehaviour
@@ -61,6 +62,13 @@ public class UnitTester : MonoBehaviour
             card.Move(chars, 0);
 
             SceneView.RepaintAll();
+        }
+    }
+    void TestShuffleDeck()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            var card = new Card(ResourceManager.GetRandomCardData());
         }
     }
 }
