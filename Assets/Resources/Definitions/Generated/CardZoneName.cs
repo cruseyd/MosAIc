@@ -4,4 +4,5 @@ public enum CardZoneName {
     Characters,
     Items,
     Discard,
+    Deck,
 }

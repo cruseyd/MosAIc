@@ -11,6 +11,7 @@ public class MainInitializer : Initializer{
         {
             state.AddCardZone(CardZoneName.Hand, id);
             state.AddCardZone(CardZoneName.Characters, id);
+            state.AddDeck(CardZoneName.Deck, id);
         }
         state.activeAgentID = 0;
         state.phase = PhaseName.Ready;

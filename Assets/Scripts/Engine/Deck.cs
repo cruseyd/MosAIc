@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Deck : CardZone
 {
@@ -13,7 +14,9 @@ public class Deck : CardZone
     {
         if (NumCards() == 0) { return null; }
         Card topCard = GetFirstCard();
+        Debug.Log("top card is in zone: " + topCard.zone.name.ToString());
         topCard.Move(targetZone, targetPosition);
+        Debug.Log("top card is now in zone: " + topCard.zone.name.ToString());
         return topCard;
     }
     public void Shuffle()
@@ -26,10 +29,10 @@ public class Deck : CardZone
     public void InsertRandom(Card card)
     {
         int randomPosition = Random.Range(0,NumCards());
-        AddAtPosition(card, randomPosition);
+        card.Move(this, randomPosition);
     }
     public void Insert(Card card, int position)
     {
-        AddAtPosition(card, position);
+        card.Move(this, position);
     }
 }

@@ -75,6 +75,18 @@ public class GameState
         var zone = new CardZone(name, agent);
         zones[key] = zone;
     }
+    public void AddDeck(CardZoneName name, int agent)
+    {
+        var key = new Pair<CardZoneName, int>();
+        key.first = name;
+        key.second = agent;
+        if (zones.ContainsKey(key))
+        {
+            Debug.LogError($"GameState.AddCardZone | Error: Key already exists ({name},{agent})");
+        }
+        var zone = new Deck(name, agent);
+        zones[key] = zone;
+    }
     public List<CardZone> GetCardZones()
     {
         var cardZones = new List<CardZone>();
