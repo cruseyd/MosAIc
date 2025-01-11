@@ -24,7 +24,7 @@ public class UnitTester : MonoBehaviour
         {
             case TestName.GameState: TestGameState(); break;
             case TestName.MoveCard: TestMoveCard(); break;
-            case TestName.TestDeck: TestShuffleDeck(); break;
+            case TestName.TestDeck: TestDeck(); break;
             case TestName.GameAction: TestGameAction(); break;
         }
     }
@@ -45,7 +45,7 @@ public class UnitTester : MonoBehaviour
             card.Move(chars, 0);
         }
     }
-    void TestShuffleDeck()
+    void TestDeck()
     {
         if (Input.GetMouseButtonDown(0))
         {

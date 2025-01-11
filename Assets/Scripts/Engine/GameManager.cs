@@ -36,11 +36,10 @@ public class GameManager : Singleton<GameManager>
     {
         // Listen for user input
     }
-
-    public void TakeAction(ActionName actionName, int agentID)
+    public void TakeAction(ActionName actionName, int agentID, GameActionArgs args = new GameActionArgs())
     {
-        GameAction action = actionName.GetAssociatedClass(agentID, state) as GameAction;
-        state =  action.Resolve();
+        GameAction action = actionName.GetAssociatedClass(agentID, args, state) as GameAction;
+        state = action.Resolve();
     }
 
     public void TryAction(ActionName action)

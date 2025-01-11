@@ -56,7 +56,7 @@ public class ScriptGenerator
     {
         
         string code = ($"public class {className} : GameAction" + " {\n");
-        code += ($"    public {className}(int agentID, GameState state) : base(agentID, state)" + "{}");
+        code += ($"    public {className}(int agentID, GameActionArgs args, GameState state) : base(agentID, args, state)" + "{}");
         code += @"
     protected override void Execute(GameState state)
     {

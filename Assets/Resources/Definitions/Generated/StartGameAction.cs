@@ -2,7 +2,7 @@
 using UnityEngine;
 
 public class StartGameAction : GameAction {
-    public StartGameAction(int agentID, GameState state) : base(agentID, state){}
+    public StartGameAction(int agentID, GameActionArgs args, GameState state) : base(agentID, args, state){}
     protected override void Execute(GameState state)
     {
         var deck = state.GetDeck(CardZoneName.Deck, agentID);
