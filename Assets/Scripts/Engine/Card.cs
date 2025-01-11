@@ -39,8 +39,10 @@ public class Card
             return position;
         }
     }
+    public int id {get; private set; }
     public Card(CardData data_)
     {
+        id = Random.Range(0,1000);
         data = data_;
         _visibleTo = new List<int>();
         orientation = CardOrientation.Up;
@@ -52,6 +54,7 @@ public class Card
     }
     public Card(Card card)
     {
+        id = card.id;
         data = card.data;
         _visibleTo = card._visibleTo;
         orientation = card.orientation;
@@ -65,7 +68,7 @@ public class Card
             case CardVisibility.Hidden: break;
             case CardVisibility.Owner: _visibleTo.Add(agent); break;
             case CardVisibility.Visible:
-                for (int id = 0; id < GameState.main.NumAgents(); id++)
+                for (int id = 0; id < GameManager.state.NumAgents(); id++)
                 {
                     _visibleTo.Add(id);
                 }
@@ -97,7 +100,7 @@ public class Card
     public void Move(int newPosition)
     {
         Debug.Assert(zone != null);
-        zone.AddAtPosition(this, newPosition);
+        Move(zone, newPosition);
     }
     public void Move(CardZone newZone, int newPosition)
     {

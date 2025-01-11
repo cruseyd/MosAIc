@@ -3,7 +3,7 @@ using System.Linq;
 
 public static class EnumExtensions
 {
-    public static object GetAssociatedClass(this Enum enumValue)
+    public static object GetAssociatedClass(this Enum enumValue, params object[] constructorArgs)
     {
         // Get the type of the enum
         var enumType = enumValue.GetType();
@@ -17,7 +17,7 @@ public static class EnumExtensions
             .FirstOrDefault() as ClassMappingAttribute;
 
         // Return an instance of the mapped type if it exists
-        return attribute != null ? Activator.CreateInstance(attribute.MappedType) : null;
+        return attribute != null ? Activator.CreateInstance(attribute.MappedType, constructorArgs) : null;
     }
     public static T GetNext<T>(this T enumValue) where T : Enum
     {

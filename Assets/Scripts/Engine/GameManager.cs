@@ -1,14 +1,15 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
 {
-    public GameState state {get; private set; }
+    public static GameState state {get; private set; }
     public Phase phase
     {
         get {
             return _phase;
         } 
-        set {
+        private set {
             Phase nextPhase = value;
             Phase prevPhase = _phase;
             if (prevPhase != null && (nextPhase.name != prevPhase.name))
@@ -23,6 +24,9 @@ public class GameManager : Singleton<GameManager>
     protected override void Awake()
     {
         base.Awake();
+    }
+    protected void Start()
+    {
         GameMode mode = GameParams.GameMode();
         Initializer initializer = (Initializer)mode.GetAssociatedClass();
         state = initializer.Initialize();
@@ -30,12 +34,17 @@ public class GameManager : Singleton<GameManager>
 
     void Update()
     {
-        // Listen for UI inputs
+        // Listen for user input
     }
 
-    public void HandleNext()
+    public void TakeAction(ActionName actionName, int agentID)
     {
-        Phase nextPhase = phase.Next(state);
-        phase = nextPhase;
+        GameAction action = actionName.GetAssociatedClass(agentID, state) as GameAction;
+        state =  action.Resolve();
+    }
+
+    public void TryAction(ActionName action)
+    {
+        // Used by the AI to produce new game states to analyze
     }
 }

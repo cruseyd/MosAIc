@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameState
 {
-    public static GameState main;
+    //public static GameState main;
     public int activeAgentID;
     public Agent activeAgent
     {
@@ -16,24 +16,28 @@ public class GameState
     public PhaseName phase {get; set;}
     private Dictionary<Pair<CardZoneName, int>, CardZone> zones;
     private Dictionary<int, Agent> agents;
-
+    private Queue<GameEffect> effectQueue = new Queue<GameEffect>();
     public GameState()
     {
         zones = new Dictionary<Pair<CardZoneName, int>, CardZone>();
         agents = new Dictionary<int, Agent>();
         activeAgentID = -1;
         phase = PhaseName.Default;
-        if (main == null) { main = this;}
     }
-
     public GameState(GameState state)
     {
+        Debug.Log("GameState copy constructor");
         zones = new Dictionary<Pair<CardZoneName, int>, CardZone>();
         agents = new Dictionary<int, Agent>();
 
         foreach (Pair<CardZoneName, int> key in state.zones.Keys)
         {
-            zones[key] = new CardZone(state.zones[key]);
+            if (state.zones[key].GetType() == typeof(Deck))
+            {
+                zones[key] = new Deck(state.zones[key]);
+            } else {
+                zones[key] = new CardZone(state.zones[key]);
+            }
         }
         foreach (int key in state.agents.Keys)
         {
@@ -43,6 +47,20 @@ public class GameState
         activeAgentID = state.activeAgentID;
     }
 
+    public void Execute(GameEffect effect)
+    {
+        GameEffect currentEffect = effect;
+        currentEffect.Execute();
+        while (currentEffect.simultaneous != null)
+        {
+            currentEffect = currentEffect.simultaneous;
+            currentEffect.Execute();
+        }
+        while(effectQueue.Count > 0)
+        {
+            Execute(effectQueue.Dequeue());
+        }
+    }
     public void AddAgent(AgentType type, int id)
     {
         if (agents.ContainsKey(id))
@@ -106,5 +124,17 @@ public class GameState
             Debug.LogError($"GameState.GetCardZone | Error: Key missing ({name},{agent})");
         }
         return zones[key];
+    }
+    public Deck GetDeck(CardZoneName name, int agent)
+    {
+        var key = new Pair<CardZoneName, int>();
+        key.first = name;
+        key.second = agent;
+        if (!zones.ContainsKey(key))
+        {
+            Debug.LogError($"GameState.GetCardZone | Error: Key missing ({name},{agent})");
+        }
+        Debug.Assert(zones[key].GetType() == typeof(Deck));
+        return (Deck)zones[key];
     }
 }

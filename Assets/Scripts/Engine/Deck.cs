@@ -14,9 +14,7 @@ public class Deck : CardZone
     {
         if (NumCards() == 0) { return null; }
         Card topCard = GetFirstCard();
-        Debug.Log("top card is in zone: " + topCard.zone.name.ToString());
-        topCard.Move(targetZone, targetPosition);
-        Debug.Log("top card is now in zone: " + topCard.zone.name.ToString());
+        topCard?.Move(targetZone, targetPosition);
         return topCard;
     }
     public void Shuffle()

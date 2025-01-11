@@ -52,6 +52,20 @@ public class ScriptGenerator
 }";
         return code;
     }
+    public static string GenerateGameActionScript(string className)
+    {
+        
+        string code = ($"public class {className} : GameAction" + " {\n");
+        code += ($"    public {className}(int agentID, GameState state) : base(agentID, state)" + "{}");
+        code += @"
+    protected override void Execute(GameState state)
+    {
+        // Get game objects from state
+        // Add GameEffect instances using this.AddEffect
+    }
+};";
+        return code;
+    }
     private static void CreateGenerationDirectory()
     {
         if (!Directory.Exists(generatedScriptsPath))

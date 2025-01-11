@@ -10,13 +10,12 @@ public class GameStateWindow : EditorWindow
     {
         GetWindow<GameStateWindow>("GameState");
     }
-    
-    void OnGUI()
+    private void PrintState()
     {
         GUILayout.Label("Game State", EditorStyles.boldLabel);
         if (Application.isPlaying)
         {
-            gameState = GameState.main;
+            gameState = GameManager.state;
         }
         if (gameState == null)
         {
@@ -38,9 +37,13 @@ public class GameStateWindow : EditorWindow
                 GUILayout.Label(zone.ToString());
                 foreach (Card card in zone.Cards())
                 {
-                    GUILayout.Label(card.ToString());
+                    GUILayout.Label("\t" + card.ToString());
                 }
             }
         }
+    }
+    void OnGUI()
+    {
+        PrintState();
     }
 }

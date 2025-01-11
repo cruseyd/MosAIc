@@ -6,11 +6,20 @@ using UnityEngine.AI;
 public class ResourceManager : PersistentSingleton<ResourceManager>
 {
     private Dictionary<string, CardData> cardData;
+    private bool _initialized = false;
 
     protected override void Awake()
     {
         base.Awake();
-        LoadCardData();
+        Initialize();
+    }
+    private void Initialize()
+    {
+        if (!_initialized)
+        {
+            LoadCardData();
+            _initialized = true;
+        }
     }
     private void LoadCardData()
     {
@@ -24,11 +33,13 @@ public class ResourceManager : PersistentSingleton<ResourceManager>
     }
     public static CardData GetCardData(string id)
     {
+        instance.Initialize();
         Debug.Assert(instance.cardData.ContainsKey(id));
         return instance.cardData[id];
     }
     public static CardData GetRandomCardData()
     {
+        instance.Initialize();
         var cards = instance.cardData.Keys;
         int roll = Random.Range(0,cards.Count);
         int index = 0;

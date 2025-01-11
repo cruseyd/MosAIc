@@ -12,6 +12,12 @@ public class MainInitializer : Initializer{
             state.AddCardZone(CardZoneName.Hand, id);
             state.AddCardZone(CardZoneName.Characters, id);
             state.AddDeck(CardZoneName.Deck, id);
+            var deck = state.GetDeck(CardZoneName.Deck, id);
+            for (int ii = 0; ii < GameParams.Get(Parameter.MinDeckSize); ii++)
+            {
+                Card card = new Card(ResourceManager.GetRandomCardData());
+                deck.InsertRandom(card);
+            }
         }
         state.activeAgentID = 0;
         state.phase = PhaseName.Ready;

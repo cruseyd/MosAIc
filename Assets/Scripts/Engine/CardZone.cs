@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Mono.Cecil.Cil;
 using UnityEngine;
 
 public class CardZone
@@ -20,7 +21,8 @@ public class CardZone
         _cards = new List<Card>();
         foreach (Card card in zone._cards)
         {
-            _cards.Add(new Card(card));
+            var c = new Card(card);
+            c.Move(this, card.zonePosition);
         }
     }
 
@@ -33,7 +35,9 @@ public class CardZone
     public Card GetCardAtPosition(int position)
     {
         Debug.Assert(position < NumCards());
-        return _cards[position];
+        Card card = _cards[position];
+        Debug.Assert(card.zone == this);
+        return card;
     }
     public Card GetFirstCard()
     {
