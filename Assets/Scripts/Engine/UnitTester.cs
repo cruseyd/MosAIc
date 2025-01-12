@@ -91,4 +91,9 @@ public class UnitTester : MonoBehaviour
             GameManager.instance.TakeAction(ActionName.StartGame, 0);
         }
     }
+
+    void TestCardUI()
+    {
+        
+    }
 }

@@ -10,7 +10,10 @@ public struct StatValuePair {
 
 [CreateAssetMenu(fileName = "NewCardData", menuName = "Scriptable Objects/CardData", order = 1)]
 public class CardData : ScriptableObject {
+    public GameObject prefab = null;
     public new string name;
+    [TextArea(3,10)]
+    public List<string> text = new List<string>();
     public CardType type;
     public List<StatValuePair> baseStats;
 
@@ -53,5 +56,22 @@ public class CardData : ScriptableObject {
             if (correctStats[ii] != currentStats[ii]) { return false; }
         }
         return true; 
+    }
+    public int GetBaseStatValue(StatName statName)
+    {
+        foreach (var statValue in baseStats)
+        {
+            if (statValue.stat == statName)
+            {
+                return statValue.value;
+            }
+        }
+        Debug.LogError($"CardData.GetBaseStatValue | Error: Could not find StatName: {statName.ToString()}");
+        return 0;
+    }
+    public string GetText(int index)
+    {
+        Debug.Assert(text.Count > index);
+        return text[index];
     }
 }

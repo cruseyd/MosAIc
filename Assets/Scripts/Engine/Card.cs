@@ -60,6 +60,11 @@ public class Card
         orientation = card.orientation;
         stats = card.stats;
     }
+    public Stat GetStat(StatName statName)
+    {  
+        Debug.Assert(stats.ContainsKey(statName));
+        return stats[statName];
+    }
     public void SetVisibility(CardVisibility visibility)
     {
         _visibleTo.Clear();
@@ -108,7 +113,7 @@ public class Card
         newZone?.AddAtPosition(this, newPosition);
         zone = newZone;
     }
-
+    
     public override string ToString()
     {
         string info = "Card | name: " + data.name + " | orient: " + orientation.ToString();
