@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEditor;
 using UnityEngine;
 
@@ -17,6 +18,8 @@ public enum CardVisibility
 }
 public class Card
 {
+    private static long _nextSpawnID = 0;
+    public long id {get; private set; }
     private List<int> _visibleTo;
     public CardOrientation orientation
     {
@@ -39,10 +42,14 @@ public class Card
             return position;
         }
     }
-    public int id {get; private set; }
     public Card(CardData data_)
     {
-        id = Random.Range(0,1000);
+        id = _nextSpawnID;
+        _nextSpawnID++;
+        if (_nextSpawnID == long.MaxValue)
+        {
+            _nextSpawnID = 0;
+        }
         data = data_;
         _visibleTo = new List<int>();
         orientation = CardOrientation.Up;
@@ -113,7 +120,10 @@ public class Card
         newZone?.AddAtPosition(this, newPosition);
         zone = newZone;
     }
-    
+    public int CompareZonePosition(Card c)
+    {
+        return zonePosition - c.zonePosition;
+    }
     public override string ToString()
     {
         string info = "Card | name: " + data.name + " | orient: " + orientation.ToString();

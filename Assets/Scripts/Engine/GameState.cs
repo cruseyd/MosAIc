@@ -14,15 +14,15 @@ public class GameState
         }
     }
     public PhaseName phase {get; set;}
-    private Dictionary<Pair<CardZoneName, int>, CardZone> zones;
-    private Dictionary<int, Agent> agents;
+    private Dictionary<Pair<CardZoneName, int>, CardZone> zones
+        = new Dictionary<Pair<CardZoneName, int>, CardZone>();
+    private Dictionary<int, Agent> agents = new Dictionary<int, Agent>();
     private Queue<GameEffect> effectQueue = new Queue<GameEffect>();
     public GameState()
     {
-        zones = new Dictionary<Pair<CardZoneName, int>, CardZone>();
-        agents = new Dictionary<int, Agent>();
         activeAgentID = -1;
         phase = PhaseName.Default;
+
     }
     public GameState(GameState state)
     {

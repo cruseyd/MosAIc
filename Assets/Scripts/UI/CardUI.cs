@@ -6,20 +6,34 @@ using TMPro;
 
 public class CardUI : MonoBehaviour
 {
-    protected Card card { get; private set; }
+    public Card card { get; private set; }
     public TextMeshProUGUI nameText;
     public int agentID;
     public List<StatUI> stats = new List<StatUI>();
     public List<TextMeshProUGUI> textRegions = new List<TextMeshProUGUI>();
     public Transform front;
     public Transform back;
-
+    public float width 
+    {
+        get {
+            var rect = GetComponent<RectTransform>();
+            Debug.Assert(rect != null);
+            return rect.rect.width;
+        }
+    }
+    public float height
+    {
+        get {
+            var rect = GetComponent<RectTransform>();
+            Debug.Assert(rect != null);
+            return rect.rect.height;
+        }
+    }
     public static CardUI Spawn(Card card)
     {
         var cardUI = Spawn(card.data, card.agent);
         cardUI.SetVisible(false);
-        cardUI.card = card;
-        cardUI.Initialize(card);
+        cardUI.Define(card);
         return cardUI;
     }
     public static CardUI Spawn(CardData data, int agentID)
@@ -34,10 +48,10 @@ public class CardUI : MonoBehaviour
         var cardUI = gameObject.GetComponent<CardUI>();
         cardUI.SetVisible(true);
         Debug.Assert(cardUI != null);
-        cardUI.Initialize(data, agentID);
+        cardUI.Define(data, agentID);
         return cardUI;
     }
-    private void Initialize(Card card)
+    private void Define(Card card)
     {
         nameText.text = card.data.name;
         agentID = card.agent;
@@ -50,8 +64,15 @@ public class CardUI : MonoBehaviour
         {
             textRegions[textIndex].text = card.data.GetText(textIndex);
         }
+        if (this.card != null)
+        {
+            // ???
+        } else {
+
+        }
+        this.card = card;
     }
-    private void Initialize(CardData data, int agentID)
+    private void Define(CardData data, int agentID)
     {
         nameText.text = data.name;
         this.agentID = agentID;
