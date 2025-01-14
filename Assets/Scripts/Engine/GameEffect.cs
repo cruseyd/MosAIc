@@ -14,36 +14,38 @@ public abstract class GameEffect
 
 public class MoveCardEffect : GameEffect
 {
-    private Card _card;
-    private CardZone _zone;
+    public Card card;
+    public CardZone zone;
+    public CardZone prevZone;
     public MoveCardEffect(Card card, CardZone zone)
     {
-        _card = card;
-        _zone = zone;
+        this.card = card;
+        this.zone = zone;
+        this.prevZone = card.zone;
     }
     public override void Execute()
     {
         // before card move event
-        _card.Move(_zone);
+        card.Move(zone);
         // after card move event
     }
 }
 
 public class DrawCardEffect : GameEffect
 {
-    private Deck _deck;
-    private CardZone _toZone;
-    private int _toPosition;
+    public Deck deck;
+    public CardZone toZone;
+    public int toPosition;
     public DrawCardEffect(Deck deck, CardZone toZone, int toPosition = 0)
     {
-        _deck = deck;
-        _toZone = toZone;
-        _toPosition = toPosition;
+        this.deck = deck;
+        this.toZone = toZone;
+        this.toPosition = toPosition;
     }
     public override void Execute()
     {
         // before draw event
-        Card card = _deck.Draw(_toZone, _toPosition);
+        Card card = deck.Draw(toZone, toPosition);
         // after draw event
     }
 }

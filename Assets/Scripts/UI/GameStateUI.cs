@@ -9,22 +9,39 @@ public class GameStateUI : Singleton<GameStateUI>
         = new Dictionary<long, CardUI>();
     private static Dictionary<Pair<CardZoneName, int>, CardZoneUI> _zones
         = new Dictionary<Pair<CardZoneName, int>, CardZoneUI>();
-    private static Dictionary<Pair<CardZoneName, int>, DeckUI> _decks
-        = new Dictionary<Pair<CardZoneName, int>, DeckUI>();
-
+    
     protected override void Awake()
     {
         base.Awake();
-        foreach (var item in _mainCanvas.GetComponentsInChildren<CardZoneUI>())
+        foreach (var zi in _mainCanvas.GetComponentsInChildren<CardZoneUI>())
         {
-            var key = new Pair<CardZoneName, int>(item.zoneName, item.agentID);
-            if (item.GetType() == typeof(DeckUI))
-            {
-                //_decks[key] = (DeckUI)item;
-            } else {
-                //_zones[key] = item;
-            }
-            
+            var key = new Pair<CardZoneName, int>(zi.zoneName, zi.agentID);
+            _zones[key] = zi;
         }
+    }
+
+    public static CardUI Spawn(Card card)
+    {
+        var cardUI = Spawn(card.data, card.agent);
+        cardUI.SetVisible(false);
+        cardUI.Define(card);
+        cardUI.transform.SetParent(instance._mainCanvas.transform);
+        return cardUI;
+    }
+    public static CardUI Spawn(CardData data, int agentID)
+    {
+        GameObject gameObject = null;
+        if (data.prefab != null)
+        {
+            gameObject = Instantiate(data.prefab);
+        } else {
+            gameObject = Instantiate(ResourceManager.GetCardPrefab(data.type));
+        }
+        var cardUI = gameObject.GetComponent<CardUI>();
+        cardUI.SetVisible(true);
+        Debug.Assert(cardUI != null);
+        cardUI.Define(data, agentID);
+        cardUI.transform.SetParent(instance._mainCanvas.transform);
+        return cardUI;
     }
 }

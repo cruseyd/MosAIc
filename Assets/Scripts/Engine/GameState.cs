@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameState
 {
-    //public static GameState main;
+    public event Action<GameEffect, GameState> onResolveEffect;
     public int activeAgentID;
     public Agent activeAgent
     {
@@ -26,7 +26,6 @@ public class GameState
     }
     public GameState(GameState state)
     {
-        Debug.Log("GameState copy constructor");
         zones = new Dictionary<Pair<CardZoneName, int>, CardZone>();
         agents = new Dictionary<int, Agent>();
 
@@ -45,10 +44,12 @@ public class GameState
     public void Execute(GameEffect effect)
     {
         GameEffect currentEffect = effect;
+        onResolveEffect?.Invoke(currentEffect, this);
         currentEffect.Execute();
         while (currentEffect.simultaneous != null)
         {
             currentEffect = currentEffect.simultaneous;
+            onResolveEffect?.Invoke(currentEffect, this);
             currentEffect.Execute();
         }
         while(effectQueue.Count > 0)

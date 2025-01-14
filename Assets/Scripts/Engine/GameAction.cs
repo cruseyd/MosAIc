@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ public struct GameActionArgs
 
 public abstract class GameAction
 {
+    public static event Action<GameAction, GameState> onResolveAction;
     private List<GameEffect> _effects = new List<GameEffect>();
     private GameState _initialState;
     private GameState _finalState;
@@ -28,6 +30,7 @@ public abstract class GameAction
     protected abstract void Execute(GameState state);
     public GameState Resolve()
     {
+        onResolveAction?.Invoke(this, _finalState);
         foreach (var effect in _effects)
         {
             _finalState.Execute(effect);

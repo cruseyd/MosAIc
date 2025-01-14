@@ -29,29 +29,7 @@ public class CardUI : MonoBehaviour
             return rect.rect.height;
         }
     }
-    public static CardUI Spawn(Card card)
-    {
-        var cardUI = Spawn(card.data, card.agent);
-        cardUI.SetVisible(false);
-        cardUI.Define(card);
-        return cardUI;
-    }
-    public static CardUI Spawn(CardData data, int agentID)
-    {
-        GameObject gameObject = null;
-        if (data.prefab != null)
-        {
-            gameObject = Instantiate(data.prefab);
-        } else {
-            gameObject = Instantiate(ResourceManager.GetCardPrefab(data.type));
-        }
-        var cardUI = gameObject.GetComponent<CardUI>();
-        cardUI.SetVisible(true);
-        Debug.Assert(cardUI != null);
-        cardUI.Define(data, agentID);
-        return cardUI;
-    }
-    private void Define(Card card)
+    public void Define(Card card)
     {
         nameText.text = card.data.name;
         agentID = card.agent;
@@ -72,7 +50,7 @@ public class CardUI : MonoBehaviour
         }
         this.card = card;
     }
-    private void Define(CardData data, int agentID)
+    public void Define(CardData data, int agentID)
     {
         nameText.text = data.name;
         this.agentID = agentID;
