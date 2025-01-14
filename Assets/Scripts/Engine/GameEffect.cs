@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public abstract class GameEffect
@@ -5,6 +6,10 @@ public abstract class GameEffect
     private GameEffect _simultaneous = null;
     public GameEffect simultaneous { get { return _simultaneous; } }
     public abstract void Execute();
+    public virtual IEnumerator Display()
+    {
+        yield return new WaitUntil(() => !GameStateUI.animating);
+    }
     public void SimultaneousWith(GameEffect effect)
     {
         Debug.Assert(_simultaneous == null);
@@ -28,6 +33,10 @@ public class MoveCardEffect : GameEffect
         // before card move event
         card.Move(zone);
         // after card move event
+    }
+    public override IEnumerator Display()
+    {
+        return base.Display();
     }
 }
 

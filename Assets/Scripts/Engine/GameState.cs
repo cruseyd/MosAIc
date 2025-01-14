@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameState
 {
-    public event Action<GameEffect, GameState> onResolveEffect;
+    public static event Action<GameEffect, GameState> onResolveEffect;
     public int activeAgentID;
     public Agent activeAgent
     {
@@ -41,21 +41,25 @@ public class GameState
         activeAgentID = state.activeAgentID;
     }
 
-    public void Execute(GameEffect effect)
+    public List<GameEffect> Execute(GameEffect effect)
     {
+        var list = new List<GameEffect>();
         GameEffect currentEffect = effect;
         onResolveEffect?.Invoke(currentEffect, this);
+        list.Add(currentEffect);
         currentEffect.Execute();
         while (currentEffect.simultaneous != null)
         {
             currentEffect = currentEffect.simultaneous;
             onResolveEffect?.Invoke(currentEffect, this);
+            list.Add(currentEffect);
             currentEffect.Execute();
         }
         while(effectQueue.Count > 0)
         {
-            Execute(effectQueue.Dequeue());
+            list.AddRange(Execute(effectQueue.Dequeue()));
         }
+        return list;
     }
     public void AddAgent(AgentType type, int id)
     {

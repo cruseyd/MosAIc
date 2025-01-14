@@ -39,7 +39,8 @@ public class GameManager : Singleton<GameManager>
     public void TakeAction(ActionName actionName, int agentID, GameActionArgs args = new GameActionArgs())
     {
         GameAction action = actionName.GetAssociatedClass(agentID, args, state) as GameAction;
-        state = action.Resolve();
+        var actionWithEffects = action.Resolve();
+        
     }
 
     public void TryAction(ActionName action)

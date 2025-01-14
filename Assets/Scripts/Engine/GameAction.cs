@@ -7,9 +7,17 @@ public struct GameActionArgs
 
 }
 
+public class GameActionWithEffects
+{
+    public GameAction action;
+    public List<GameEffect> effects;
+    public GameState state;
+}
+
 public abstract class GameAction
 {
-    public static event Action<GameAction, GameState> onResolveAction;
+    public static event Action<GameAction, GameState> onBeforeResolveAction;
+    public static event Action<GameAction, GameState> onAfterResolveAction;
     private List<GameEffect> _effects = new List<GameEffect>();
     private GameState _initialState;
     private GameState _finalState;
@@ -22,19 +30,24 @@ public abstract class GameAction
         _initialState = state;
         _finalState = new GameState(state);
         Execute(_finalState);
+        onBeforeResolveAction += GameStateUI.OnResolveAction;
     }
     protected void AddEffect(GameEffect effect)
     {
         _effects.Add(effect);
     }
     protected abstract void Execute(GameState state);
-    public GameState Resolve()
+    public GameActionWithEffects Resolve()
     {
-        onResolveAction?.Invoke(this, _finalState);
+        onBeforeResolveAction?.Invoke(this, _finalState);
+        var actionWithEffects = new GameActionWithEffects();
+        actionWithEffects.action = this;
+        actionWithEffects.state = _finalState;
         foreach (var effect in _effects)
         {
-            _finalState.Execute(effect);
+            actionWithEffects.effects.AddRange(_finalState.Execute(effect));
         }
-        return _finalState;
+        onAfterResolveAction?.Invoke(this, _finalState);
+        return actionWithEffects;
     }
 }
