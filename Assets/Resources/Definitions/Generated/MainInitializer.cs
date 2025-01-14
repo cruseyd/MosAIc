@@ -9,9 +9,9 @@ public class MainInitializer : Initializer{
         state.AddAgent(AgentType.Enemy,1);
         for (int id = 0; id < state.NumAgents(); id++)
         {
-            state.AddCardZone(CardZoneName.Hand, id);
-            state.AddCardZone(CardZoneName.Characters, id);
-            state.AddDeck(CardZoneName.Deck, id);
+            state.AddCardZone<LinearCardZone>(CardZoneName.Hand, id);
+            state.AddCardZone<LinearCardZone>(CardZoneName.Characters, id);
+            state.AddCardZone<Deck>(CardZoneName.Deck, id);
             var deck = state.GetDeck(CardZoneName.Deck, id);
             for (int ii = 0; ii < GameParams.Get(Parameter.MinDeckSize); ii++)
             {

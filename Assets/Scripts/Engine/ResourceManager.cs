@@ -58,6 +58,7 @@ public class ResourceManager : PersistentSingleton<ResourceManager>
         cardPrefabs.Clear();
         foreach (CardType cardType in Enum.GetValues(typeof(CardType)))
         {
+            if (cardType == CardType.Default) { continue; }
             GameObject prefab = Resources.Load<GameObject>($"Prefabs/{cardType.ToString()}");
             if (prefab == null)
             {

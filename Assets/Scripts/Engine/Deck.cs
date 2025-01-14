@@ -3,18 +3,13 @@ using UnityEngine.UIElements;
 
 public class Deck : CardZone
 {
-    public Deck(CardZone zone) : base(zone)
-    {
-    }
-
-    public Deck(CardZoneName name_, int playerID_) : base(name_, playerID_)
-    {
-    }
+    public Deck() : base() {}
+    public Deck(CardZoneName name_, int playerID_) : base(name_, playerID_) {}
     public Card Draw(CardZone targetZone, int targetPosition)
     {
         if (NumCards() == 0) { return null; }
-        Card topCard = GetFirstCard();
-        topCard?.Move(targetZone, targetPosition);
+        Card topCard = GetCardAtIndex(Deserialize(0));
+        topCard?.Move(targetZone, Deserialize(targetPosition));
         return topCard;
     }
     public void Shuffle()
@@ -27,10 +22,24 @@ public class Deck : CardZone
     public void InsertRandom(Card card)
     {
         int randomPosition = Random.Range(0,NumCards());
-        card.Move(this, randomPosition);
+        card.Move(this, Deserialize(randomPosition));
     }
     public void Insert(Card card, int position)
     {
-        card.Move(this, position);
+        card.Move(this, Deserialize(position));
+    }
+    protected override int Serialize(CardZoneIndex index)
+    {
+        return index.z;
+    }
+    protected override CardZoneIndex Deserialize(int position)
+    {
+        return new CardZoneIndex(0,0,position);
+    }
+    public override CardZone Clone()
+    {
+        var clone = new Deck(name, agent);
+        clone.CloneCardsFrom(this);
+        return clone;
     }
 }

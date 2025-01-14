@@ -32,12 +32,7 @@ public class GameState
 
         foreach (Pair<CardZoneName, int> key in state.zones.Keys)
         {
-            if (state.zones[key].GetType() == typeof(Deck))
-            {
-                zones[key] = new Deck(state.zones[key]);
-            } else {
-                zones[key] = new CardZone(state.zones[key]);
-            }
+            zones[key] = state.zones[key].Clone();
         }
         foreach (int key in state.agents.Keys)
         {
@@ -81,7 +76,7 @@ public class GameState
     }
 
     public int NumAgents() { return agents.Count; }
-    public void AddCardZone(CardZoneName name, int agent)
+    public void AddCardZone<T> (CardZoneName name, int agent) where T : CardZone, new()
     {
         var key = new Pair<CardZoneName, int>();
         key.first = name;
@@ -90,7 +85,8 @@ public class GameState
         {
             Debug.LogError($"GameState.AddCardZone | Error: Key already exists ({name},{agent})");
         }
-        var zone = new CardZone(name, agent);
+        
+        T zone = CardZone.Create<T>(name, agent);
         zones[key] = zone;
     }
     public void AddDeck(CardZoneName name, int agent)
@@ -110,7 +106,7 @@ public class GameState
         var cardZones = new List<CardZone>();
         foreach (CardZone zone in zones.Values)
         {
-            cardZones.Add(new CardZone(zone));
+            cardZones.Add(zone);
         }
         return cardZones;
     }

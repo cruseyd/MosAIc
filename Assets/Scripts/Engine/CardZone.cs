@@ -1,82 +1,131 @@
+using System;
 using System.Collections.Generic;
-using Mono.Cecil.Cil;
+using System.Linq;
 using UnityEngine;
 
-public class CardZone
+[System.Serializable]
+public struct CardZoneIndex
+{
+    public int x { get { return index.x; }}
+    public int y { get { return index.y; }}
+    public int z { get { return index.z; }}
+    public CardZoneIndex(int x, int y, int z)
+    {
+        index = new Vector3Int(x,y,z);
+    }
+    public CardZoneIndex(int x, int y)
+    {
+        index = new Vector3Int(x, y, 0);
+    }
+    public CardZoneIndex(int x)
+    {
+        index = new Vector3Int(x, 0, 0);
+    }
+    public int GetSerialValue(int width, int height)
+    {
+        return x + width*y + width*height*z;
+    }
+    [SerializeField] private Vector3Int index;
+}
+public abstract class CardZone
 {
     public CardZoneName name {get; protected set;}
     public int agent {get; protected set;}
-    protected List<Card> _cards;
+    protected List<Card> _cards = new List<Card>();
+    public CardZone()
+    {
+        name = CardZoneName.Default;
+        agent = -1;
+    }
     public CardZone(CardZoneName name_, int playerID_)
     {
         name = name_;
         agent = playerID_;
-        _cards = new List<Card>();
     }
-
-    public CardZone(CardZone zone)
-    {
-        name = zone.name;
-        agent = zone.agent;
-        _cards = new List<Card>();
-        foreach (Card card in zone._cards)
-        {
-            var c = new Card(card);
-            c.Move(this, card.zonePosition);
-        }
-    }
-
     public List<Card> Cards()
     {
         var  list = new List<Card>();
         list.AddRange(_cards);
         return list;
     }
-    public Card GetCardAtPosition(int position)
+    public CardZoneIndex FirstIndex()
     {
+        return Deserialize(0);
+    }
+    public CardZoneIndex LastIndex()
+    {
+        int index = _cards
+            .Select((value, idx) => value != null ? idx : -1)
+            .LastOrDefault(i => i != -1); 
+        index = (index == -1) ? _cards.Count : index;
+        return Deserialize(index);
+    }
+    public CardZoneIndex NextIndex()
+    {
+        int index = _cards
+            .Select((value, idx) => value == null ? idx : -1)
+            .FirstOrDefault(i => i != -1); 
+        index = (index == -1) ? _cards.Count : index;
+        return Deserialize(index);
+    }
+    public Card FirstCard()
+    {
+        return GetCardAtIndex(FirstIndex());
+    }
+    public Card LastCard()
+    {
+        return GetCardAtIndex(LastIndex()); 
+    }
+    public Card GetCardAtIndex(CardZoneIndex index)
+    {
+        if (NumCards() <= 0) { return null; }
+        int position = Serialize(index);
         Debug.Assert(position < NumCards());
         Card card = _cards[position];
-        Debug.Assert(card.zone == this);
         return card;
-    }
-    public Card GetFirstCard()
-    {
-        Debug.Assert(NumCards() > 0);
-        return GetCardAtPosition(0);
-    }
-    public Card GetLastCard()
-    {
-        Debug.Assert(NumCards() > 0);
-        return GetCardAtPosition(NumCards()-1);
     }
     public void Add(Card card)
     {
-        AddAtPosition(card, _cards.Count);
+        AddAtIndex(card, NextIndex());
     }
-    public void AddAtPosition(Card card, int position)
+    public void AddAtIndex(Card card, CardZoneIndex index)
     {
-        Debug.Assert(position <= _cards.Count);
+        int position = Serialize(index);
+
         if (Contains(card))
         {
-            int prevPosition = GetPosition(card);
+            int prevPosition = Serialize(card.zoneIndex);
             if (position != prevPosition)
             {
                 _cards.RemoveAt(prevPosition);
                 if (prevPosition < position) { position--; }
                 _cards.Insert(position, card);
             }
-        } else {
-            _cards.Insert(position, card);
         }
+        else
+        {
+            if (position >= NumCards())
+            {
+                _cards.Insert(position, card);
+            } else {
+                if (_cards[position] == null)
+                {
+                    _cards[position] = card;
+                } else {
+                    _cards.Insert(position, card);
+                }
+            }
+        }
+    }
+    public CardZoneIndex GetIndex(Card card)
+    {
+        Debug.Assert(Contains(card));
+        int index = _cards.FindIndex((c) => c == card);
+        return Deserialize(index);
     }
     public int GetPosition(Card card)
     {
-        if (_cards.Contains(card))
-        {
-            return _cards.IndexOf(card);
-        } else {
-            return -1;
-        }
+        return Serialize(GetIndex(card));
     }
     public bool Contains(Card card)
     {
@@ -89,7 +138,32 @@ public class CardZone
             _cards.Remove(card);
         }
     }
+    protected abstract int Serialize(CardZoneIndex index);
+    protected abstract CardZoneIndex Deserialize(int position);
+    public CardZoneIndex Increment(CardZoneIndex index, int delta)
+    {
+        return Deserialize(Serialize(index)+delta);
+    }
+    public abstract CardZone Clone();
+    protected void CloneCardsFrom(CardZone zone)
+    {
+        _cards.Clear();
+        foreach (Card card in zone.Cards())
+        {
+            Card clone = new Card(card);
+            clone.Move(this, card.zoneIndex);
+        }
+    }
+    public static T Create<T>(CardZoneName name, int agent) where T : CardZone, new()
+    {
+        return (T)Activator.CreateInstance(typeof(T), name, agent);
+    }
     public int NumCards() { return _cards.Count; }
+    public int Compare(Card a, Card b)
+    {
+        Debug.Assert(Contains(a) && Contains(b));
+        return Serialize(a.zoneIndex) - Serialize(b.zoneIndex);
+    }
     public override string ToString()
     {
         string info = "Card Zone | type: " + name.ToString() + " | agent: " + agent + " | numCards: " + NumCards();

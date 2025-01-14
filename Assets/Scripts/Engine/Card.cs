@@ -34,12 +34,18 @@ public class Card
     private Dictionary<StatName, Stat> stats;
     public CardZone zone { get; private set;}
     public int agent { get { return zone.agent; }}
+    public CardZoneIndex zoneIndex
+    {
+        get {
+            Debug.Assert(zone.Contains(this));
+            return zone.GetIndex(this);
+        }
+    }
     public int zonePosition
     {
         get {
-            int position = zone.GetPosition(this);
-            Debug.Assert(position >= 0);
-            return position;
+            Debug.Assert(zone.Contains(this));
+            return zone.GetPosition(this);
         }
     }
     public Card(CardData data_)
@@ -106,30 +112,30 @@ public class Card
     public void Move(CardZone newZone)
     {
         if (newZone == zone) { return; }
-        int newPosition = newZone.NumCards();
-        Move(newZone, newPosition);
-    }
-    public void Move(int newPosition)
-    {
-        Debug.Assert(zone != null);
-        Move(zone, newPosition);
-    }
-    public void Move(CardZone newZone, int newPosition)
-    {
         zone?.Remove(this);
-        newZone?.AddAtPosition(this, newPosition);
+        newZone?.Add(this);
         zone = newZone;
     }
-    public int CompareZonePosition(Card c)
+    public void Move(CardZoneIndex index)
     {
-        return zonePosition - c.zonePosition;
+        Debug.Assert(zone != null);
+        Move(zone, index);
+    }
+    public void Move(CardZone newZone, CardZoneIndex index)
+    {
+        zone?.Remove(this);
+        newZone?.AddAtIndex(this, index);
+        zone = newZone;
     }
     public override string ToString()
     {
-        string info = "Card | name: " + data.name + " | orient: " + orientation.ToString();
+        string info = "Card | name: " + data.name;
+        //info += " | orient: " + orientation.ToString();
+        info += " | position: " + zonePosition.ToString();
+        info += " | id: " + id.ToString();
         foreach (StatName stat in stats.Keys)
         {
-            info += " | " + stat.ToString() + " : " + stats[stat].value;
+            //info += " | " + stat.ToString() + " : " + stats[stat].value;
         }
         return info;
     }

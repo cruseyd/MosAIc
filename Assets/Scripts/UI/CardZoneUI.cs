@@ -41,7 +41,7 @@ public class CardZoneUI : MonoBehaviour
         {
             cards.Add(item);
         }
-        cards.Sort((a,b) => a.card.CompareZonePosition(b.card));
+        cards.Sort((a,b) => zone.Compare(a.card, b.card));
         return cards;
     }
     private int NumCards()

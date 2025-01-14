@@ -38,7 +38,7 @@ MonoBehaviour:
   - paramName: 2
     paramValue: 20
   - paramName: 3
-    paramValue: 60
+    paramValue: 20
   cardStatAssignments:
   - cardType: 1
     stats: 05000000010000000200000003000000
