@@ -30,7 +30,6 @@ public abstract class GameAction
         _initialState = state;
         _finalState = new GameState(state);
         Execute(_finalState);
-        onBeforeResolveAction += GameStateUI.OnResolveAction;
     }
     protected void AddEffect(GameEffect effect)
     {
