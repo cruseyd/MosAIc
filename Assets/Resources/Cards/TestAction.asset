@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b605e3f09f86e945874d983ccce0ef5, type: 3}
   m_Name: TestAction
   m_EditorClassIdentifier: 
+  prefab: {fileID: 0}
   name: Test Action
+  text:
+  - This is a test Action
   type: 2
   baseStats:
   - stat: 5

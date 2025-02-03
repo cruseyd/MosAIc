@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 
 
 public class GameStateUI : Singleton<GameStateUI>
 {
-    private Canvas _mainCanvas;
+    [SerializeField] private Canvas _mainCanvas;
     private static Dictionary<long, CardUI> _cards
         = new Dictionary<long, CardUI>();
     private static Dictionary<Pair<CardZoneName, int>, CardZoneUI> _zones
@@ -24,24 +25,37 @@ public class GameStateUI : Singleton<GameStateUI>
         }
     }
 
-    public static CardUI Spawn(Card card)
+    public static void BindState(GameState state)
     {
-        var cardUI = Spawn(card.data, card.agent);
+        foreach (var item in _zones.Keys)
+        {
+            _zones[item].zone = state.GetCardZone(item.first, item.second);
+        }
+    }
+
+    public static CardUI Spawn(CardData data, CardZoneName zoneName, int agentID)
+    {
+        Transform spawnPoint = GetUI(zoneName, agentID).transform;
+        return Spawn(data, agentID, spawnPoint);
+    }
+
+    public static CardUI Spawn(Card card, Transform spawnPoint)
+    {
+        var cardUI = Spawn(card.data, card.agent, spawnPoint);
         cardUI.SetVisible(false);
         cardUI.Define(card);
         cardUI.transform.SetParent(instance._mainCanvas.transform);
-        Debug.Assert(!_cards.ContainsKey(card.id));
         _cards[card.id] = cardUI;
         return cardUI;
     }
-    public static CardUI Spawn(CardData data, int agentID)
+    public static CardUI Spawn(CardData data, int agentID, Transform spawnPoint)
     {
         GameObject gameObject = null;
         if (data.prefab != null)
         {
-            gameObject = Instantiate(data.prefab);
+            gameObject = Instantiate(data.prefab, spawnPoint);
         } else {
-            gameObject = Instantiate(ResourceManager.GetCardPrefab(data.type));
+            gameObject = Instantiate(ResourceManager.GetCardPrefab(data.type), spawnPoint);
         }
         var cardUI = gameObject.GetComponent<CardUI>();
         cardUI.SetVisible(true);
@@ -56,12 +70,12 @@ public class GameStateUI : Singleton<GameStateUI>
         if (cardUI.card != null)
         {
             Debug.Assert(_cards.ContainsKey(cardUI.card.id));
-            _cards[cardUI.card.id] = null;
+            _cards.Remove(cardUI.card.id);
         }
         Destroy(cardUI.gameObject);
     }
 
-    private static CardUI GetUI(Card card)
+    public static CardUI GetUI(Card card)
     {
         if (card == null) { return null; }
         if (_cards.ContainsKey(card.id))
@@ -71,10 +85,14 @@ public class GameStateUI : Singleton<GameStateUI>
         return null;
     }
 
-    private static CardZoneUI GetUI(CardZone zone)
+    public static CardZoneUI GetUI(CardZone zone)
     {
-        if (zone == null) { return null; }
-        var key = new Pair<CardZoneName, int>(zone.name, zone.agent);
+        Debug.Assert(zone != null);
+        return GetUI(zone.name, zone.agent);
+    }
+    public static CardZoneUI GetUI(CardZoneName zoneName, int agentID)
+    {
+        var key = new Pair<CardZoneName, int>(zoneName, agentID);
         if (_zones.ContainsKey(key))
         {
             return _zones[key];
@@ -84,6 +102,9 @@ public class GameStateUI : Singleton<GameStateUI>
 
     public static void Animate(GameActionWithEffects actionWithEffects)
     {
+        Debug.Assert(actionWithEffects != null);
+        Debug.Assert(instance != null);
+        BindState(actionWithEffects.state);
         instance.StartCoroutine(DoAnimate(actionWithEffects));
     }
 
@@ -91,18 +112,23 @@ public class GameStateUI : Singleton<GameStateUI>
     {
         foreach (var effect in actionWithEffects.effects)
         {
+            Debug.Assert(effect != null);
             yield return effect.Display();
         }
     }
-    public void MoveCard(Card card, CardZone startZone, CardZone endZone)
+    public static void MoveCard(Card card, CardZone startZone, CardZone endZone, float duration)
     {
         animating = true;
-        StartCoroutine(DoMoveCard(GetUI(card), GetUI(startZone), GetUI(endZone)));
+        instance.StartCoroutine(DoMoveCard(GetUI(card), GetUI(startZone), GetUI(endZone), duration));
     }
 
-    private IEnumerator DoMoveCard(CardUI card, CardZoneUI start, CardZoneUI end)
+    public static IEnumerator DoMoveCard(CardUI card, CardZoneUI start, CardZoneUI end, float duration)
     {
-        yield return new WaitForSeconds(1.0f); //placeholder
+        Debug.Assert(end != null);
+        card.transform.SetParent(end.transform);
+        start?.StartCoroutine(start.DoOrganize(duration));
+        yield return end.DoOrganize(duration);
         animating = false;
     }
+
 }

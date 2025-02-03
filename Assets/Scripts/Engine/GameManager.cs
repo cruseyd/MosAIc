@@ -40,6 +40,7 @@ public class GameManager : Singleton<GameManager>
     {
         GameAction action = actionName.GetAssociatedClass(agentID, args, state) as GameAction;
         var actionWithEffects = action.Resolve();
+        GameStateUI.Animate(actionWithEffects);
         
     }
 

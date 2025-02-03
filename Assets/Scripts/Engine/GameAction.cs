@@ -10,7 +10,7 @@ public struct GameActionArgs
 public class GameActionWithEffects
 {
     public GameAction action;
-    public List<GameEffect> effects;
+    public List<GameEffect> effects = new List<GameEffect>();
     public GameState state;
 }
 

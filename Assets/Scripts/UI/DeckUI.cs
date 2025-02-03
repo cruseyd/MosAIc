@@ -3,26 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class DeckUI : MonoBehaviour
+public class DeckUI : CardZoneUI
 {
-    public CardZoneName zoneName;
-    public int agentID;
-    private Deck deck;
-    public float width 
+    public override IEnumerator DoOrganize(float dt)
     {
-        get {
-            var rect = GetComponent<RectTransform>();
-            Debug.Assert(rect != null);
-            return rect.rect.width;
-        }
-    }
-    public float height
-    {
-        get {
-            var rect = GetComponent<RectTransform>();
-            Debug.Assert(rect != null);
-            return rect.rect.height;
-        }
+        yield return null;
     }
 
 }
