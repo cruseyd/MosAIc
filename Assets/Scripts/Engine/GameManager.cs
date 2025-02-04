@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class GameManager : Singleton<GameManager>
 {
@@ -41,11 +42,22 @@ public class GameManager : Singleton<GameManager>
         GameAction action = actionName.GetAssociatedClass(agentID, args, state) as GameAction;
         var actionWithEffects = action.Resolve();
         GameStateUI.Animate(actionWithEffects);
+        state = actionWithEffects.state;
         
     }
 
     public void TryAction(ActionName action)
     {
         // Used by the AI to produce new game states to analyze
+    }
+
+    public static void HandleDoubleClick(IDoubleClickable clickedObject, PointerEventData eventData)
+    {
+
+    }
+
+    public static void HandleRightClick(IRightClickable clickedObject, PointerEventData eventData)
+    {
+
     }
 }

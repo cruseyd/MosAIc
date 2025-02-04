@@ -110,15 +110,16 @@ public class GameStateUI : Singleton<GameStateUI>
 
     private static IEnumerator DoAnimate(GameActionWithEffects actionWithEffects)
     {
+        animating = true;
         foreach (var effect in actionWithEffects.effects)
         {
             Debug.Assert(effect != null);
             yield return effect.Display();
         }
+        animating = false;
     }
     public static void MoveCard(Card card, CardZone startZone, CardZone endZone, float duration)
     {
-        animating = true;
         instance.StartCoroutine(DoMoveCard(GetUI(card), GetUI(startZone), GetUI(endZone), duration));
     }
 

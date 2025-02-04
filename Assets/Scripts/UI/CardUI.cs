@@ -3,8 +3,9 @@ using Mono.Cecil.Cil;
 using Unity.VisualScripting;
 using UnityEngine;
 using TMPro;
+using UnityEngine.EventSystems;
 
-public class CardUI : MonoBehaviour
+public class CardUI : MonoBehaviour, IDoubleClickable, IRightClickable
 {
     public Card card { get; private set; }
     public TextMeshProUGUI nameText;
@@ -80,5 +81,15 @@ public class CardUI : MonoBehaviour
     {
         front.gameObject.SetActive(flag);
         back.gameObject.SetActive(!flag);
+    }
+    public void OnDoubleClick(PointerEventData eventData)
+    {
+        Debug.Log("Double clicked Card with in zone " + card.zone.name.ToString() + " with position " + card.zonePosition.ToString());
+        GameManager.HandleDoubleClick(this, eventData);
+    }
+    public void OnRightClick(PointerEventData eventData)
+    {
+        Debug.Log("Right clicked Card with in zone " + card.zone.name.ToString() + " with position " + card.zonePosition.ToString());
+        GameManager.HandleRightClick(this, eventData);
     }
 }
