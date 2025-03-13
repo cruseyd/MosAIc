@@ -598,6 +598,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da231069a2d2084429e8958aae695313, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetScale: {x: 2, y: 2, z: 2}
   nameText: {fileID: 2801742001151615529}
   agentID: 0
   stats:

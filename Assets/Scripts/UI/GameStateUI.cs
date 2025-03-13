@@ -126,6 +126,7 @@ public class GameStateUI : Singleton<GameStateUI>
     public static IEnumerator DoMoveCard(CardUI card, CardZoneUI start, CardZoneUI end, float duration)
     {
         Debug.Assert(end != null);
+        animating = true;
         card.transform.SetParent(end.transform);
         start?.StartCoroutine(start.DoOrganize(duration));
         yield return end.DoOrganize(duration);
