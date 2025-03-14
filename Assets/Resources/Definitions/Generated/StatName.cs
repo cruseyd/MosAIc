@@ -1,9 +1,7 @@
 public enum StatName {
     Default,
-    Strength,
-    Willpower,
-    QuestValue,
-    Lore,
-    Cost,
-    Inkable,
+    Valor,
+    Faith,
+    Vitality,
+    Level,
 }

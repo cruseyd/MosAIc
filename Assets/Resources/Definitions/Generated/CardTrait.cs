@@ -1,7 +1,12 @@
 public enum CardTrait {
     Default,
-    Song,
-    Hero,
-    Villain,
-    Ally,
+    Finnian,
+    Merewyn,
+    Brendan,
+    Lasting,
+    Bane,
+    Boon,
+    Trial,
+    Ragnar,
+    Necromancer,
 }

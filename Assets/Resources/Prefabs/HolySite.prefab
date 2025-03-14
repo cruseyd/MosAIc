@@ -556,10 +556,10 @@ GameObject:
   m_Component:
   - component: {fileID: 17474302310869406}
   - component: {fileID: 8324939179857952858}
-  - component: {fileID: 8914850614019263336}
-  - component: {fileID: -3892961752759694113}
+  - component: {fileID: 2945248952991599869}
+  - component: {fileID: 8798641072217500117}
   m_Layer: 0
-  m_Name: Item
+  m_Name: HolySite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -607,7 +607,7 @@ MonoBehaviour:
   - {fileID: 4072337489805977802}
   front: {fileID: 1200513575009107555}
   back: {fileID: 8984937924167658624}
---- !u!114 &8914850614019263336
+--- !u!114 &2945248952991599869
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -620,7 +620,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   threshold: 0.3
---- !u!114 &-3892961752759694113
+--- !u!114 &8798641072217500117
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -730,7 +730,7 @@ PrefabInstance:
       objectReference: {fileID: 8568344757670096564}
     - target: {fileID: 8680139148729953519, guid: 42348db7f46166c4785cd6e778ff782e, type: 3}
       propertyPath: statName
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

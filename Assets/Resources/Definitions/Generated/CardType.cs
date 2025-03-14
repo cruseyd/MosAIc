@@ -1,6 +1,11 @@
 public enum CardType {
     Default,
-    Character,
-    Action,
-    Item,
+    Hero,
+    Villain,
+    PlayerAction,
+    Event,
+    Enemy,
+    HolySite,
+    Relic,
+    EnemyAction,
 }

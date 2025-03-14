@@ -35,7 +35,7 @@ public class UnitTester : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             var card = new Card(ResourceManager.GetRandomCardData());
-            var hand = GameManager.state.GetCardZone(CardZoneName.Hand,0);
+            var hand = GameManager.state.GetCardZone(CardZoneName.Hand);
 
             int nh0 = hand.NumCards();
             Dictionary<Card, int> prevPositions = new Dictionary<Card, int>();
@@ -58,7 +58,7 @@ public class UnitTester : MonoBehaviour
         } else if (Input.GetMouseButtonDown(1))
         {
             var hand = GameManager.state.GetCardZone(CardZoneName.Hand, 0);
-            var chars = GameManager.state.GetCardZone(CardZoneName.Characters, 0);
+            var chars = GameManager.state.GetCardZone(CardZoneName.InPlay, 0);
             Card card = hand.FirstCard();
 
             int nh0 = hand.NumCards();
@@ -103,7 +103,7 @@ public class UnitTester : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             var card = new Card(ResourceManager.GetRandomCardData());
-            Deck deck = GameManager.state.GetCardZone(CardZoneName.Deck, 0) as Deck;
+            Deck deck = GameManager.state.GetCardZone(CardZoneName.PlayerDeck, 0) as Deck;
             int n0 = deck.NumCards();
             deck.InsertRandom(card);
             int n1 = deck.NumCards();
@@ -112,12 +112,12 @@ public class UnitTester : MonoBehaviour
         }
         if (Input.GetMouseButtonDown(1))
         {
-            Deck deck = GameManager.state.GetCardZone(CardZoneName.Deck, 0) as Deck;
+            Deck deck = GameManager.state.GetCardZone(CardZoneName.PlayerDeck, 0) as Deck;
             deck.Shuffle();
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Deck deck = GameManager.state.GetCardZone(CardZoneName.Deck, 0) as Deck;
+            Deck deck = GameManager.state.GetCardZone(CardZoneName.PlayerDeck, 0) as Deck;
             var hand = GameManager.state.GetCardZone(CardZoneName.Hand,0);
             int nd0 = deck.NumCards();
             int nh0 = hand.NumCards();

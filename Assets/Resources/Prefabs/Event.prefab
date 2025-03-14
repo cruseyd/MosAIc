@@ -559,7 +559,7 @@ GameObject:
   - component: {fileID: 2945248952991599869}
   - component: {fileID: 8798641072217500117}
   m_Layer: 0
-  m_Name: Action
+  m_Name: Event
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -730,7 +730,7 @@ PrefabInstance:
       objectReference: {fileID: 8568344757670096564}
     - target: {fileID: 8680139148729953519, guid: 42348db7f46166c4785cd6e778ff782e, type: 3}
       propertyPath: statName
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -14,7 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   values:
   - Hand
-  - Characters
-  - Items
-  - Discard
-  - Deck
+  - InPlay
+  - Buy
+  - Effects
+  - Enemies
+  - Hero
+  - Villain
+  - Event
+  - PlayerDiscard
+  - VillainDiscard
+  - WorldDiscard
+  - PlayerDeck
+  - VillainDeck
+  - WorldDeck
+  - RelicDeck
+  - HolySites

@@ -16,7 +16,13 @@ MonoBehaviour:
   name: Test Action
   text:
   - This is a test Action
-  type: 2
+  type: 3
   baseStats:
-  - stat: 5
-    value: 3
+  - stat: 4
+    value: 2
+  - stat: 1
+    value: 1
+  - stat: 2
+    value: 1
+  - stat: 3
+    value: 1

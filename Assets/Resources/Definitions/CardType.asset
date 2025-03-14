@@ -13,6 +13,11 @@ MonoBehaviour:
   m_Name: CardType
   m_EditorClassIdentifier: 
   values:
-  - Character
-  - Action
-  - Item
+  - Hero
+  - Villain
+  - PlayerAction
+  - Event
+  - Enemy
+  - HolySite
+  - Relic
+  - EnemyAction

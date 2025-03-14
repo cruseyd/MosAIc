@@ -81,7 +81,7 @@ public class GameState
     }
 
     public int NumAgents() { return agents.Count; }
-    public void AddCardZone<T> (CardZoneName name, int agent) where T : CardZone, new()
+    public void AddCardZone<T> (CardZoneName name, int agent = 0) where T : CardZone, new()
     {
         var key = new Pair<CardZoneName, int>();
         key.first = name;
@@ -94,7 +94,7 @@ public class GameState
         T zone = CardZone.Create<T>(name, agent);
         zones[key] = zone;
     }
-    public void AddDeck(CardZoneName name, int agent)
+    public void AddDeck(CardZoneName name, int agent = 0)
     {
         var key = new Pair<CardZoneName, int>();
         key.first = name;
@@ -115,7 +115,7 @@ public class GameState
         }
         return cardZones;
     }
-    public CardZone GetCardZone(CardZoneName name, int agent)
+    public CardZone GetCardZone(CardZoneName name, int agent = 0)
     {
         var key = new Pair<CardZoneName, int>();
         key.first = name;
@@ -126,7 +126,7 @@ public class GameState
         }
         return zones[key];
     }
-    public Deck GetDeck(CardZoneName name, int agent)
+    public Deck GetDeck(CardZoneName name, int agent = 0)
     {
         var key = new Pair<CardZoneName, int>();
         key.first = name;

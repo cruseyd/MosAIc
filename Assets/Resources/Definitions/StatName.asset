@@ -13,9 +13,7 @@ MonoBehaviour:
   m_Name: StatName
   m_EditorClassIdentifier: 
   values:
-  - Strength
-  - Willpower
-  - QuestValue
-  - Lore
-  - Cost
-  - Inkable
+  - Valor
+  - Faith
+  - Vitality
+  - Level
