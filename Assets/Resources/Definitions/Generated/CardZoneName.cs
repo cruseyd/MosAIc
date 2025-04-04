@@ -16,4 +16,5 @@ public enum CardZoneName {
     WorldDeck,
     RelicDeck,
     HolySites,
+    BuyDeck,
 }

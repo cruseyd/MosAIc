@@ -161,6 +161,11 @@ public abstract class CardZone
     public int NumCards() { return _cards.Count; }
     public int Compare(Card a, Card b)
     {
+        Debug.Log("this zone is: " + name);
+        Debug.Log("a is in zone " + a.zone.name + " | b is in zone " + b.zone.name);
+        Debug.Log("a in zone? " + Contains(a));
+        Debug.Log("b in zone? " + Contains(b));
+        Debug.Log("a and b in same zone? " + (a.zone == b.zone));
         Debug.Assert(Contains(a) && Contains(b));
         return Serialize(a.zoneIndex) - Serialize(b.zoneIndex);
     }

@@ -100,6 +100,15 @@ public class GameStateUI : Singleton<GameStateUI>
         return null;
     }
 
+    public static List<CardZoneUI> GetAllCardZoneUI()
+    {
+        List<CardZoneUI> zones = new List<CardZoneUI>();
+        foreach (CardZoneUI ui in _zones.Values)
+        {
+            zones.Add(ui);
+        }
+        return zones;
+    }
     public static void Animate(GameActionWithEffects actionWithEffects)
     {
         Debug.Assert(actionWithEffects != null);

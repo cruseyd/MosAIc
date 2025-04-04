@@ -63,6 +63,7 @@ public class CardZoneUI : MonoBehaviour
         var rect = GetComponent<RectTransform>();
 
         int N = NumCards();
+        Debug.Log("CardZoneUI::DoOrganize | num cards = " + N);
         float spacing = this.width / N;
         float leftSideOffset = -rect.sizeDelta.x * rect.pivot.x;
 
@@ -82,6 +83,7 @@ public class CardZoneUI : MonoBehaviour
         {
             for (int n = 0; n < N; n++)
             {
+                cardList[n].GetComponent<RectTransform>().pivot = Vector2.one*0.5f;
                 cardList[n].transform.localPosition = Vector2.Lerp(startPositions[n], endPositions[n], t/dt);
             }
             t += Time.deltaTime;

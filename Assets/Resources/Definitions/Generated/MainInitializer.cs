@@ -8,16 +8,16 @@ public class MainInitializer : Initializer{
         GameState state = new GameState();
 
         state.AddAgent(AgentType.Player, 0);
+        state.GetAgentWithID(0).SetStat(StatName.Vitality, GameParams.Get(Parameter.PlayerBaseVitality));
         state.AddAgent(AgentType.Enemy, 1);
 
-        foreach (CardZoneName zoneName in Enum.GetValues(typeof (CardZoneName)))
+        state.AddCardZonesFromUI();
+
+        var playerDeck = state.GetDeck(CardZoneName.PlayerDeck);
+        for (int ii = 0; ii < 20; ii++)
         {
-            if (zoneName.ToString().Contains("Deck"))
-            {
-                state.AddDeck(zoneName, 0);
-            } else {
-                state.AddCardZone<LinearCardZone>(zoneName);
-            }
+            Card card = new Card(ResourceManager.GetRandomCardData());
+            playerDeck.InsertRandom(card);
         }
 
         state.activeAgentID = 0;

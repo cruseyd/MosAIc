@@ -103,7 +103,6 @@ public class CardUI : MonoBehaviour, IDoubleClickable, IRightClickable, IPointer
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log("Mouse Entered");
         if (!GameStateUI.animating && isVisible)
         {
             isHovered = true;

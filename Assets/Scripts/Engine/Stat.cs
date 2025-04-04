@@ -2,7 +2,11 @@ using UnityEngine;
 
 public class Stat {
     public StatName name;
-    public virtual int value { get; set; }
+    public virtual int value
+    {
+        get;
+        set;
+    }
     public virtual int minValue { get; protected set; }
     public virtual int maxValue { get; protected set; }
 

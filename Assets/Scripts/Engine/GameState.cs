@@ -81,6 +81,23 @@ public class GameState
     }
 
     public int NumAgents() { return agents.Count; }
+    public void AddCardZonesFromUI()
+    {
+        zones.Clear();
+        List<CardZoneUI> uiZones = GameStateUI.GetAllCardZoneUI();
+        foreach (CardZoneUI z in uiZones)
+        {
+            switch (z)
+            {
+                case DeckUI deck:
+                    AddCardZone<Deck>(z.zoneName, z.agentID);
+                    break;
+                default:
+                    AddCardZone<LinearCardZone>(z.zoneName, z.agentID);
+                    break;
+            }
+        }
+    }
     public void AddCardZone<T> (CardZoneName name, int agent = 0) where T : CardZone, new()
     {
         var key = new Pair<CardZoneName, int>();
