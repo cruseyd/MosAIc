@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 
 [System.Serializable]
@@ -9,7 +12,7 @@ public struct StatValuePair {
 }
 
 [CreateAssetMenu(fileName = "NewCardData", menuName = "Scriptable Objects/CardData", order = 1)]
-public class CardData : ScriptableObject {
+public class CardData : GameAssetData {
     public GameObject prefab = null;
     public new string name;
     [TextArea(3,10)]
@@ -17,8 +20,9 @@ public class CardData : ScriptableObject {
     public CardType type;
     public List<StatValuePair> baseStats;
 
-    private void OnValidate()
+    public override void OnValidate()
     {
+        base.OnValidate();
         UpdateDefaultStats();
     }
     public void GenerateDefaultStats(CardType cardType)
@@ -73,5 +77,17 @@ public class CardData : ScriptableObject {
     {
         Debug.Assert(text.Count > index);
         return text[index];
+    }
+    protected override string GenerateAbilityScript(string className)
+    {
+        string code = $@"
+public class {className} : CardAbility {{
+
+    public {className}(Card card) : base(card) {{}}
+
+    public override void Execute(AbilityArgs args) {{}}
+}};
+";
+        return code;
     }
 }
