@@ -14,7 +14,8 @@ public class CardUI : MonoBehaviour, IDoubleClickable, IRightClickable, IPointer
     private Canvas sortingCanvas;
     private int baseSortingOrder;
     public Vector3 targetScale = Vector3.one*2.0f;
-    public Card card { get; private set; }
+    public CardType type;
+    public Card card { get; set; }
     public TextMeshProUGUI nameText;
     public int agentID;
     public List<StatUI> stats = new List<StatUI>();
@@ -39,12 +40,13 @@ public class CardUI : MonoBehaviour, IDoubleClickable, IRightClickable, IPointer
     }
     public void Define(Card card)
     {
+        Debug.Assert(card.data.type == type);
         nameText.text = card.data.name;
         agentID = card.agent;
         foreach (var statValue in card.data.baseStats)
         {
             StatName statName = statValue.stat;
-            this.GetStat(statName).Initialize(card.GetStat(statName));
+            GetStat(statName).statValue = card.GetStat(statName);
         }
         for (int textIndex = 0; textIndex < textRegions.Count; textIndex++)
         {
@@ -52,7 +54,7 @@ public class CardUI : MonoBehaviour, IDoubleClickable, IRightClickable, IPointer
         }
         if (this.card != null)
         {
-            // ???
+            Debug.LogError("Tried to redefine a CardUI");
         } else {
 
         }
@@ -65,7 +67,7 @@ public class CardUI : MonoBehaviour, IDoubleClickable, IRightClickable, IPointer
         foreach (var statValue in data.baseStats)
         {
             StatName statName = statValue.stat;
-            this.GetStat(statName).Initialize(data.GetBaseStatValue(statName));
+            GetStat(statName).statValue = data.GetBaseStatValue(statName);
         }
         for (int textIndex = 0; textIndex < textRegions.Count; textIndex++)
         {
@@ -169,5 +171,11 @@ public class CardUI : MonoBehaviour, IDoubleClickable, IRightClickable, IPointer
         }
         Vector3 desiredScale = isHovered ? targetScale : baseScale;
         transform.localScale = Vector3.Lerp(transform.localScale, desiredScale, Time.deltaTime * 10f);
+        
+        foreach (var statUI in stats)
+        {
+            var statName = statUI.statName;
+            statUI.statValue = card.GetStat(statName);
+        }
     }
 }

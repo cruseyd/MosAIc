@@ -63,7 +63,6 @@ public class CardZoneUI : MonoBehaviour
         var rect = GetComponent<RectTransform>();
 
         int N = NumCards();
-        Debug.Log("CardZoneUI::DoOrganize | num cards = " + N);
         float spacing = this.width / N;
         float leftSideOffset = -rect.sizeDelta.x * rect.pivot.x;
 

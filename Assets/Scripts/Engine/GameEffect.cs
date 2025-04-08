@@ -67,3 +67,25 @@ public class DrawCardEffect : GameEffect
         yield return GameStateUI.DoMoveCard(cardUI, deckUI, toZoneUI, dt);
     }
 }
+public class IncrementAgentStatEffect : GameEffect
+{
+    private Agent _agent;
+    private StatName _stat;
+    private int _delta;
+    public IncrementAgentStatEffect(Agent agent, StatName stat, int delta)
+    {
+        _agent = agent;
+        _stat = stat;
+        _delta = delta;
+    }
+
+    public override IEnumerator Display()
+    {
+        yield return null;
+    }
+
+    public override void Execute()
+    {
+        _agent.IncrementStat(_stat, _delta);
+    }
+}

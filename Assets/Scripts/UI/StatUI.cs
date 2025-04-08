@@ -1,27 +1,15 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UIElements.Experimental;
 
 public class StatUI : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _text;
     [SerializeField] public StatName statName;
-    protected Stat stat {get; private set; }
-
-    void Update()
+    public int statValue
     {
-        if (stat != null)
-        {
-            _text.text = stat.value.ToString();
+        set {
+            _text.text = value.ToString();
         }
-    }
-
-    public void Initialize(int value)
-    {
-        _text.text = value.ToString();
-    }
-
-    public void Initialize(Stat stat)
-    {
-        this.stat = stat;
     }
 }

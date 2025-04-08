@@ -13,6 +13,8 @@ public class GameStateUI : Singleton<GameStateUI>
         = new Dictionary<long, CardUI>();
     private static Dictionary<Pair<CardZoneName, int>, CardZoneUI> _zones
         = new Dictionary<Pair<CardZoneName, int>, CardZoneUI>();
+    private static Dictionary<int, AgentUI> _agents
+        = new Dictionary<int, AgentUI>();
 
     public static bool animating { get; private set; }
     protected override void Awake()
@@ -23,6 +25,10 @@ public class GameStateUI : Singleton<GameStateUI>
             var key = new Pair<CardZoneName, int>(zi.zoneName, zi.agentID);
             _zones[key] = zi;
         }
+        foreach (var ai in _mainCanvas.GetComponentsInChildren<AgentUI>())
+        {
+            _agents[ai.id] = ai;
+        }
     }
 
     public static void BindState(GameState state)
@@ -30,6 +36,21 @@ public class GameStateUI : Singleton<GameStateUI>
         foreach (var item in _zones.Keys)
         {
             _zones[item].zone = state.GetCardZone(item.first, item.second);
+        }
+        foreach (var cardID in _cards.Keys)
+        {
+            var ui = _cards[cardID];
+            Card card = state.GetCardWithID(cardID);
+            Debug.Assert(card != null);
+            Debug.Assert(card.zone.name == ui.card.zone.name);
+            ui.card = card;
+        }
+        foreach (var agentID in _agents.Keys)
+        {
+            var ui = _agents[agentID];
+            Agent agent = state.GetAgentWithID(agentID);
+            Debug.Assert(agent != null);
+            ui.agent = agent;
         }
     }
 

@@ -70,7 +70,12 @@ public class GameState
         }
         agents[id] = new Agent(type, id);
     }
-
+    public void AddAgent(Agent agent)
+    {
+        int id = agent.ID;
+        Debug.Assert(!agents.ContainsKey(id), $"GameState already contains an Agent with key {id}");
+        agents[id] = agent;
+    }
     public Agent GetAgentWithID(int id)
     {
         if (!agents.ContainsKey(id))
@@ -79,7 +84,17 @@ public class GameState
         }
         return agents[id];
     }
-
+    public Card GetCardWithID(long id)
+    {
+        foreach (var z in zones.Values)
+        {
+            foreach (var c in z.Cards())
+            {
+                if (c.id == id) { return c; }
+            }
+        }
+        return null;
+    }
     public int NumAgents() { return agents.Count; }
     public void AddCardZonesFromUI()
     {

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem.Controls;
 
 public enum CardOrientation
 {
@@ -31,7 +32,7 @@ public class Card
     }
     private CardOrientation _orientation;
     public CardData data {get; private set;}
-    private Dictionary<StatName, Stat> stats;
+    private Dictionary<StatName, int> stats = new Dictionary<StatName, int>();
     public CardZone zone { get; private set;}
     public int agent { get { return zone.agent; }}
     public CardZoneIndex zoneIndex
@@ -59,10 +60,10 @@ public class Card
         data = data_;
         _visibleTo = new List<int>();
         orientation = CardOrientation.Up;
-        stats = new Dictionary<StatName, Stat>();
+        stats.Clear();
         foreach (StatValuePair def in data_.baseStats)
         {
-            stats.Add(def.stat, new Stat(def.stat, def.value));
+            stats.Add(def.stat, def.value);
         }
     }
     public Card(Card card)
@@ -73,10 +74,20 @@ public class Card
         orientation = card.orientation;
         stats = card.stats;
     }
-    public Stat GetStat(StatName statName)
+    public int GetStat(StatName statName)
     {  
         Debug.Assert(stats.ContainsKey(statName));
         return stats[statName];
+    }
+    public void SetStat(StatName statName, int value)
+    {
+        Debug.Assert(stats.ContainsKey(statName));
+        stats[statName] = value;
+    }
+    public void IncrementStat(StatName statName, int delta)
+    {
+        Debug.Assert(stats.ContainsKey(statName));
+        stats[statName] = stats[statName] + delta;
     }
     public void SetVisibility(CardVisibility visibility)
     {
