@@ -4,4 +4,7 @@ public enum StatName {
     Faith,
     Vitality,
     Level,
+    PlayerValor,
+    PlayerFaith,
+    PlayerVitality,
 }

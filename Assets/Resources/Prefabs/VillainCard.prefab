@@ -559,7 +559,7 @@ GameObject:
   - component: {fileID: 2945248952991599869}
   - component: {fileID: 8798641072217500117}
   m_Layer: 0
-  m_Name: Villain
+  m_Name: VillainCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -599,6 +599,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetScale: {x: 2, y: 2, z: 2}
+  type: 2
   nameText: {fileID: 2801742001151615529}
   agentID: 0
   stats:

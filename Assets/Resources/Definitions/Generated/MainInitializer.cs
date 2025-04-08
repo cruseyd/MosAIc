@@ -6,12 +6,16 @@ public class MainInitializer : Initializer{
     public override GameState Initialize()
     {
         GameState state = new GameState();
-
-        state.AddAgent(AgentType.Player, 0);
-        state.GetAgentWithID(0).SetStat(StatName.Vitality, GameParams.Get(Parameter.PlayerBaseVitality));
-        state.AddAgent(AgentType.Enemy, 1);
-
+        
         state.AddCardZonesFromUI();
+
+        AgentData playerData = ResourceManager.GetRandomAgentData(AgentType.Player);
+        Agent player = new Agent(playerData, 0);
+        state.AddAgent(player);
+        
+        AgentData enemyData = ResourceManager.GetRandomAgentData(AgentType.Enemy);
+        Agent enemy = new Agent(enemyData, 1);
+        state.AddAgent(enemy);
 
         var playerDeck = state.GetDeck(CardZoneName.PlayerDeck);
         for (int ii = 0; ii < 20; ii++)

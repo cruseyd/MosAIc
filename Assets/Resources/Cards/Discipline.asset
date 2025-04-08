@@ -9,14 +9,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7103f24014822034ba66c5bf7578ab78, type: 3}
-  m_Name: StatName
+  m_Script: {fileID: 11500000, guid: 7b605e3f09f86e945874d983ccce0ef5, type: 3}
+  m_Name: Discipline
   m_EditorClassIdentifier: 
-  values:
-  - Valor
-  - Faith
-  - Vitality
-  - Level
-  - PlayerValor
-  - PlayerFaith
-  - PlayerVitality
+  prefab: {fileID: 0}
+  name: Discipline
+  text:
+  - 
+  type: 3
+  baseStats:
+  - stat: 4
+    value: 3
+  - stat: 1
+    value: 2
+  - stat: 2
+    value: 0
+  - stat: 3
+    value: 0
