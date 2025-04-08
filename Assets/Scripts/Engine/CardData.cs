@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -78,8 +79,24 @@ public class CardData : GameAssetData {
         Debug.Assert(text.Count > index);
         return text[index];
     }
-    protected override string GenerateAbilityScript(string className)
+    public CardAbility GetAbility(Card card)
     {
+        Debug.Assert(card != null);
+        string abilityName = AbilityClassName();
+        foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+        {
+            Type abilityType = assembly.GetType(abilityName);
+            if (abilityType != null && typeof(Ability).IsAssignableFrom(abilityType))
+            {
+                return (CardAbility)Activator.CreateInstance(abilityType, card);
+            }
+        }
+        Debug.LogError("CardData::GetAbility | Could not find ability with name " + abilityName);
+        return null;
+    }
+    protected override string GenerateAbilityScript()
+    {
+        string className = AbilityClassName();
         string code = $@"
 public class {className} : CardAbility {{
 

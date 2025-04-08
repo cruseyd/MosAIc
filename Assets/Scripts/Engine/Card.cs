@@ -49,6 +49,7 @@ public class Card
             return zone.GetPosition(this);
         }
     }
+    protected CardAbility _ability;
     public Card(CardData data_)
     {
         id = _nextSpawnID;
@@ -65,6 +66,7 @@ public class Card
         {
             stats.Add(def.stat, def.value);
         }
+        _ability = data_.GetAbility(this);
     }
     public Card(Card card)
     {

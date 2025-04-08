@@ -11,18 +11,22 @@ public abstract class GameAssetData : ScriptableObject
     }
     protected void GenerateAbility()
     {
-        string className = $"{name}_Ability";
+        string className = AbilityClassName();
         string abilityDirectory = CreateAbilityFolder();
         string abilityScriptName = $"{className}.cs";
         string abilityScriptPath = Path.Combine(abilityDirectory, abilityScriptName);
         if (!File.Exists(abilityScriptPath))
         {
-            string code = GenerateAbilityScript(className);
+            string code = GenerateAbilityScript();
             File.WriteAllText(abilityScriptPath, code);
             AssetDatabase.Refresh();
         }
     }
-    protected abstract string GenerateAbilityScript(string className);
+    protected string AbilityClassName()
+    {
+        return $"{name}_Ability";
+    }
+    protected abstract string GenerateAbilityScript();
     protected string CreateAbilityFolder()
     {
         string subdirectoryName = "Abilities";
