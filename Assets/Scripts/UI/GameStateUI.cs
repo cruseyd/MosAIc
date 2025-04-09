@@ -42,7 +42,6 @@ public class GameStateUI : Singleton<GameStateUI>
             var ui = _cards[cardID];
             Card card = state.GetCardWithID(cardID);
             Debug.Assert(card != null);
-            Debug.Assert(card.zone.name == ui.card.zone.name);
             ui.card = card;
         }
         foreach (var agentID in _agents.Keys)

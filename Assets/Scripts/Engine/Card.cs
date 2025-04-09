@@ -32,6 +32,11 @@ public class Card
     }
     private CardOrientation _orientation;
     public CardData data {get; private set;}
+    public CardType type {
+        get {
+            return data.type;
+        }
+    }
     private Dictionary<StatName, int> stats = new Dictionary<StatName, int>();
     public CardZone zone { get; private set;}
     public int agent { get { return zone.agent; }}
@@ -146,6 +151,7 @@ public class Card
         //info += " | orient: " + orientation.ToString();
         info += " | position: " + zonePosition.ToString();
         info += " | id: " + id.ToString();
+        info += " | zone: " + zone.name;
         foreach (StatName stat in stats.Keys)
         {
             //info += " | " + stat.ToString() + " : " + stats[stat].value;

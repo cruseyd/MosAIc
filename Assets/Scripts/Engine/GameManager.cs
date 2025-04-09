@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -5,6 +6,7 @@ using UnityEngine.EventSystems;
 public class GameManager : Singleton<GameManager>
 {
     public static GameState state {get; private set; }
+    public static event Action<Card> onCardDoubleClick;
     public Phase phase
     {
         get {
@@ -37,7 +39,7 @@ public class GameManager : Singleton<GameManager>
     {
         // Listen for user input
     }
-    public void TakeAction(ActionName actionName, int agentID, GameActionArgs args = new GameActionArgs())
+    public void TakeAction(ActionName actionName, int agentID, GameActionArgs args = null)
     {
         GameAction action = actionName.GetAssociatedClass(agentID, args, state) as GameAction;
         var actionWithEffects = action.Resolve();
@@ -53,7 +55,11 @@ public class GameManager : Singleton<GameManager>
 
     public static void HandleDoubleClick(IDoubleClickable clickedObject, PointerEventData eventData)
     {
-
+        if (clickedObject is CardUI)
+        {
+            Card card = ((CardUI)clickedObject).card;
+            onCardDoubleClick?.Invoke(card);
+        }
     }
 
     public static void HandleRightClick(IRightClickable clickedObject, PointerEventData eventData)

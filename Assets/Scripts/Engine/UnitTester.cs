@@ -17,6 +17,7 @@ public class UnitTester : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        GameManager.onCardDoubleClick += PlayCard;
     }
 
     void Update()
@@ -143,7 +144,12 @@ public class UnitTester : MonoBehaviour
             GameManager.instance.TakeAction(ActionName.StartGame, 0);
         }
     }
-
+    void PlayCard(Card card)
+    {
+        GameActionArgs args = new GameActionArgs();
+        args.cards.Add(card);
+        GameManager.instance.TakeAction(ActionName.PlayCard, 0, args);
+    }
     void TestCardUI()
     {
         

@@ -31,7 +31,16 @@ public class MoveCardEffect : GameEffect
         card.Move(zone);
         // after card move event
     }
-    public override IEnumerator Display() { yield return null; }
+    public override IEnumerator Display()
+    {
+        Debug.Assert(card != null);
+        float dt = 0.2f;
+        CardZoneUI newZoneUI = GameStateUI.GetUI(zone);
+        CardZoneUI oldZoneUI = GameStateUI.GetUI(prevZone);
+        CardUI cardUI = GameStateUI.GetUI(card);
+        cardUI.SetVisible(true);
+        yield return GameStateUI.DoMoveCard(cardUI, oldZoneUI, newZoneUI, dt);
+    }
 }
 
 public class DrawCardEffect : GameEffect
