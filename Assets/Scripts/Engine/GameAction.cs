@@ -4,32 +4,11 @@ using UnityEngine;
 
 public class GameActionArgs
 {
-    public List<Agent> agents = new List<Agent>();
-    public List<Card> cards = new List<Card>();
+    public List<int> players = new List<int>();
+    public List<CardIndex> cards = new List<CardIndex>();
     public List<int> values = new List<int>();
 
     public GameActionArgs(){}
-    // Create a new GameActionArgs object with objects bound to given state
-    public GameActionArgs(GameActionArgs args, GameState state)
-    {
-        if (args == null) { return; }
-        cards.Clear();
-        foreach (Card card in args.cards)
-        {
-            Card newCard = state.GetCardWithID(card.id);
-            Debug.Assert(newCard != null);
-            cards.Add(newCard);
-        }
-        agents.Clear();
-        foreach (Agent agent in args.agents)
-        {
-            Agent newAgent = state.GetAgentWithID(agent.ID);
-            Debug.Assert(newAgent != null);
-            agents.Add(newAgent);
-        }
-        values.Clear();
-        values.AddRange(args.values);
-    }
 }
 
 public class GameActionWithEffects
@@ -46,14 +25,14 @@ public abstract class GameAction
     private List<GameEffect> _effects = new List<GameEffect>();
     private GameState _initialState;
     private GameState _finalState;
-    protected int agentID {get; private set;}
+    protected int player {get; private set;}
     protected GameActionArgs args { get; private set; }
-    public GameAction(int agentID, GameActionArgs args, GameState state)
+    public GameAction(int player, GameActionArgs args, GameState state)
     {
-        this.agentID = agentID;
+        this.player = player;
         _initialState = state;
         _finalState = new GameState(state);
-        this.args = new GameActionArgs(args, _finalState);
+        this.args = args;
     }
     protected void AddEffect(GameEffect effect)
     {

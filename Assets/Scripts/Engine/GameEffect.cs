@@ -1,11 +1,12 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public abstract class GameEffect
 {
     private GameEffect _simultaneous = null;
     public GameEffect simultaneous { get { return _simultaneous; } }
-    public abstract void Execute();
+    public abstract void Execute(GameState state);
     public abstract IEnumerator Display();
     public void SimultaneousWith(GameEffect effect)
     {
@@ -16,28 +17,30 @@ public abstract class GameEffect
 
 public class MoveCardEffect : GameEffect
 {
-    public Card card;
-    public CardZone zone;
-    public CardZone prevZone;
-    public MoveCardEffect(Card card, CardZone zone)
+    private CardIndex cardIndex;
+    private CardZoneID toZoneID;
+    private CardZoneID prevZoneID;
+    private int toZonePosition;
+    public MoveCardEffect(CardIndex cardIndex, CardZoneID toZoneID, int toZonePosition = 0)
     {
-        this.card = card;
-        this.zone = zone;
-        this.prevZone = card.zone;
+        this.cardIndex = cardIndex;
+        this.toZoneID = toZoneID;
+        this.toZonePosition = toZonePosition;
     }
-    public override void Execute()
+    public override void Execute(GameState state)
     {
         // before card move event
-        card.Move(zone);
+        prevZoneID = state.GetCard(cardIndex).zone;
+        state.MoveCard(cardIndex, toZoneID, toZonePosition);
         // after card move event
     }
     public override IEnumerator Display()
     {
-        Debug.Assert(card != null);
+        Debug.Assert(cardIndex != null);
         float dt = 0.2f;
-        CardZoneUI newZoneUI = GameStateUI.GetUI(zone);
-        CardZoneUI oldZoneUI = GameStateUI.GetUI(prevZone);
-        CardUI cardUI = GameStateUI.GetUI(card);
+        CardZoneUI newZoneUI = GameStateUI.GetUI(toZoneID);
+        CardZoneUI oldZoneUI = GameStateUI.GetUI(prevZoneID);
+        CardUI cardUI = GameStateUI.GetUI(cardIndex);
         cardUI.SetVisible(true);
         yield return GameStateUI.DoMoveCard(cardUI, oldZoneUI, newZoneUI, dt);
     }
@@ -45,21 +48,21 @@ public class MoveCardEffect : GameEffect
 
 public class DrawCardEffect : GameEffect
 {
-    public Deck deck;
-    public CardZone toZone;
+    public CardZoneID deckID;
+    public CardZoneID toZoneID;
     public int toPosition;
     private Card drawnCard;
-    public DrawCardEffect(Deck deck, CardZone toZone, int toPosition = 0)
+    public DrawCardEffect(CardZoneID deckID, CardZoneID toZoneID, int toPosition = 0)
     {
-        this.deck = deck;
-        this.toZone = toZone;
+        this.deckID = deckID;
+        this.toZoneID = toZoneID;
         this.toPosition = toPosition;
         drawnCard = null;
     }
-    public override void Execute()
+    public override void Execute(GameState state)
     {
         // before draw event
-        drawnCard = deck.Draw(toZone, toPosition);
+        drawnCard = state.DrawCard(deckID, toZoneID, toPosition);
         // after draw event
     }
 
@@ -67,10 +70,8 @@ public class DrawCardEffect : GameEffect
     {
         Debug.Assert(drawnCard != null);
         float dt = 0.2f;
-        CardZoneUI deckUI = GameStateUI.GetUI(deck);
-        CardZoneUI toZoneUI = GameStateUI.GetUI(toZone);
-        Debug.Assert(deckUI != null);
-        Debug.Assert(toZone != null);
+        CardZoneUI deckUI = GameStateUI.GetUI(deckID);
+        CardZoneUI toZoneUI = GameStateUI.GetUI(toZoneID);
         CardUI cardUI = GameStateUI.Spawn(drawnCard, deckUI.transform);
         cardUI.SetVisible(true);
         yield return GameStateUI.DoMoveCard(cardUI, deckUI, toZoneUI, dt);
@@ -78,12 +79,12 @@ public class DrawCardEffect : GameEffect
 }
 public class IncrementAgentStatEffect : GameEffect
 {
-    private Agent _agent;
+    private int _player;
     private StatName _stat;
     private int _delta;
-    public IncrementAgentStatEffect(Agent agent, StatName stat, int delta)
+    public IncrementAgentStatEffect(int player, StatName stat, int delta)
     {
-        _agent = agent;
+        _player = player;
         _stat = stat;
         _delta = delta;
     }
@@ -93,8 +94,8 @@ public class IncrementAgentStatEffect : GameEffect
         yield return null;
     }
 
-    public override void Execute()
+    public override void Execute(GameState state)
     {
-        _agent.IncrementStat(_stat, _delta);
+        state.IncrementAgentStat(_player, _stat, _delta);
     }
 }

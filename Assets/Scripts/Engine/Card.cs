@@ -1,8 +1,5 @@
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.InputSystem.Controls;
 
 public enum CardOrientation
 {
@@ -17,10 +14,38 @@ public enum CardVisibility
     Owner,
     Visible
 }
+
+public class CardIndex{
+    private static long _nextIndex = 1;
+    public long index {get; private set;}
+    public CardIndex()
+    {
+        index = _nextIndex;
+        _nextIndex++;
+    }
+    public CardIndex(long index)
+    {
+        this.index = index;
+    }
+    public CardIndex(CardIndex index)
+    {
+        this.index = index.index;
+    }
+    public override bool Equals(object obj)
+    {
+        if (obj is CardIndex other) {
+            return this.index == other.index;
+        }
+        return false;
+    }
+
+    public override int GetHashCode() {
+        return index.GetHashCode(); // Tuple-based hash code generation
+    }
+}
 public class Card
 {
-    private static long _nextSpawnID = 0;
-    public long id {get; private set; }
+    public CardIndex id {get; private set; }
     private List<int> _visibleTo;
     public CardOrientation orientation
     {
@@ -38,34 +63,15 @@ public class Card
         }
     }
     private Dictionary<StatName, int> stats = new Dictionary<StatName, int>();
-    public CardZone zone { get; private set;}
-    public int agent { get { return zone.agent; }}
-    public CardZoneIndex zoneIndex
-    {
-        get {
-            Debug.Assert(zone.Contains(this));
-            return zone.GetIndex(this);
-        }
-    }
-    public int zonePosition
-    {
-        get {
-            Debug.Assert(zone.Contains(this));
-            return zone.GetPosition(this);
-        }
-    }
+    public CardZoneID zone { get; set;}
     protected CardAbility _ability;
     public Card(CardData data_)
     {
-        id = _nextSpawnID;
-        _nextSpawnID++;
-        if (_nextSpawnID == long.MaxValue)
-        {
-            _nextSpawnID = 0;
-        }
+        id = new CardIndex();
         data = data_;
         _visibleTo = new List<int>();
         orientation = CardOrientation.Up;
+        zone = null;
         stats.Clear();
         foreach (StatValuePair def in data_.baseStats)
         {
@@ -79,7 +85,9 @@ public class Card
         data = card.data;
         _visibleTo = card._visibleTo;
         orientation = card.orientation;
+        zone = card.zone;
         stats = card.stats;
+        _ability = data.GetAbility(this);
     }
     public int GetStat(StatName statName)
     {  
@@ -98,18 +106,20 @@ public class Card
     }
     public void SetVisibility(CardVisibility visibility)
     {
-        _visibleTo.Clear();
-        switch (visibility)
-        {
-            case CardVisibility.Hidden: break;
-            case CardVisibility.Owner: _visibleTo.Add(agent); break;
-            case CardVisibility.Visible:
-                for (int id = 0; id < GameManager.state.NumAgents(); id++)
-                {
-                    _visibleTo.Add(id);
-                }
-                break;
-        }
+        //TODO: Fix this when we need it. 
+
+        // _visibleTo.Clear();
+        // switch (visibility)
+        // {
+        //     case CardVisibility.Hidden: break;
+        //     case CardVisibility.Owner: _visibleTo.Add(player); break;
+        //     case CardVisibility.Visible:
+        //         for (int id = 0; id < GameManager.state.NumAgents(); id++)
+        //         {
+        //             _visibleTo.Add(id);
+        //         }
+        //         break;
+        // }
     }
     public void SetVisibility(int agent)
     {
@@ -127,35 +137,15 @@ public class Card
     {
         return _visibleTo.Contains(agent);
     }
-    public void Move(CardZone newZone)
-    {
-        if (newZone == zone) { return; }
-        zone?.Remove(this);
-        newZone?.Add(this);
-        zone = newZone;
-    }
-    public void Move(CardZoneIndex index)
-    {
-        Debug.Assert(zone != null);
-        Move(zone, index);
-    }
-    public void Move(CardZone newZone, CardZoneIndex index)
-    {
-        zone?.Remove(this);
-        newZone?.AddAtIndex(this, index);
-        zone = newZone;
-    }
     public override string ToString()
     {
         string info = "Card | name: " + data.name;
-        //info += " | orient: " + orientation.ToString();
-        info += " | position: " + zonePosition.ToString();
         info += " | id: " + id.ToString();
-        info += " | zone: " + zone.name;
-        foreach (StatName stat in stats.Keys)
-        {
-            //info += " | " + stat.ToString() + " : " + stats[stat].value;
-        }
+        info += " | zone: " + zone;
+        // foreach (StatName stat in stats.Keys)
+        // {
+        //     //info += " | " + stat.ToString() + " : " + stats[stat].value;
+        // }
         return info;
     }
 }

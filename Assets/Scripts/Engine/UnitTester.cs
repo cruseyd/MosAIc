@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -37,63 +38,62 @@ public class UnitTester : MonoBehaviour
         {
             var card = new Card(ResourceManager.GetRandomCardData());
             var hand = GameManager.state.GetCardZone(CardZoneName.Hand);
-
             int nh0 = hand.NumCards();
-            Dictionary<Card, int> prevPositions = new Dictionary<Card, int>();
-            foreach (Card ci in hand.Cards()) { prevPositions[ci] = ci.zonePosition; }
+            Dictionary<CardIndex, int> prevPositions = new Dictionary<CardIndex, int>();
+            foreach (CardIndex ci in hand.Cards()) { prevPositions[ci] = hand.GetPosition(ci); }
 
-            card.Move(hand, hand.FirstIndex());
+            GameManager.state.MoveCard(card.id, CardZoneName.Hand, 0);
             
             int nh1 = hand.NumCards();
-            Dictionary<Card, int> postPositions = new Dictionary<Card, int>();
-            foreach (Card ci in hand.Cards()) { prevPositions[ci] = ci.zonePosition; }
+            Dictionary<CardIndex, int> postPositions = new Dictionary<CardIndex, int>();
+            foreach (CardIndex ci in hand.Cards()) { prevPositions[ci] = hand.GetPosition(ci); }
             
             Debug.Assert(nh1 - nh0 == 1);
-            foreach (Card ci in postPositions.Keys)
+            foreach (var (ci, pi) in postPositions)
             {
-                if (!prevPositions.ContainsKey(ci)) { Debug.Assert(ci == card); }
+                if (!prevPositions.ContainsKey(ci)) { Debug.Assert(ci == card.id); }
                 else {
-                    Debug.Assert(postPositions[ci] - prevPositions[ci] == 1);
+                    Debug.Assert(pi - prevPositions[ci] == 1);
                 }
             }
         } else if (Input.GetMouseButtonDown(1))
         {
-            var hand = GameManager.state.GetCardZone(CardZoneName.Hand, 0);
-            var chars = GameManager.state.GetCardZone(CardZoneName.InPlay, 0);
-            Card card = hand.FirstCard();
+            var hand = GameManager.state.GetCardZone(CardZoneName.Hand);
+            var inPlay = GameManager.state.GetCardZone(CardZoneName.InPlay);
+            CardIndex card = hand.FirstCard();
 
             int nh0 = hand.NumCards();
-            int nc0 = chars.NumCards();
-            Dictionary<Card, int> prevHandPositions = new Dictionary<Card, int>();
-            foreach (Card ci in hand.Cards()) { prevHandPositions[ci] = ci.zonePosition; }
-            Dictionary<Card, int> prevCharPositions = new Dictionary<Card, int>();
-            foreach (Card ci in chars.Cards()) { prevCharPositions[ci] = ci.zonePosition; }
+            int nc0 = inPlay.NumCards();
+            Dictionary<CardIndex, int> prevHandPositions = new Dictionary<CardIndex, int>();
+            foreach (CardIndex ci in hand.Cards()) { prevHandPositions[ci] = hand.GetPosition(ci); }
+            Dictionary<CardIndex, int> prevCharPositions = new Dictionary<CardIndex, int>();
+            foreach (CardIndex ci in inPlay.Cards()) { prevCharPositions[ci] = hand.GetPosition(ci); }
 
-            card.Move(chars, chars.FirstIndex());
+            GameManager.state.MoveCard(card, CardZoneName.InPlay, 0);
 
             int nh1 = hand.NumCards();
-            int nc1 = chars.NumCards();
-            Dictionary<Card, int> postHandPositions = new Dictionary<Card, int>();
-            foreach (Card ci in hand.Cards()) { postHandPositions[ci] = ci.zonePosition; }
-            Dictionary<Card, int> postCharPositions = new Dictionary<Card, int>();
-            foreach (Card ci in chars.Cards()) { postCharPositions[ci] = ci.zonePosition; }
+            int nc1 = inPlay.NumCards();
+            Dictionary<CardIndex, int> postHandPositions = new Dictionary<CardIndex, int>();
+            foreach (CardIndex ci in hand.Cards()) { postHandPositions[ci] = hand.GetPosition(ci); }
+            Dictionary<CardIndex, int> postCharPositions = new Dictionary<CardIndex, int>();
+            foreach (CardIndex ci in inPlay.Cards()) { postCharPositions[ci] = hand.GetPosition(ci); }
 
             if (nh0 > 0)
             {
                 Debug.Assert(nh1 - nh0 == -1);
                 Debug.Assert(nc1 - nc0 == 1);
-                foreach (Card ci in prevHandPositions.Keys)
+                foreach ( var (ci, pi) in prevHandPositions)
                 {
                     if (!postHandPositions.ContainsKey(ci)) { Debug.Assert(ci == card); }
                     else {
-                        Debug.Assert(prevHandPositions[ci] - postHandPositions[ci] == 1);
+                        Debug.Assert(pi - postHandPositions[ci] == 1);
                     }
                 }
-                foreach (Card ci in postCharPositions.Keys)
+                foreach ( var (ci, pi) in postCharPositions)
                 {
                     if (!prevCharPositions.ContainsKey(ci)) { Debug.Assert(ci == card); }
                     else {
-                        Debug.Assert(postCharPositions[ci] - prevCharPositions[ci] == 1);
+                        Debug.Assert(pi - prevCharPositions[ci] == 1);
                     }
                 }
             }
@@ -104,26 +104,26 @@ public class UnitTester : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             var card = new Card(ResourceManager.GetRandomCardData());
-            Deck deck = GameManager.state.GetCardZone(CardZoneName.PlayerDeck, 0) as Deck;
+            Deck deck = GameManager.state.GetCardZone(CardZoneName.PlayerDeck) as Deck;
             int n0 = deck.NumCards();
-            deck.InsertRandom(card);
+            GameManager.state.AddCard(card, CardZoneName.PlayerDeck);
             int n1 = deck.NumCards();
             Debug.Assert(n1 - n0 == 1);
 
         }
         if (Input.GetMouseButtonDown(1))
         {
-            Deck deck = GameManager.state.GetCardZone(CardZoneName.PlayerDeck, 0) as Deck;
+            Deck deck = GameManager.state.GetCardZone(CardZoneName.PlayerDeck) as Deck;
             deck.Shuffle();
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Deck deck = GameManager.state.GetCardZone(CardZoneName.PlayerDeck, 0) as Deck;
-            var hand = GameManager.state.GetCardZone(CardZoneName.Hand,0);
+            Deck deck = GameManager.state.GetCardZone(CardZoneName.PlayerDeck) as Deck;
+            var hand = GameManager.state.GetCardZone(CardZoneName.Hand);
             int nd0 = deck.NumCards();
             int nh0 = hand.NumCards();
-            Card topCard = deck.FirstCard();
-            Card drawn = deck.Draw(hand, 0);
+            CardIndex topCard = deck.FirstCard();
+            Card drawn = GameManager.state.DrawCard(CardZoneName.PlayerDeck, CardZoneName.Hand);
             int nd1 = deck.NumCards();
             int nh1 = hand.NumCards();
             if (nd0 == 0)
@@ -131,7 +131,7 @@ public class UnitTester : MonoBehaviour
                 Debug.Assert(drawn == null);
                 Debug.Assert(nh1 == nh0);
             } else {
-                Debug.Assert(drawn == topCard);
+                Debug.Assert(drawn.id == topCard);
                 Debug.Assert(nh1 - nh0 == 1);
                 Debug.Assert(nd0 - nd1 == 1);
             }
@@ -147,11 +147,7 @@ public class UnitTester : MonoBehaviour
     void PlayCard(Card card)
     {
         GameActionArgs args = new GameActionArgs();
-        args.cards.Add(card);
+        args.cards.Add(card.id);
         GameManager.instance.TakeAction(ActionName.PlayCard, 0, args);
-    }
-    void TestCardUI()
-    {
-        
     }
 }

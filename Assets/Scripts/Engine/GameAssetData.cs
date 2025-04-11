@@ -6,7 +6,6 @@ public abstract class GameAssetData : ScriptableObject
 {
     public virtual void OnValidate()
     {
-        Debug.Log("GameAssetData::OnValidate");
         GenerateAbility();
     }
     protected void GenerateAbility()

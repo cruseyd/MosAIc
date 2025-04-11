@@ -3,6 +3,7 @@ using UnityEngine;
 public class LinearCardZone : CardZone
 {
     public LinearCardZone() : base() {}
+    public LinearCardZone(LinearCardZone zone_) : base(zone_) {}
     public LinearCardZone(CardZoneName name_, int playerID_) : base(name_, playerID_)
     {
     }
@@ -14,10 +15,10 @@ public class LinearCardZone : CardZone
     {
         return new CardZoneIndex(position, 0, 0);
     }
-    public override CardZone Clone()
-    {
-        var clone = new LinearCardZone(name, agent);
-        clone.CloneCardsFrom(this);
-        return clone;
-    }
+    // public override CardZone Clone()
+    // {
+    //     var clone = new LinearCardZone(name, player);
+    //     clone.CloneCardsFrom(this);
+    //     return clone;
+    // }
 }

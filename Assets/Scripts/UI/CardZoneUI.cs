@@ -1,15 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using Unity.Burst.Intrinsics;
 using UnityEngine;
 
 public class CardZoneUI : MonoBehaviour
 {
-    public CardZoneName zoneName;
-    public int agentID;
-    public CardZone zone;
+    [SerializeField] public CardZoneID id;
+    [SerializeField] public CardZone zone;
     public float width 
     {
         get {
@@ -26,16 +22,6 @@ public class CardZoneUI : MonoBehaviour
             return rect.rect.height;
         }
     }
-    public void Define(CardZone zone)
-    {
-        Debug.Assert(zone.agent == agentID);
-        Debug.Assert(zone.name == zoneName);
-        if (this.zone != null)
-        {
-            // ???
-        }
-        this.zone = zone;
-    }
     public bool animating { get; private set;}
     private List<CardUI> GetCards()
     {
@@ -45,7 +31,7 @@ public class CardZoneUI : MonoBehaviour
             cards.Add(item);
         }
         Debug.Assert(zone != null);
-        cards.Sort((a,b) => zone.Compare(a.card, b.card));
+        cards.Sort((a,b) => zone.Compare(a.card.id, b.card.id));
         return cards;
     }
     private int NumCards()

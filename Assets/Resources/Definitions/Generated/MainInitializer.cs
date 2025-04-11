@@ -17,14 +17,12 @@ public class MainInitializer : Initializer{
         Agent enemy = new Agent(enemyData, 1);
         state.AddAgent(enemy);
 
-        var playerDeck = state.GetDeck(CardZoneName.PlayerDeck);
         for (int ii = 0; ii < 20; ii++)
         {
             Card card = new Card(ResourceManager.GetRandomCardData());
-            playerDeck.InsertRandom(card);
+            state.AddCard(card, CardZoneName.PlayerDeck);
         }
 
-        state.activeAgentID = 0;
         return state;
     }
 }

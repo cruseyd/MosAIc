@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -5,28 +6,30 @@ public class Deck : CardZone
 {
     public Deck() : base() {}
     public Deck(CardZoneName name_, int playerID_) : base(name_, playerID_) {}
-    public Card Draw(CardZone targetZone, int targetPosition)
+    public Deck(Deck deck_) : base(deck_) {}
+    public CardIndex Draw()
     {
         if (NumCards() == 0) { return null; }
-        Card topCard = GetCardAtIndex(Deserialize(0));
-        topCard?.Move(targetZone, Deserialize(targetPosition));
+        CardIndex topCard = GetCardAtIndex(Deserialize(0));
         return topCard;
     }
     public void Shuffle()
     {
-        foreach (var card in Cards())
+        int N = NumCards();
+        for (int ii = 0; ii < N; ii++)
         {
-            InsertRandom(card);
+            int a = Random.Range(0,N);
+            int b = Random.Range(0,N);
+            if (a == b) { continue; }
+            var tmp = _cards[a];
+            _cards[a] = _cards[b];
+            _cards[b] = tmp;
         }
     }
-    public void InsertRandom(Card card)
+    public void InsertRandom(CardIndex card)
     {
         int randomPosition = Random.Range(0,NumCards());
-        card.Move(this, Deserialize(randomPosition));
-    }
-    public void Insert(Card card, int position)
-    {
-        card.Move(this, Deserialize(position));
+        AddAtIndex(card, Deserialize(randomPosition));
     }
     protected override int Serialize(CardZoneIndex index)
     {
@@ -35,11 +38,5 @@ public class Deck : CardZone
     protected override CardZoneIndex Deserialize(int position)
     {
         return new CardZoneIndex(0,0,position);
-    }
-    public override CardZone Clone()
-    {
-        var clone = new Deck(name, agent);
-        clone.CloneCardsFrom(this);
-        return clone;
     }
 }

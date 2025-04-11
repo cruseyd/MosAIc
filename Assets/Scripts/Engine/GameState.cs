@@ -1,101 +1,63 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GameState
 {
     public static event Action<GameEffect, GameState> onResolveEffect;
-    public int activeAgentID;
-    public Agent activeAgent
-    {
-        get {
-            Debug.Assert(agents.ContainsKey(activeAgentID));
-            return agents[activeAgentID];
-        }
-    }
     public PhaseName phase {get; set;}
-    private Dictionary<Pair<CardZoneName, int>, CardZone> zones
-        = new Dictionary<Pair<CardZoneName, int>, CardZone>();
-    private Dictionary<int, Agent> agents = new Dictionary<int, Agent>();
+    private Dictionary<CardZoneID, CardZone> zones
+        = new Dictionary<CardZoneID, CardZone>();
+    private Dictionary<int, Agent> agents
+        = new Dictionary<int, Agent>();
+    private Dictionary<CardIndex, Card> cards
+        = new Dictionary<CardIndex, Card>();
     private Queue<GameEffect> effectQueue = new Queue<GameEffect>();
+    // Construction
     public GameState()
     {
-        activeAgentID = -1;
         phase = PhaseName.Default;
-
     }
     public GameState(GameState state)
     {
-        zones = new Dictionary<Pair<CardZoneName, int>, CardZone>();
-        agents = new Dictionary<int, Agent>();
-
-        foreach (Pair<CardZoneName, int> key in state.zones.Keys)
+        foreach (var (player, agent) in state.agents)
         {
-            zones[key] = state.zones[key].Clone();
+            agents[player] = (Agent)Activator.CreateInstance(agent.GetType(), agent);
         }
-        foreach (int key in state.agents.Keys)
+        foreach (var (key, zone) in state.zones)
         {
-            agents[key] = new Agent(state.agents[key]);
+            zones[key] = (CardZone)Activator.CreateInstance(zone.GetType(), zone);
+        }
+        foreach (var (index, card) in state.cards)
+        {
+            cards[index] = (Card)Activator.CreateInstance(card.GetType(), card);
         }
         phase = state.phase;
-        activeAgentID = state.activeAgentID;
     }
-
-    public List<GameEffect> Execute(GameEffect effect)
+    // Add Assets
+    public void AddAgent(AgentType type, int player)
     {
-        var list = new List<GameEffect>();
-        GameEffect currentEffect = effect;
-        onResolveEffect?.Invoke(currentEffect, this);
-        list.Add(currentEffect);
-        currentEffect.Execute();
-        while (currentEffect.simultaneous != null)
+        if (agents.ContainsKey(player))
         {
-            currentEffect = currentEffect.simultaneous;
-            onResolveEffect?.Invoke(currentEffect, this);
-            list.Add(currentEffect);
-            currentEffect.Execute();
-        }
-        while(effectQueue.Count > 0)
-        {
-            list.AddRange(Execute(effectQueue.Dequeue()));
-        }
-        return list;
-    }
-    public void AddAgent(AgentType type, int id)
-    {
-        if (agents.ContainsKey(id))
-        {
-            Debug.LogError($"GameState.AddAgent | Error: Tried to add agent with existing id {id}");
+            Debug.LogError($"GameState.AddAgent | Error: Tried to add agent with existing id {player}");
             return;
         }
-        agents[id] = new Agent(type, id);
+        agents[player] = new Agent(type, player);
     }
     public void AddAgent(Agent agent)
     {
-        int id = agent.ID;
-        Debug.Assert(!agents.ContainsKey(id), $"GameState already contains an Agent with key {id}");
-        agents[id] = agent;
+        int player = agent.player;
+        Debug.Assert(!agents.ContainsKey(player), $"GameState already contains an Agent with key {player}");
+        agents[player] = agent;
     }
-    public Agent GetAgentWithID(int id)
+    public void AddCardZone<T> (CardZoneID id) where T : CardZone, new()
     {
-        if (!agents.ContainsKey(id))
-        {
-            Debug.LogError($"GameState.GetAgent | Error: Could not find Agent with id {id}");
-        }
-        return agents[id];
+        Debug.Assert(!zones.ContainsKey(id),$"GameState.AddCardZone | Error: Key already exists ({id.name},{id.player})");
+        
+        T zone = CardZone.Create<T>(id);
+        zones[id] = zone;
     }
-    public Card GetCardWithID(long id)
-    {
-        foreach (var z in zones.Values)
-        {
-            foreach (var c in z.Cards())
-            {
-                if (c.id == id) { return c; }
-            }
-        }
-        return null;
-    }
-    public int NumAgents() { return agents.Count; }
     public void AddCardZonesFromUI()
     {
         zones.Clear();
@@ -104,39 +66,39 @@ public class GameState
         {
             switch (z)
             {
-                case DeckUI deck:
-                    AddCardZone<Deck>(z.zoneName, z.agentID);
+                case DeckUI:
+                    AddCardZone<Deck>(z.id);
                     break;
                 default:
-                    AddCardZone<LinearCardZone>(z.zoneName, z.agentID);
+                    AddCardZone<LinearCardZone>(z.id);
                     break;
             }
         }
     }
-    public void AddCardZone<T> (CardZoneName name, int agent = 0) where T : CardZone, new()
+    public void AddCard(Card card, CardZoneID zoneID)
     {
-        var key = new Pair<CardZoneName, int>();
-        key.first = name;
-        key.second = agent;
-        if (zones.ContainsKey(key))
-        {
-            Debug.LogError($"GameState.AddCardZone | Error: Key already exists ({name},{agent})");
-        }
-        
-        T zone = CardZone.Create<T>(name, agent);
-        zones[key] = zone;
+        Debug.Assert(!cards.ContainsKey(card.id));
+        CardZone zone = GetCardZone(zoneID);
+        Debug.Assert(!zone.Contains(card.id));
+        MoveCard(card.id, zoneID);
     }
-    public void AddDeck(CardZoneName name, int agent = 0)
+    // Accessors
+    public Agent GetAgent(int player)
     {
-        var key = new Pair<CardZoneName, int>();
-        key.first = name;
-        key.second = agent;
-        if (zones.ContainsKey(key))
+        if (!agents.ContainsKey(player))
         {
-            Debug.LogError($"GameState.AddCardZone | Error: Key already exists ({name},{agent})");
+            Debug.LogError($"GameState.GetAgent | Error: Could not find Agent with id {player}");
         }
-        var zone = new Deck(name, agent);
-        zones[key] = zone;
+        return agents[player];
+    }
+    public CardZone GetCardZone(CardZoneID id)
+    {
+        foreach (var (key, value) in zones)
+        {
+            Debug.Log($"{key.name}, {key.player} -> {value.id.name}");
+        }
+        Debug.Assert(zones.ContainsKey(id),$"GameState.GetCardZone | Error: Key missing ({id.name},{id.player})"); 
+        return zones[id];
     }
     public List<CardZone> GetCardZones()
     {
@@ -147,27 +109,61 @@ public class GameState
         }
         return cardZones;
     }
-    public CardZone GetCardZone(CardZoneName name, int agent = 0)
+    public Card GetCard(CardIndex index)
     {
-        var key = new Pair<CardZoneName, int>();
-        key.first = name;
-        key.second = agent;
-        if (!zones.ContainsKey(key))
-        {
-            Debug.LogError($"GameState.GetCardZone | Error: Key missing ({name},{agent})");
-        }
-        return zones[key];
+        Debug.Assert(cards.ContainsKey(index));
+        return cards[index];
     }
-    public Deck GetDeck(CardZoneName name, int agent = 0)
+    public int NumAgents() { return agents.Count; }
+
+    // Execute Effect
+    public List<GameEffect> Execute(GameEffect effect)
     {
-        var key = new Pair<CardZoneName, int>();
-        key.first = name;
-        key.second = agent;
-        if (!zones.ContainsKey(key))
+        var list = new List<GameEffect>();
+        GameEffect currentEffect = effect;
+        onResolveEffect?.Invoke(currentEffect, this);
+        list.Add(currentEffect);
+        currentEffect.Execute(this);
+        while (currentEffect.simultaneous != null)
         {
-            Debug.LogError($"GameState.GetCardZone | Error: Key missing ({name},{agent})");
+            currentEffect = currentEffect.simultaneous;
+            onResolveEffect?.Invoke(currentEffect, this);
+            list.Add(currentEffect);
+            currentEffect.Execute(this);
         }
-        Debug.Assert(zones[key].GetType() == typeof(Deck));
-        return (Deck)zones[key];
+        while(effectQueue.Count > 0)
+        {
+            list.AddRange(Execute(effectQueue.Dequeue()));
+        }
+        return list;
+    }
+
+    // Mutators
+    public void MoveCard(CardIndex cardIndex, CardZoneID toZoneID, int position = 0)
+    {
+        Debug.Assert(cards.ContainsKey(cardIndex));
+        Card card = GetCard(cardIndex);
+        if (card.zone != null)
+        {
+            CardZone prevZone = GetCardZone(card.zone);
+            prevZone.Remove(card.id);
+        }
+        CardZone toZone = GetCardZone(toZoneID);
+        toZone.AddAtPosition(cardIndex, position);
+        card.zone = toZoneID;
+    }
+
+    public Card DrawCard(CardZoneID deckID, CardZoneID toZoneID, int position = 0)
+    {
+        Deck deck = (Deck)GetCardZone(deckID);
+        Card drawnCard = GetCard(deck.Draw());
+        MoveCard(drawnCard.id, toZoneID, position);
+        return drawnCard;
+    }
+
+    public void IncrementAgentStat(int player, StatName stat, int delta)
+    {
+        var agent = GetAgent(player);
+        agent.IncrementStat(stat, delta);
     }
 }

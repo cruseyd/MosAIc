@@ -17,7 +17,6 @@ public class CardUI : MonoBehaviour, IDoubleClickable, IRightClickable, IPointer
     public CardType type;
     public Card card { get; set; }
     public TextMeshProUGUI nameText;
-    public int agentID;
     public List<StatUI> stats = new List<StatUI>();
     public List<TextMeshProUGUI> textRegions = new List<TextMeshProUGUI>();
     public Transform front;
@@ -38,32 +37,10 @@ public class CardUI : MonoBehaviour, IDoubleClickable, IRightClickable, IPointer
             return rect.rect.height;
         }
     }
-    public void Define(Card card)
+    public void Define(CardData data)
     {
-        Debug.Assert(card.data.type == type);
-        nameText.text = card.data.name;
-        agentID = card.agent;
-        foreach (var statValue in card.data.baseStats)
-        {
-            StatName statName = statValue.stat;
-            GetStat(statName).statValue = card.GetStat(statName);
-        }
-        for (int textIndex = 0; textIndex < textRegions.Count; textIndex++)
-        {
-            textRegions[textIndex].text = card.data.GetText(textIndex);
-        }
-        if (this.card != null)
-        {
-            Debug.LogError("Tried to redefine a CardUI");
-        } else {
-
-        }
-        this.card = card;
-    }
-    public void Define(CardData data, int agentID)
-    {
+        Debug.Assert(data.type == type);
         nameText.text = data.name;
-        this.agentID = agentID;
         foreach (var statValue in data.baseStats)
         {
             StatName statName = statValue.stat;
@@ -94,12 +71,10 @@ public class CardUI : MonoBehaviour, IDoubleClickable, IRightClickable, IPointer
     }
     public void OnDoubleClick(PointerEventData eventData)
     {
-        Debug.Log("Double clicked Card with in zone " + card.zone.name.ToString() + " with position " + card.zonePosition.ToString());
         GameManager.HandleDoubleClick(this, eventData);
     }
     public void OnRightClick(PointerEventData eventData)
     {
-        Debug.Log("Right clicked Card with in zone " + card.zone.name.ToString() + " with position " + card.zonePosition.ToString());
         GameManager.HandleRightClick(this, eventData);
     }
 

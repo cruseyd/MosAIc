@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayCardAction : GameAction {
-    private Card _playedCard;
-    private List<Card> _targetedCards = new List<Card>();
-    public PlayCardAction(int agentID, GameActionArgs args, GameState state) : base(agentID, args, state)
+    private CardIndex _playedCardIndex;
+    private List<CardIndex> _targetedCardIndices = new List<CardIndex>();
+    public PlayCardAction(int player, GameActionArgs args, GameState state) : base(player, args, state)
     {
         Debug.Assert(args.cards.Count >= 1);
         Debug.Log("number of cards in args: " + args.cards.Count);
-        _playedCard = args.cards[0];
+        _playedCardIndex = args.cards[0];
         if (args.cards.Count > 1)
         {
             for (int ii = 1; ii < args.cards.Count; ii++)
             {
-                _targetedCards.Add(args.cards[ii]);
+                _targetedCardIndices.Add(args.cards[ii]);
             }
         }
     }
@@ -22,19 +22,18 @@ public class PlayCardAction : GameAction {
     {
         // Get game objects from state
         // Add GameEffect instances using this.AddEffect
-        switch (_playedCard.type)
+        Card playedCard = state.GetCard(_playedCardIndex);
+        switch (playedCard.type)
         {
             case CardType.PlayerAction:
-                Agent player = state.GetAgentWithID(0);
-                CardZone playerDiscard = state.GetCardZone(CardZoneName.PlayerDiscard);
                 // card ability
-                this.AddEffect(new IncrementAgentStatEffect(player, StatName.PlayerValor, _playedCard.GetStat(StatName.Valor)));
-                this.AddEffect(new IncrementAgentStatEffect(player, StatName.PlayerFaith, _playedCard.GetStat(StatName.Faith)));
-                this.AddEffect(new IncrementAgentStatEffect(player, StatName.PlayerVitality, _playedCard.GetStat(StatName.Vitality)));
-                this.AddEffect(new MoveCardEffect(_playedCard, playerDiscard));
+                this.AddEffect(new IncrementAgentStatEffect(this.player, StatName.PlayerValor, playedCard.GetStat(StatName.Valor)));
+                this.AddEffect(new IncrementAgentStatEffect(this.player, StatName.PlayerFaith, playedCard.GetStat(StatName.Faith)));
+                this.AddEffect(new IncrementAgentStatEffect(this.player, StatName.PlayerVitality, playedCard.GetStat(StatName.Vitality)));
+                this.AddEffect(new MoveCardEffect(_playedCardIndex, CardZoneName.PlayerDiscard));
                 break;
             default:
-                Debug.LogWarning($"PlayCard action not implemented for card type {_playedCard.data.type}");
+                Debug.LogWarning($"PlayCard action not implemented for card type {playedCard.data.type}");
                 break;
         }
     }

@@ -9,10 +9,10 @@ using UnityEngine.InputSystem;
 public class GameStateUI : Singleton<GameStateUI>
 {
     [SerializeField] private Canvas _mainCanvas;
-    private static Dictionary<long, CardUI> _cards
-        = new Dictionary<long, CardUI>();
-    private static Dictionary<Pair<CardZoneName, int>, CardZoneUI> _zones
-        = new Dictionary<Pair<CardZoneName, int>, CardZoneUI>();
+    private static Dictionary<CardIndex, CardUI> _cards
+        = new Dictionary<CardIndex, CardUI>();
+    private static Dictionary<CardZoneID, CardZoneUI> _zones
+        = new Dictionary<CardZoneID, CardZoneUI>();
     private static Dictionary<int, AgentUI> _agents
         = new Dictionary<int, AgentUI>();
 
@@ -20,67 +20,59 @@ public class GameStateUI : Singleton<GameStateUI>
     protected override void Awake()
     {
         base.Awake();
-        foreach (var zi in _mainCanvas.GetComponentsInChildren<CardZoneUI>())
-        {
-            var key = new Pair<CardZoneName, int>(zi.zoneName, zi.agentID);
-            _zones[key] = zi;
-        }
         foreach (var ai in _mainCanvas.GetComponentsInChildren<AgentUI>())
         {
             _agents[ai.id] = ai;
+        }
+        foreach (var zi in _mainCanvas.GetComponentsInChildren<CardZoneUI>())
+        {
+            _zones[zi.id] = zi;
         }
     }
 
     public static void BindState(GameState state)
     {
-        foreach (var item in _zones.Keys)
+        foreach (var (player, agentUI) in _agents)
         {
-            _zones[item].zone = state.GetCardZone(item.first, item.second);
+            agentUI.agent = state.GetAgent(player);
         }
-        foreach (var cardID in _cards.Keys)
+        foreach (var (id, zoneUI) in _zones)
         {
-            var ui = _cards[cardID];
-            Card card = state.GetCardWithID(cardID);
-            Debug.Assert(card != null);
-            ui.card = card;
+            zoneUI.zone = state.GetCardZone(id);
         }
-        foreach (var agentID in _agents.Keys)
+        foreach (var (index, cardUI) in _cards)
         {
-            var ui = _agents[agentID];
-            Agent agent = state.GetAgentWithID(agentID);
-            Debug.Assert(agent != null);
-            ui.agent = agent;
+            cardUI.card = state.GetCard(index);
         }
     }
 
-    public static CardUI Spawn(CardData data, CardZoneName zoneName, int agentID)
+    public static CardUI Spawn(CardData data, CardZoneID zoneID)
     {
-        Transform spawnPoint = GetUI(zoneName, agentID).transform;
-        return Spawn(data, agentID, spawnPoint);
+        Transform spawnPoint = GetUI(zoneID).transform;
+        return Spawn(data, spawnPoint);
     }
 
     public static CardUI Spawn(Card card, Transform spawnPoint)
     {
-        var cardUI = Spawn(card.data, card.agent, spawnPoint);
+        var cardUI = Spawn(card.data, spawnPoint);
         cardUI.SetVisible(false);
-        cardUI.Define(card);
-        cardUI.transform.SetParent(instance._mainCanvas.transform);
+        cardUI.card = card;
         _cards[card.id] = cardUI;
         return cardUI;
     }
-    public static CardUI Spawn(CardData data, int agentID, Transform spawnPoint)
+    public static CardUI Spawn(CardData data, Transform spawnPoint)
     {
-        GameObject gameObject = null;
+        GameObject prefab;
         if (data.prefab != null)
         {
-            gameObject = Instantiate(data.prefab, spawnPoint);
+            prefab = Instantiate(data.prefab, spawnPoint);
         } else {
-            gameObject = Instantiate(ResourceManager.GetCardPrefab(data.type), spawnPoint);
+            prefab = Instantiate(ResourceManager.GetCardPrefab(data.type), spawnPoint);
         }
-        var cardUI = gameObject.GetComponent<CardUI>();
-        cardUI.SetVisible(true);
+        var cardUI = prefab.GetComponent<CardUI>();
         Debug.Assert(cardUI != null);
-        cardUI.Define(data, agentID);
+        cardUI.SetVisible(true);
+        cardUI.Define(data);
         cardUI.transform.SetParent(instance._mainCanvas.transform);
         return cardUI;
     }
@@ -95,27 +87,20 @@ public class GameStateUI : Singleton<GameStateUI>
         Destroy(cardUI.gameObject);
     }
 
-    public static CardUI GetUI(Card card)
+    public static CardUI GetUI(CardIndex cardID)
     {
-        if (card == null) { return null; }
-        if (_cards.ContainsKey(card.id))
+        if (_cards.ContainsKey(cardID))
         {
-            return _cards[card.id];
+            return _cards[cardID];
         }
         return null;
     }
 
-    public static CardZoneUI GetUI(CardZone zone)
+    public static CardZoneUI GetUI(CardZoneID zoneID)
     {
-        Debug.Assert(zone != null);
-        return GetUI(zone.name, zone.agent);
-    }
-    public static CardZoneUI GetUI(CardZoneName zoneName, int agentID)
-    {
-        var key = new Pair<CardZoneName, int>(zoneName, agentID);
-        if (_zones.ContainsKey(key))
+        if (_zones.ContainsKey(zoneID))
         {
-            return _zones[key];
+            return _zones[zoneID];
         }
         return null;
     }
@@ -147,9 +132,9 @@ public class GameStateUI : Singleton<GameStateUI>
         }
         animating = false;
     }
-    public static void MoveCard(Card card, CardZone startZone, CardZone endZone, float duration)
+    public static void MoveCard(CardIndex cardID, CardZoneID startZoneID, CardZoneID endZoneID, float duration)
     {
-        instance.StartCoroutine(DoMoveCard(GetUI(card), GetUI(startZone), GetUI(endZone), duration));
+        instance.StartCoroutine(DoMoveCard(GetUI(cardID), GetUI(startZoneID), GetUI(endZoneID), duration));
     }
 
     public static IEnumerator DoMoveCard(CardUI card, CardZoneUI start, CardZoneUI end, float duration)

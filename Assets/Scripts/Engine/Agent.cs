@@ -1,19 +1,16 @@
-using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Agent
 {
-    public int ID {get; private set;}
+    public int player {get; private set;}
     public AgentType type {get; private set; }
     public AgentData data {get; private set; }
     private Dictionary<StatName, int> stats = new Dictionary<StatName, int>();
     public Agent(AgentType type_, int id_)
     {
         type = type_;
-        ID = id_;
+        player = id_;
         stats.Clear();
         foreach (StatName name in GameParams.AgentStats(type))
         {
@@ -25,7 +22,7 @@ public class Agent
     {
         data = data_;
         type = data_.type;
-        ID = id_;
+        player = id_;
         stats.Clear();
         foreach (var statPair in data.baseStats)
         {
@@ -36,7 +33,7 @@ public class Agent
     {
         data = agent.data;
         type = agent.type;
-        ID = agent.ID;
+        player = agent.player;
         stats = agent.stats;
     }
 
@@ -59,7 +56,7 @@ public class Agent
 
     public override string ToString()
     {
-        string info =  "Agent | type: " + type.ToString() + " | ID: " + ID;
+        string info =  "Agent | type: " + type.ToString() + " | ID: " + player;
         foreach (var item in stats)
         {
             info += " | " + item.Key + " = " + item.Value;

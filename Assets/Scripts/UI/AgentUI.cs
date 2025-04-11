@@ -15,7 +15,7 @@ public class AgentUI : MonoBehaviour
     public List<StatUI> stats = new List<StatUI>();
     public void Define(Agent newAgent)
     {
-        nameText.text = newAgent.type.ToString() + " " + newAgent.ID;
+        nameText.text = newAgent.type.ToString() + " " + newAgent.player;
         foreach (var statValue in agent.data.baseStats)
         {
             StatName statName = statValue.stat;
