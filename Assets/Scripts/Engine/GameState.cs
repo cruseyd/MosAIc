@@ -80,6 +80,7 @@ public class GameState
         Debug.Assert(!cards.ContainsKey(card.id));
         CardZone zone = GetCardZone(zoneID);
         Debug.Assert(!zone.Contains(card.id));
+        cards[card.id] = card;
         MoveCard(card.id, zoneID);
     }
     // Accessors
