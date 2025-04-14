@@ -94,10 +94,6 @@ public class GameState
     }
     public CardZone GetCardZone(CardZoneID id)
     {
-        foreach (var (key, value) in zones)
-        {
-            Debug.Log($"{key.name}, {key.player} -> {value.id.name}");
-        }
         Debug.Assert(zones.ContainsKey(id),$"GameState.GetCardZone | Error: Key missing ({id.name},{id.player})"); 
         return zones[id];
     }

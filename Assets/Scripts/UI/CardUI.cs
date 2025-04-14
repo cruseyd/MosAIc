@@ -5,6 +5,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.EventSystems;
 using System;
+using UnityEngine.Animations;
 
 public class CardUI : MonoBehaviour, IDoubleClickable, IRightClickable, IPointerEnterHandler, IPointerExitHandler
 {
@@ -124,6 +125,17 @@ public class CardUI : MonoBehaviour, IDoubleClickable, IRightClickable, IPointer
         rectTransform.pivot = new Vector2(pivotX, pivotY);
         rectTransform.position = oldWorldPos + positionOffset; 
     }
+    private void updateBaseScale()
+    {
+        CardZoneUI zone = transform.parent.GetComponent<CardZoneUI>();
+        if (zone)
+        {
+            Debug.Log($"card height: {height} | zone height: {zone.height} | zone name: {zone.name}");
+            baseScale = zone.height / height * Vector3.one;
+        } else {
+            baseScale = Vector3.one;
+        }
+    }
     public void Awake()
     {
         sortingCanvas = GetComponent<Canvas>();
@@ -144,6 +156,8 @@ public class CardUI : MonoBehaviour, IDoubleClickable, IRightClickable, IPointer
         {
             isHovered = false;
         }
+
+        updateBaseScale();
         Vector3 desiredScale = isHovered ? targetScale : baseScale;
         transform.localScale = Vector3.Lerp(transform.localScale, desiredScale, Time.deltaTime * 10f);
         

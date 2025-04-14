@@ -587,7 +587,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 150, y: 2}
+  m_SizeDelta: {x: 150, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8324939179857952858
 MonoBehaviour:
@@ -604,7 +604,6 @@ MonoBehaviour:
   targetScale: {x: 2, y: 2, z: 2}
   type: 3
   nameText: {fileID: 2801742001151615529}
-  agentID: 0
   stats:
   - {fileID: 7077683085962696996}
   - {fileID: 3736687684152609045}
