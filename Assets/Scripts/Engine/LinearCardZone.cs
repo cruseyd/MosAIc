@@ -15,10 +15,4 @@ public class LinearCardZone : CardZone
     {
         return new CardZoneIndex(position, 0, 0);
     }
-    // public override CardZone Clone()
-    // {
-    //     var clone = new LinearCardZone(name, player);
-    //     clone.CloneCardsFrom(this);
-    //     return clone;
-    // }
 }

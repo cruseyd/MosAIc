@@ -10,6 +10,7 @@ using UnityEngine.Animations;
 public class CardUI : MonoBehaviour, IDoubleClickable, IRightClickable, IPointerEnterHandler, IPointerExitHandler
 {
     private bool isHovered = false;
+    private bool doHoverZoom = false;
     private bool isVisible = true;
     private Vector3 baseScale = Vector3.one;
     private Canvas sortingCanvas;
@@ -81,7 +82,7 @@ public class CardUI : MonoBehaviour, IDoubleClickable, IRightClickable, IPointer
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (!GameStateUI.animating && isVisible)
+        if (!GameStateUI.animating && isVisible && doHoverZoom)
         {
             isHovered = true;
             baseSortingOrder = sortingCanvas.sortingOrder;
@@ -125,12 +126,13 @@ public class CardUI : MonoBehaviour, IDoubleClickable, IRightClickable, IPointer
         rectTransform.pivot = new Vector2(pivotX, pivotY);
         rectTransform.position = oldWorldPos + positionOffset; 
     }
-    private void updateBaseScale()
+    private void zoneUpdate()
     {
         CardZoneUI zone = transform.parent.GetComponent<CardZoneUI>();
+        doHoverZoom = !(zone is DeckUI || zone is CardStackUI);
+
         if (zone)
         {
-            Debug.Log($"card height: {height} | zone height: {zone.height} | zone name: {zone.name}");
             baseScale = zone.height / height * Vector3.one;
         } else {
             baseScale = Vector3.one;
@@ -156,8 +158,10 @@ public class CardUI : MonoBehaviour, IDoubleClickable, IRightClickable, IPointer
         {
             isHovered = false;
         }
-
-        updateBaseScale();
+        else {
+            zoneUpdate();
+        }
+        
         Vector3 desiredScale = isHovered ? targetScale : baseScale;
         transform.localScale = Vector3.Lerp(transform.localScale, desiredScale, Time.deltaTime * 10f);
         

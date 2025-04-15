@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,7 @@ public class CardZoneUI : MonoBehaviour
 {
     [SerializeField] public CardZoneID id;
     [SerializeField] public CardZone zone;
+    [SerializeField] public float overlapSpacing;
     public float width 
     {
         get {
@@ -22,8 +24,8 @@ public class CardZoneUI : MonoBehaviour
             return rect.rect.height;
         }
     }
-    public bool animating { get; private set;}
-    private List<CardUI> GetCards()
+    public bool animating { get; set;}
+    protected List<CardUI> GetCards()
     {
         List<CardUI> cards = new List<CardUI>();
         foreach (CardUI item in transform.GetComponentsInChildren<CardUI>())
@@ -34,7 +36,7 @@ public class CardZoneUI : MonoBehaviour
         cards.Sort((a,b) => zone.Compare(a.card.id, b.card.id));
         return cards;
     }
-    private int NumCards()
+    protected int NumCards()
     {
         return transform.GetComponentsInChildren<CardUI>().Length;
     }
@@ -51,17 +53,25 @@ public class CardZoneUI : MonoBehaviour
         int N = NumCards();
         float spacing = this.width / N;
         float leftSideOffset = -rect.sizeDelta.x * rect.pivot.x;
+        var cardList = GetCards();
 
         Vector2[] endPositions = new Vector2[N];
-        for (int n = 0; n < N; n++)
-        {
-            endPositions[n] = new Vector2(spacing / 2.0f + n*spacing + leftSideOffset, 0);
-        }
-        var cardList = GetCards();
         Vector2[] startPositions = new Vector2[N];
         for (int n = 0; n < N; n++)
         {
-            startPositions[n] = cardList[n].transform.localPosition;
+            var c = cardList[n];
+            var zoneIndex = zone.GetIndex(c.card.id);
+            var s = Math.Min(zoneIndex.x, n);
+            var x = spacing / 2.0f + s*spacing + leftSideOffset;
+            var y = -overlapSpacing*zoneIndex.z;
+            endPositions[n] = new Vector2(x, y);
+            startPositions[n] = c.transform.localPosition;
+        }
+        
+        
+        for (int n = 0; n < N; n++)
+        {
+            
         }
         float t = 0.0f;
         while (t < dt)

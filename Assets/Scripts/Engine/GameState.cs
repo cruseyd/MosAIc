@@ -69,6 +69,9 @@ public class GameState
                 case DeckUI:
                     AddCardZone<Deck>(z.id);
                     break;
+                case CardStackUI:
+                    AddCardZone<CardStack>(z.id);
+                    break;
                 default:
                     AddCardZone<LinearCardZone>(z.id);
                     break;
