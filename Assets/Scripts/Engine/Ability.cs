@@ -1,15 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public struct AbilityArgs
-{
-    public List<Agent> agents;
-    public List<Card> cards;
-    public List<StatValuePair> stats;
-}
 public abstract class Ability
 {
-    public abstract void Execute(AbilityArgs args);
+    public abstract List<GameEffect> Execute(GameActionArgs args);
 }
 public abstract class CardAbility : Ability
 {

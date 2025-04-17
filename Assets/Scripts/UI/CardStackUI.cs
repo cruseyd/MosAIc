@@ -21,11 +21,11 @@ public class CardStackUI : CardZoneUI
         {
             var c = cardList[n];
             var zoneIndex = zone.GetIndex(c.card.id);
-            var s = Math.Min(zoneIndex.x, n);
             var x = 0;
             var y = -overlapSpacing*zoneIndex.z;
             endPositions[n] = new Vector2(x, y);
             startPositions[n] = c.transform.localPosition;
+            c.GetComponent<RectTransform>().pivot = Vector2.one*0.5f;
         }
         
         float t = 0.0f;

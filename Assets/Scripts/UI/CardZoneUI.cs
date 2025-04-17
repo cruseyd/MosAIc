@@ -67,12 +67,6 @@ public class CardZoneUI : MonoBehaviour
             endPositions[n] = new Vector2(x, y);
             startPositions[n] = c.transform.localPosition;
         }
-        
-        
-        for (int n = 0; n < N; n++)
-        {
-            
-        }
         float t = 0.0f;
         while (t < dt)
         {
@@ -83,6 +77,10 @@ public class CardZoneUI : MonoBehaviour
             }
             t += Time.deltaTime;
             yield return null;
+        }
+        for (int n = 0; n < N; n++)
+        {
+            cardList[n].transform.localPosition = endPositions[n];
         }
         animating = false;
     }

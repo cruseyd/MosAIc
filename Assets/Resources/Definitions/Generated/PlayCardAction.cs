@@ -23,10 +23,10 @@ public class PlayCardAction : GameAction {
         // Get game objects from state
         // Add GameEffect instances using this.AddEffect
         Card playedCard = state.GetCard(_playedCardIndex);
+        this.PlayCard(playedCard);
         switch (playedCard.type)
         {
             case CardType.PlayerAction:
-                // card ability
                 this.AddEffect(new IncrementAgentStatEffect(this.player, StatName.PlayerValor, playedCard.GetStat(StatName.Valor)));
                 this.AddEffect(new IncrementAgentStatEffect(this.player, StatName.PlayerFaith, playedCard.GetStat(StatName.Faith)));
                 this.AddEffect(new IncrementAgentStatEffect(this.player, StatName.PlayerVitality, playedCard.GetStat(StatName.Vitality)));

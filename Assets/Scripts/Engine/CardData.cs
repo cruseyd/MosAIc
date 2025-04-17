@@ -98,11 +98,19 @@ public class CardData : GameAssetData {
     {
         string className = AbilityClassName();
         string code = $@"
+using System.Collections.Generic;
 public class {className} : CardAbility {{
 
     public {className}(Card card) : base(card) {{}}
 
-    public override void Execute(AbilityArgs args) {{}}
+    public override List<GameEffect> Execute(GameActionArgs args)
+    {{
+        var effects = new List<GameEffect>
+        {{
+            // add effects here;
+        }};
+        return effects;
+    }}
 }};
 ";
         return code;

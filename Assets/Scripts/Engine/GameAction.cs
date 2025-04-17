@@ -6,6 +6,7 @@ public class GameActionArgs
 {
     public List<int> players = new List<int>();
     public List<CardIndex> cards = new List<CardIndex>();
+    public List<StatValuePair> stats = new List<StatValuePair>();
     public List<int> values = new List<int>();
 
     public GameActionArgs(){}
@@ -37,6 +38,13 @@ public abstract class GameAction
     protected void AddEffect(GameEffect effect)
     {
         _effects.Add(effect);
+    }
+    protected void PlayCard(Card card)
+    {
+        foreach (var ei in card.Play(args))
+        {
+            AddEffect(ei);
+        }
     }
     protected abstract void Execute(GameState state);
     public GameActionWithEffects Resolve()

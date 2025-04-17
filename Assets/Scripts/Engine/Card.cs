@@ -89,6 +89,11 @@ public class Card
         stats = card.stats;
         _ability = data.GetAbility(this);
     }
+    public List<GameEffect> Play(GameActionArgs args)
+    {
+        Debug.Assert(_ability != null);
+        return _ability.Execute(args);
+    }
     public int GetStat(StatName statName)
     {  
         Debug.Assert(stats.ContainsKey(statName));
