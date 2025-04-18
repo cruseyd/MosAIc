@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -28,18 +29,18 @@ public class GameManager : Singleton<GameManager>
     protected override void Awake()
     {
         base.Awake();
+        _phase = null;
     }
     protected void Start()
     {
         GameMode mode = GameParams.GameMode();
         rules = (GameRules)mode.GetAssociatedClass();
-        //Initializer initializer = (Initializer)mode.GetAssociatedClass();
         state = rules.Initialize();
     }
 
     void Update()
     {
-        // Listen for user input
+        HandleSpace();
     }
     public void TakeAction(ActionName actionName, int agentID, GameActionArgs args = null)
     {
@@ -61,11 +62,25 @@ public class GameManager : Singleton<GameManager>
         {
             Card card = ((CardUI)clickedObject).card;
             onCardDoubleClick?.Invoke(card);
+            var args = new GameActionArgs();
+            args.cards.Add(card.id);
+            instance.TakeAction(ActionName.PlayCard, state.currentPlayer, args);
         }
     }
 
     public static void HandleRightClick(IRightClickable clickedObject, PointerEventData eventData)
     {
 
+    }
+
+    public static void HandleSpace()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (instance.phase == null)
+            {
+                instance.TakeAction(ActionName.StartGame, 0);
+            }
+        }
     }
 }

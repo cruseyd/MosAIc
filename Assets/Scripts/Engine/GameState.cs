@@ -7,6 +7,7 @@ public class GameState
 {
     public static event Action<GameEffect, GameState> onResolveEffect;
     public PhaseName phase {get; set;}
+    public int currentPlayer = 0;
     private Dictionary<CardZoneID, CardZone> zones
         = new Dictionary<CardZoneID, CardZone>();
     private Dictionary<int, Agent> agents
@@ -18,6 +19,7 @@ public class GameState
     public GameState()
     {
         phase = PhaseName.Default;
+        currentPlayer = 0;
     }
     public GameState(GameState state)
     {
@@ -34,6 +36,7 @@ public class GameState
             cards[index] = (Card)Activator.CreateInstance(card.GetType(), card);
         }
         phase = state.phase;
+        currentPlayer = state.currentPlayer;
     }
     // Add Assets
     public void AddAgent(AgentType type, int player)

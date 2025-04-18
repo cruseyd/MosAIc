@@ -10,6 +10,7 @@ public enum TestName
     MoveCard, 
     TestDeck,
     GameAction,
+    Default,
 }
 
 public class UnitTester : MonoBehaviour
@@ -18,7 +19,7 @@ public class UnitTester : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        GameManager.onCardDoubleClick += PlayCard;
+        // GameManager.onCardDoubleClick += PlayCard;
     }
 
     void Update()
@@ -29,6 +30,7 @@ public class UnitTester : MonoBehaviour
             case TestName.MoveCard: TestMoveCard(); break;
             case TestName.TestDeck: TestDeck(); break;
             case TestName.GameAction: TestGameAction(); break;
+            default: break;
         }
     }
     void TestGameState() {}
