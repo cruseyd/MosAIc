@@ -37,10 +37,10 @@ public class ScriptGenerator
 }";
         return code;
     }
-    public static string GenerateInitializerScript(string className)
+    public static string GenerateGameRulesScript(string className)
     {
         
-        string code = ($"using UnityEngine;\npublic class {className} : Initializer" + "{\n");
+        string code = ($"using UnityEngine;\npublic class {className} : GameRules" + "{\n");
         code += @"
     // Initialize a GameState
     public override GameState Initialize()
@@ -48,6 +48,12 @@ public class ScriptGenerator
         GameState state = new GameState();
         // Initialization logic here
         return state;
+    }
+    public override bool IsValid(ActionName action)
+    {
+        switch(action) {
+            default: return true;
+        }
     }
 }";
         return code;
@@ -84,11 +90,11 @@ public class ScriptGenerator
         }
     }
 
-    [MenuItem("Assets/Create/MosAIc/Initializer", false, 80)]
-    public static void CreateInitializer()
+    [MenuItem("Assets/Create/MosAIc/GameRules", false, 80)]
+    public static void CreateGameRules()
     {
         string path = GetSelectedPathOrFallback();
-        string fileName = "NewInitializer.cs";
+        string fileName = "NewGameRules.cs";
         string fullPath = Path.Combine(path, fileName);
 
         if (File.Exists(fullPath))
@@ -100,7 +106,7 @@ public class ScriptGenerator
         string scriptContent = 
 @"using UnityEngine;
 
-public class NewInitializer : Initializer
+public class NewGameRules : GameRules
 {
     // Initialize a GameState
     public override GameState Initialize()
@@ -108,6 +114,12 @@ public class NewInitializer : Initializer
         GameState state = new GameState();
         // Initialization logic here
         return state;
+    }
+    public override bool IsValid(ActionName action)
+    {
+        switch(action) {
+            default: return true;
+        }
     }
 }";
 

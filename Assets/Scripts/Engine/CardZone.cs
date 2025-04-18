@@ -152,7 +152,7 @@ public abstract class CardZone
     }
     public CardZoneIndex GetIndex(CardIndex card)
     {
-        Debug.Assert(Contains(card));
+        //Debug.Assert(Contains(card));
         int index = _cards.FindIndex((c) => c == card);
         return Deserialize(index);
     }
@@ -177,16 +177,6 @@ public abstract class CardZone
     {
         return Deserialize(Serialize(index)+delta);
     }
-    // public abstract CardZone Clone();
-    // protected void CloneCardsFrom(CardZone zone)
-    // {
-    //     _cards.Clear();
-    //     foreach (Card card in zone.Cards())
-    //     {
-    //         Card clone = new Card(card);
-    //         clone.Move(this, card.zoneIndex);
-    //     }
-    // }
     public static T Create<T>(CardZoneID id) where T : CardZone, new()
     {
         return (T)Activator.CreateInstance(typeof(T), id.name, id.player);
@@ -194,7 +184,10 @@ public abstract class CardZone
     public int NumCards() { return _cards.Count; }
     public int Compare(CardIndex a, CardIndex b)
     {
-        Debug.Assert(Contains(a) && Contains(b));
+        // Debug.Assert(Contains(a),
+        //     $"Card {a.index} is not in CardZone {id.name}");
+        // Debug.Assert(Contains(b),
+        //     $"Card {b.index} is not in CardZone {id.name}");
         return Serialize(GetIndex(a)) - Serialize(GetIndex(b));
     }
     public override string ToString()

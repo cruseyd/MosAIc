@@ -17,7 +17,8 @@ public class CardUI : MonoBehaviour, IDoubleClickable, IRightClickable, IPointer
     private int baseSortingOrder;
     public Vector3 targetScale = Vector3.one*2.0f;
     public CardType type;
-    public Card card { get; set; }
+    public Card card {get; set; }
+    public long id;
     public TextMeshProUGUI nameText;
     public List<StatUI> stats = new List<StatUI>();
     public List<TextMeshProUGUI> textRegions = new List<TextMeshProUGUI>();

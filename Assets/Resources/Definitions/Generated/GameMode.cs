@@ -1,5 +1,5 @@
 public enum GameMode {
     Default,
-    [ClassMapping(typeof(MainInitializer))]
+    [ClassMapping(typeof(MainRules))]
     Main,
 }

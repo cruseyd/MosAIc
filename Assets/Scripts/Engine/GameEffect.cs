@@ -7,7 +7,7 @@ public abstract class GameEffect
     private GameEffect _simultaneous = null;
     public GameEffect simultaneous { get { return _simultaneous; } }
     public abstract void Execute(GameState state);
-    public abstract IEnumerator Display();
+    public abstract IEnumerator Display(float speed = 1.0f);
     public void SimultaneousWith(GameEffect effect)
     {
         Debug.Assert(_simultaneous == null);
@@ -34,10 +34,10 @@ public class MoveCardEffect : GameEffect
         state.MoveCard(cardIndex, toZoneID, toZonePosition);
         // after card move event
     }
-    public override IEnumerator Display()
+    public override IEnumerator Display(float speed = 1.0f)
     {
         Debug.Assert(cardIndex != null);
-        float dt = 0.2f;
+        float dt = 0.2f/speed;
         CardZoneUI newZoneUI = GameStateUI.GetUI(toZoneID);
         CardZoneUI oldZoneUI = GameStateUI.GetUI(prevZoneID);
         CardUI cardUI = GameStateUI.GetUI(cardIndex);
@@ -66,10 +66,10 @@ public class DrawCardEffect : GameEffect
         // after draw event
     }
 
-    public override IEnumerator Display()
+    public override IEnumerator Display(float speed = 1.0f)
     {
         Debug.Assert(drawnCard != null);
-        float dt = 0.2f;
+        float dt = 0.2f/speed;
         CardZoneUI deckUI = GameStateUI.GetUI(deckID);
         CardZoneUI toZoneUI = GameStateUI.GetUI(toZoneID);
         CardUI cardUI = GameStateUI.Spawn(drawnCard, deckUI.transform);
@@ -89,7 +89,7 @@ public class IncrementAgentStatEffect : GameEffect
         _delta = delta;
     }
 
-    public override IEnumerator Display()
+    public override IEnumerator Display(float speed = 1.0f)
     {
         yield return null;
     }

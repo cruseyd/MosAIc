@@ -16,6 +16,7 @@ public class GameStateUI : Singleton<GameStateUI>
     private static Dictionary<int, AgentUI> _agents
         = new Dictionary<int, AgentUI>();
 
+    public float animationSpeed = 1.0f;
     public static bool animating { get; private set; }
     protected override void Awake()
     {
@@ -57,6 +58,7 @@ public class GameStateUI : Singleton<GameStateUI>
         var cardUI = Spawn(card.data, spawnPoint);
         cardUI.SetVisible(false);
         cardUI.card = card;
+        cardUI.id = card.id.index;
         _cards[card.id] = cardUI;
         return cardUI;
     }
@@ -128,7 +130,7 @@ public class GameStateUI : Singleton<GameStateUI>
         foreach (var effect in actionWithEffects.effects)
         {
             Debug.Assert(effect != null);
-            yield return effect.Display();
+            yield return effect.Display(instance.animationSpeed);
         }
         animating = false;
     }

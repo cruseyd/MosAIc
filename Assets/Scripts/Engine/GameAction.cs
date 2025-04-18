@@ -50,7 +50,7 @@ public abstract class GameAction
     public GameActionWithEffects Resolve()
     {
         Execute(_finalState); //populates effects
-
+        
         onBeforeResolveAction?.Invoke(this, _finalState);
         var actionWithEffects = new GameActionWithEffects();
         actionWithEffects.action = this;

@@ -8,7 +8,6 @@ public class PlayCardAction : GameAction {
     public PlayCardAction(int player, GameActionArgs args, GameState state) : base(player, args, state)
     {
         Debug.Assert(args.cards.Count >= 1);
-        Debug.Log("number of cards in args: " + args.cards.Count);
         _playedCardIndex = args.cards[0];
         if (args.cards.Count > 1)
         {

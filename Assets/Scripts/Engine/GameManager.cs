@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 public class GameManager : Singleton<GameManager>
 {
     public static GameState state {get; private set; }
+    public static GameRules rules {get; private set;}
     public static event Action<Card> onCardDoubleClick;
     public Phase phase
     {
@@ -31,8 +32,9 @@ public class GameManager : Singleton<GameManager>
     protected void Start()
     {
         GameMode mode = GameParams.GameMode();
-        Initializer initializer = (Initializer)mode.GetAssociatedClass();
-        state = initializer.Initialize();
+        rules = (GameRules)mode.GetAssociatedClass();
+        //Initializer initializer = (Initializer)mode.GetAssociatedClass();
+        state = rules.Initialize();
     }
 
     void Update()
