@@ -1,4 +1,4 @@
-public class ReadyPhase : Phase{
+public class PlayerEndPhase : Phase{
 
     // What happens at the start of this phase
     public override void Enter(Phase prevPhase, GameState state){}

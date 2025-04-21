@@ -99,3 +99,23 @@ public class IncrementAgentStatEffect : GameEffect
         state.IncrementAgentStat(_player, _stat, _delta);
     }
 }
+public class ChangePhaseEffect : GameEffect
+{
+    PhaseName _newPhase;
+    public ChangePhaseEffect(PhaseName newPhase)
+    {
+        _newPhase = newPhase;
+    }
+
+    public override IEnumerator Display(float speed = 1.0f)
+    {
+        yield return null;
+    }
+
+    public override void Execute(GameState state)
+    {
+        // leave phase events
+        // enter phase events
+        state.ChangePhase(_newPhase);
+    }
+}

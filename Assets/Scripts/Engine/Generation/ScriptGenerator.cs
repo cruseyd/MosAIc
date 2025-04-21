@@ -49,7 +49,7 @@ public class ScriptGenerator
         // Initialization logic here
         return state;
     }
-    public override bool IsValid(ActionName action)
+    public override bool IsValid(ActionName action, int player, GameActionArgs args, GameState state)
     {
         switch(action) {
             default: return true;

@@ -15,3 +15,5 @@ MonoBehaviour:
   values:
   - StartGame
   - PlayCard
+  - BuyCard
+  - ChangePhase

@@ -6,7 +6,7 @@ using UnityEngine;
 public class GameState
 {
     public static event Action<GameEffect, GameState> onResolveEffect;
-    public PhaseName phase {get; set;}
+    public PhaseName phase {get; private set;}
     public int currentPlayer = 0;
     private Dictionary<CardZoneID, CardZone> zones
         = new Dictionary<CardZoneID, CardZone>();
@@ -168,5 +168,10 @@ public class GameState
     {
         var agent = GetAgent(player);
         agent.IncrementStat(stat, delta);
+    }
+
+    public void ChangePhase(PhaseName newPhase)
+    {
+        phase = newPhase;
     }
 }

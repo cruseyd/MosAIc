@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: PhaseName
   m_EditorClassIdentifier: 
   values:
-  - Ready
+  - GameStart
+  - PlayerMain

@@ -4,4 +4,8 @@ public enum ActionName {
     StartGame,
     [ClassMapping(typeof(PlayCardAction))]
     PlayCard,
+    [ClassMapping(typeof(BuyCardAction))]
+    BuyCard,
+    [ClassMapping(typeof(ChangePhaseAction))]
+    ChangePhase,
 }

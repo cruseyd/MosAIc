@@ -8,6 +8,7 @@ public class GameActionArgs
     public List<CardIndex> cards = new List<CardIndex>();
     public List<StatValuePair> stats = new List<StatValuePair>();
     public List<int> values = new List<int>();
+    public PhaseName phase = PhaseName.Default;
 
     public GameActionArgs(){}
 }

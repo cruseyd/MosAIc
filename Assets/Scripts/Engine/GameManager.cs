@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -8,28 +9,9 @@ public class GameManager : Singleton<GameManager>
 {
     public static GameState state {get; private set; }
     public static GameRules rules {get; private set;}
-    public static event Action<Card> onCardDoubleClick;
-    public Phase phase
-    {
-        get {
-            return _phase;
-        } 
-        private set {
-            Phase nextPhase = value;
-            Phase prevPhase = _phase;
-            if (prevPhase != null && (nextPhase.name != prevPhase.name))
-            {
-                prevPhase?.Exit(nextPhase, state);
-            }
-            _phase = nextPhase;
-            nextPhase.Enter(prevPhase, state);
-        }
-    }
-    private Phase _phase;
     protected override void Awake()
     {
         base.Awake();
-        _phase = null;
     }
     protected void Start()
     {
@@ -40,15 +22,23 @@ public class GameManager : Singleton<GameManager>
 
     void Update()
     {
-        HandleSpace();
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            HandleSpace();
+        }
+        
     }
-    public void TakeAction(ActionName actionName, int agentID, GameActionArgs args = null)
+    public void TakeAction(ActionName actionName, int player, GameActionArgs args = null)
     {
-        GameAction action = actionName.GetAssociatedClass(agentID, args, state) as GameAction;
+        if (!rules.IsValid(actionName, player, args, state))
+        {
+            Debug.Log($"Invalid Action: {actionName}");
+            return;
+        }
+        GameAction action = actionName.GetAssociatedClass(player, args, state) as GameAction;
         var actionWithEffects = action.Resolve();
         GameStateUI.Animate(actionWithEffects);
         state = actionWithEffects.state;
-        
     }
 
     public void TryAction(ActionName action)
@@ -61,11 +51,15 @@ public class GameManager : Singleton<GameManager>
         if (clickedObject is CardUI)
         {
             Card card = ((CardUI)clickedObject).card;
-            onCardDoubleClick?.Invoke(card);
-            var args = new GameActionArgs();
-            args.cards.Add(card.id);
-            instance.TakeAction(ActionName.PlayCard, state.currentPlayer, args);
+            instance.DoubleClickCard(card);
         }
+    }
+
+    public virtual void DoubleClickCard(Card card)
+    {
+        var args = new GameActionArgs();
+        args.cards.Add(card.id);
+        instance.TakeAction(ActionName.PlayCard, state.currentPlayer, args);
     }
 
     public static void HandleRightClick(IRightClickable clickedObject, PointerEventData eventData)
@@ -73,14 +67,7 @@ public class GameManager : Singleton<GameManager>
 
     }
 
-    public static void HandleSpace()
+    public virtual void HandleSpace()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            if (instance.phase == null)
-            {
-                instance.TakeAction(ActionName.StartGame, 0);
-            }
-        }
     }
 }

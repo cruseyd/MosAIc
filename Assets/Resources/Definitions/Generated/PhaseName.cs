@@ -1,5 +1,7 @@
 public enum PhaseName {
     Default,
-    [ClassMapping(typeof(ReadyPhase))]
-    Ready,
+    [ClassMapping(typeof(GameStartPhase))]
+    GameStart,
+    [ClassMapping(typeof(PlayerMainPhase))]
+    PlayerMain,
 }
