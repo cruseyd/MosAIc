@@ -4,18 +4,22 @@ using UnityEngine.UIElements;
 
 public class Deck : CardZone
 {
-    public Deck() : base() {}
-    public Deck(CardZoneName name_, int playerID_, CardZoneName sourceZone = CardZoneName.Default) : base(name_, playerID_)
+    public CardZoneID sourceZone { get; private set; }
+    public Deck() : base() { }
+    public Deck(CardZoneName name_, int playerID_, CardZoneName sourceZone_ = CardZoneName.Default) : base(name_, playerID_)
     {
-        if (sourceZone != CardZoneName.Default)
-        {
-            
-        }
+        sourceZone = new CardZoneID(sourceZone_, playerID_);
     }
-    public Deck(Deck deck_) : base(deck_) {}
+    public Deck(Deck deck_) : base(deck_)
+    {
+        sourceZone = deck_.sourceZone;
+    }
     public CardIndex Draw()
     {
-        if (NumCards() == 0) { return null; }
+        if (NumCards() == 0)
+        {
+            return null;
+        }
         CardIndex topCard = GetCardAtIndex(Deserialize(0));
         return topCard;
     }

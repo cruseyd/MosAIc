@@ -52,6 +52,8 @@ public class DrawCardEffect : GameEffect
     public CardZoneID toZoneID;
     public int toPosition;
     private Card drawnCard;
+    private bool drawFromEmptyDeck = false;
+    private CardZoneID sourceZoneID;
     public DrawCardEffect(CardZoneID deckID, CardZoneID toZoneID, int toPosition = 0)
     {
         this.deckID = deckID;
@@ -62,6 +64,9 @@ public class DrawCardEffect : GameEffect
     public override void Execute(GameState state)
     {
         // before draw event
+        var deck = (Deck)state.GetCardZone(deckID);
+        sourceZoneID = deck.sourceZone;
+        drawFromEmptyDeck = (deck.NumCards() == 0);
         drawnCard = state.DrawCard(deckID, toZoneID, toPosition);
         // after draw event
     }
@@ -73,6 +78,13 @@ public class DrawCardEffect : GameEffect
         CardZoneUI deckUI = GameStateUI.GetUI(deckID);
         CardZoneUI toZoneUI = GameStateUI.GetUI(toZoneID);
         CardUI cardUI = GameStateUI.Spawn(drawnCard, deckUI.transform);
+        if (drawFromEmptyDeck && sourceZoneID.name != CardZoneName.Default)
+        {
+            foreach (CardUI ui in GameStateUI.GetUI(sourceZoneID).GetCards())
+            {
+                ui.Delete();
+            }
+        }
         cardUI.SetVisible(true);
         yield return GameStateUI.DoMoveCard(cardUI, deckUI, toZoneUI, dt);
     }

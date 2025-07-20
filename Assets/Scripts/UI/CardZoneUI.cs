@@ -25,7 +25,7 @@ public class CardZoneUI : MonoBehaviour
         }
     }
     public bool animating { get; set;}
-    protected List<CardUI> GetCards()
+    public List<CardUI> GetCards()
     {
         List<CardUI> cards = new List<CardUI>();
         foreach (CardUI item in transform.GetComponentsInChildren<CardUI>())

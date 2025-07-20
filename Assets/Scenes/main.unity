@@ -532,6 +532,7 @@ MonoBehaviour:
     name: 12
     player: 0
   overlapSpacing: 0
+  sourceZone: 9
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1121,6 +1122,7 @@ MonoBehaviour:
     name: 13
     player: 0
   overlapSpacing: 0
+  sourceZone: 10
 --- !u!1 &723972628
 GameObject:
   m_ObjectHideFlags: 0
@@ -2281,6 +2283,7 @@ MonoBehaviour:
     name: 15
     player: 0
   overlapSpacing: 0
+  sourceZone: 0
 --- !u!1 &1756417745
 GameObject:
   m_ObjectHideFlags: 0
@@ -2417,6 +2420,7 @@ MonoBehaviour:
     name: 14
     player: 0
   overlapSpacing: 0
+  sourceZone: 0
 --- !u!1 &1991797868
 GameObject:
   m_ObjectHideFlags: 0
@@ -2509,6 +2513,7 @@ MonoBehaviour:
     name: 17
     player: 0
   overlapSpacing: 0
+  sourceZone: 0
 --- !u!1 &2058815836
 GameObject:
   m_ObjectHideFlags: 0

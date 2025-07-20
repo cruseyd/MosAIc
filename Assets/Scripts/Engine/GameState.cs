@@ -73,7 +73,7 @@ public class GameState
             switch (z)
             {
                 case DeckUI:
-                    AddCardZone<Deck>(z.id.name, z.id.player, CardZoneName.Default);
+                    AddCardZone<Deck>(z.id.name, z.id.player, ((DeckUI)z).sourceZone);
                     break;
                 case CardStackUI:
                     AddCardZone<CardStack>(z.id.name, z.id.player);
@@ -159,9 +159,24 @@ public class GameState
         card.zone = toZoneID;
     }
 
+    public void MoveAllCards(CardZoneID fromZoneID, CardZoneID toZoneID)
+    {
+        var cards = GetCardZone(fromZoneID).Cards();
+        foreach (CardIndex card in cards)
+        {
+            MoveCard(card, toZoneID);
+        }
+    }
+
     public Card DrawCard(CardZoneID deckID, CardZoneID toZoneID, int position = 0)
     {
         Deck deck = (Deck)GetCardZone(deckID);
+        Debug.Log(deck.sourceZone);
+        if (deck.NumCards() == 0 && deck.sourceZone.name != CardZoneName.Default)
+            {
+                CardZone sourceZone = GetCardZone(deck.sourceZone);
+                MoveAllCards(sourceZone.id, deckID);
+            }
         Card drawnCard = GetCard(deck.Draw());
         MoveCard(drawnCard.id, toZoneID, position);
         return drawnCard;
