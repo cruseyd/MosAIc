@@ -177,9 +177,9 @@ public abstract class CardZone
     {
         return Deserialize(Serialize(index)+delta);
     }
-    public static T Create<T>(CardZoneID id) where T : CardZone, new()
+    public static T Create<T>(params object[] args) where T : CardZone, new()
     {
-        return (T)Activator.CreateInstance(typeof(T), id.name, id.player);
+        return (T)Activator.CreateInstance(typeof(T), args);
     }
     public int NumCards() { return _cards.Count; }
     public int Compare(CardIndex a, CardIndex b)

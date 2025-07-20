@@ -170,7 +170,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id:
-    name: 0
+    name: 18
     player: 0
   overlapSpacing: 0
 --- !u!114 &108058385

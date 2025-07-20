@@ -5,7 +5,13 @@ using UnityEngine.UIElements;
 public class Deck : CardZone
 {
     public Deck() : base() {}
-    public Deck(CardZoneName name_, int playerID_) : base(name_, playerID_) {}
+    public Deck(CardZoneName name_, int playerID_, CardZoneName sourceZone = CardZoneName.Default) : base(name_, playerID_)
+    {
+        if (sourceZone != CardZoneName.Default)
+        {
+            
+        }
+    }
     public Deck(Deck deck_) : base(deck_) {}
     public CardIndex Draw()
     {

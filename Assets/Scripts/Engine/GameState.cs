@@ -54,11 +54,14 @@ public class GameState
         Debug.Assert(!agents.ContainsKey(player), $"GameState already contains an Agent with key {player}");
         agents[player] = agent;
     }
-    public void AddCardZone<T> (CardZoneID id) where T : CardZone, new()
+    public void AddCardZone<T> (params object[] args) where T : CardZone, new()
     {
+        var name = args[0];
+        var player = args[1];
+        CardZoneID id = new CardZoneID((CardZoneName)name, (int)player);
         Debug.Assert(!zones.ContainsKey(id),$"GameState.AddCardZone | Error: Key already exists ({id.name},{id.player})");
         
-        T zone = CardZone.Create<T>(id);
+        T zone = CardZone.Create<T>(args);
         zones[id] = zone;
     }
     public void AddCardZonesFromUI()
@@ -70,13 +73,13 @@ public class GameState
             switch (z)
             {
                 case DeckUI:
-                    AddCardZone<Deck>(z.id);
+                    AddCardZone<Deck>(z.id.name, z.id.player, CardZoneName.Default);
                     break;
                 case CardStackUI:
-                    AddCardZone<CardStack>(z.id);
+                    AddCardZone<CardStack>(z.id.name, z.id.player);
                     break;
                 default:
-                    AddCardZone<LinearCardZone>(z.id);
+                    AddCardZone<LinearCardZone>(z.id.name, z.id.player);
                     break;
             }
         }
