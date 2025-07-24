@@ -4,4 +4,6 @@ public enum PhaseName {
     GameStart,
     [ClassMapping(typeof(PlayerMainPhase))]
     PlayerMain,
+    [ClassMapping(typeof(EnemyMainPhase))]
+    EnemyMain,
 }

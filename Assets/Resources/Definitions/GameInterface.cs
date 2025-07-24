@@ -37,7 +37,7 @@ public class GameInterface : GameManager
                 instance.TakeAction(ActionName.ChangePhase, state.currentPlayer, args);
                 break;
             case PhaseName.PlayerMain:
-                args.phase = PhaseName.PlayerMain;
+                args.phase = PhaseName.EnemyMain;
                 instance.TakeAction(ActionName.ChangePhase, state.currentPlayer, args);
                 break;
             default: break;

@@ -1,13 +1,20 @@
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+using System;
 
 public abstract class GameEffect
 {
+    // Effect Events
+    public static event Action<PhaseName, PhaseName> onExitPhase;
+    public static event Action<PhaseName, PhaseName> onEnterPhase;
+
+    // Event Callers
+    protected void OnExitPhase(PhaseName oldPhase, PhaseName newPhase) { onExitPhase?.Invoke(oldPhase, newPhase); }
+    protected void OnEnterPhase(PhaseName oldPhase, PhaseName newPhase) { onEnterPhase?.Invoke(oldPhase, newPhase); }
     private GameEffect _simultaneous = null;
     public GameEffect simultaneous { get { return _simultaneous; } }
     public abstract void Execute(GameState state);
-    public abstract IEnumerator Display(float speed = 1.0f);
     public void SimultaneousWith(GameEffect effect)
     {
         Debug.Assert(_simultaneous == null);
@@ -17,10 +24,10 @@ public abstract class GameEffect
 
 public class MoveCardEffect : GameEffect
 {
-    private CardIndex cardIndex;
-    private CardZoneID toZoneID;
-    private CardZoneID prevZoneID;
-    private int toZonePosition;
+    public CardIndex cardIndex { get; private set; }
+    public CardZoneID toZoneID  { get; private set; }
+    public CardZoneID prevZoneID  { get; private set; }
+    public int toZonePosition  { get; private set; }
     public MoveCardEffect(CardIndex cardIndex, CardZoneID toZoneID, int toZonePosition = 0)
     {
         this.cardIndex = cardIndex;
@@ -34,26 +41,15 @@ public class MoveCardEffect : GameEffect
         state.MoveCard(cardIndex, toZoneID, toZonePosition);
         // after card move event
     }
-    public override IEnumerator Display(float speed = 1.0f)
-    {
-        Debug.Assert(cardIndex != null);
-        float dt = 0.2f/speed;
-        CardZoneUI newZoneUI = GameStateUI.GetUI(toZoneID);
-        CardZoneUI oldZoneUI = GameStateUI.GetUI(prevZoneID);
-        CardUI cardUI = GameStateUI.GetUI(cardIndex);
-        cardUI.SetVisible(true);
-        yield return GameStateUI.DoMoveCard(cardUI, oldZoneUI, newZoneUI, dt);
-    }
 }
-
 public class DrawCardEffect : GameEffect
 {
-    public CardZoneID deckID;
-    public CardZoneID toZoneID;
-    public int toPosition;
-    private Card drawnCard;
-    private bool drawFromEmptyDeck = false;
-    private CardZoneID sourceZoneID;
+    public CardZoneID deckID { get; private set; }
+    public CardZoneID toZoneID { get; private set; }
+    public int toPosition { get; private set; }
+    public Card drawnCard { get; private set; }
+    public bool drawFromEmptyDeck { get; private set; }
+    public CardZoneID sourceZoneID { get; private set; }
     public DrawCardEffect(CardZoneID deckID, CardZoneID toZoneID, int toPosition = 0)
     {
         this.deckID = deckID;
@@ -66,27 +62,9 @@ public class DrawCardEffect : GameEffect
         // before draw event
         var deck = (Deck)state.GetCardZone(deckID);
         sourceZoneID = deck.sourceZone;
-        drawFromEmptyDeck = (deck.NumCards() == 0);
+        drawFromEmptyDeck = deck.NumCards() == 0;
         drawnCard = state.DrawCard(deckID, toZoneID, toPosition);
         // after draw event
-    }
-
-    public override IEnumerator Display(float speed = 1.0f)
-    {
-        Debug.Assert(drawnCard != null);
-        float dt = 0.2f/speed;
-        CardZoneUI deckUI = GameStateUI.GetUI(deckID);
-        CardZoneUI toZoneUI = GameStateUI.GetUI(toZoneID);
-        CardUI cardUI = GameStateUI.Spawn(drawnCard, deckUI.transform);
-        if (drawFromEmptyDeck && sourceZoneID.name != CardZoneName.Default)
-        {
-            foreach (CardUI ui in GameStateUI.GetUI(sourceZoneID).GetCards())
-            {
-                ui.Delete();
-            }
-        }
-        cardUI.SetVisible(true);
-        yield return GameStateUI.DoMoveCard(cardUI, deckUI, toZoneUI, dt);
     }
 }
 public class IncrementAgentStatEffect : GameEffect
@@ -99,11 +77,6 @@ public class IncrementAgentStatEffect : GameEffect
         _player = player;
         _stat = stat;
         _delta = delta;
-    }
-
-    public override IEnumerator Display(float speed = 1.0f)
-    {
-        yield return null;
     }
 
     public override void Execute(GameState state)
@@ -119,15 +92,10 @@ public class ChangePhaseEffect : GameEffect
         _newPhase = newPhase;
     }
 
-    public override IEnumerator Display(float speed = 1.0f)
-    {
-        yield return null;
-    }
-
     public override void Execute(GameState state)
     {
-        // leave phase events
-        // enter phase events
+        OnExitPhase(state.phase, _newPhase);
         state.ChangePhase(_newPhase);
+        OnEnterPhase(state.phase, _newPhase);
     }
 }

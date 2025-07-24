@@ -28,7 +28,7 @@ public abstract class GameAction
     private GameState _initialState;
     private GameState _finalState;
     protected int player {get; private set;}
-    protected GameActionArgs args { get; private set; }
+    public GameActionArgs args { get; private set; }
     public GameAction(int player, GameActionArgs args, GameState state)
     {
         this.player = player;

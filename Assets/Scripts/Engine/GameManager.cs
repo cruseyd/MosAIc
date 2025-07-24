@@ -7,7 +7,8 @@ using UnityEngine.EventSystems;
 
 public class GameManager : Singleton<GameManager>
 {
-    public static GameState state {get; private set; }
+    public static event Action<GameActionWithEffects, GameState, GameState> onTakeAction;
+    public static GameState state { get; private set; }
     public static GameRules rules {get; private set;}
     protected override void Awake()
     {
@@ -38,7 +39,9 @@ public class GameManager : Singleton<GameManager>
         GameAction action = actionName.GetAssociatedClass(player, args, state) as GameAction;
         var actionWithEffects = action.Resolve();
         GameStateUI.Animate(actionWithEffects);
+        GameState oldState = state;
         state = actionWithEffects.state;
+        onTakeAction?.Invoke(actionWithEffects, oldState, state);
     }
 
     public void TryAction(ActionName action)

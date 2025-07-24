@@ -139,10 +139,6 @@ public class CardUI : MonoBehaviour, IDoubleClickable, IRightClickable, IPointer
             baseScale = Vector3.one;
         }
     }
-    public void Delete()
-    {
-        Destroy(this.gameObject);
-    }
     public void Awake()
     {
         sortingCanvas = GetComponent<Canvas>();

@@ -1,14 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-
+public delegate IEnumerator EffectAnimationHandler(GameEffect effect, float speed);
 
 public class GameStateUI : Singleton<GameStateUI>
 {
     [SerializeField] private Canvas _mainCanvas;
+    [SerializeField] private TextMeshProUGUI _phaseText;
     private static Dictionary<CardIndex, CardUI> _cards
         = new Dictionary<CardIndex, CardUI>();
     private static Dictionary<CardZoneID, CardZoneUI> _zones
@@ -16,8 +17,15 @@ public class GameStateUI : Singleton<GameStateUI>
     private static Dictionary<int, AgentUI> _agents
         = new Dictionary<int, AgentUI>();
 
+    private static Dictionary<Type, Delegate> _animationHandlers = new Dictionary<Type, Delegate>();
     public float animationSpeed = 1.0f;
     public static bool animating { get; private set; }
+
+    private void RegisterAnimationHandlers()
+    {
+        _animationHandlers[typeof(MoveCardEffect)] = (EffectAnimationHandler)DisplayEffect_MoveCard;
+        _animationHandlers[typeof(DrawCardEffect)] = (EffectAnimationHandler)DisplayEffect_DrawCard;
+    }
     protected override void Awake()
     {
         base.Awake();
@@ -29,6 +37,10 @@ public class GameStateUI : Singleton<GameStateUI>
         {
             _zones[zi.id] = zi;
         }
+
+        // set events
+        RegisterAnimationHandlers();
+        GameManager.onTakeAction += DisplayAction;
     }
 
     public static void BindState(GameState state)
@@ -68,7 +80,9 @@ public class GameStateUI : Singleton<GameStateUI>
         if (data.prefab != null)
         {
             prefab = Instantiate(data.prefab, spawnPoint);
-        } else {
+        }
+        else
+        {
             prefab = Instantiate(ResourceManager.GetCardPrefab(data.type), spawnPoint);
         }
         var cardUI = prefab.GetComponent<CardUI>();
@@ -130,7 +144,8 @@ public class GameStateUI : Singleton<GameStateUI>
         foreach (var effect in actionWithEffects.effects)
         {
             Debug.Assert(effect != null);
-            yield return effect.Display(instance.animationSpeed);
+            yield return instance.DisplayEffect(effect, instance.animationSpeed);
+            //yield return effect.Display(instance.animationSpeed);
         }
         animating = false;
     }
@@ -149,4 +164,57 @@ public class GameStateUI : Singleton<GameStateUI>
         animating = false;
     }
 
+    private void DisplayAction(GameActionWithEffects action, GameState prevState, GameState postState)
+    {
+
+    }
+
+    private IEnumerator DisplayEffect(GameEffect effect, float speed)
+    {
+        Type T = effect.GetType();
+        if (_animationHandlers.TryGetValue(T, out Delegate handler))
+        {
+            yield return ((EffectAnimationHandler)handler)(effect, speed);
+        }
+        else
+        {
+            yield return null;
+        }
+    }
+
+
+    // Individual Effect Logic
+    private IEnumerator DisplayEffect_MoveCard(GameEffect e, float speed)
+    {
+        Debug.Assert(e is MoveCardEffect);
+        var effect = (MoveCardEffect)e;
+
+        Debug.Assert(effect.cardIndex != null);
+        float dt = 0.2f / speed;
+        CardZoneUI newZoneUI = GetUI(effect.toZoneID);
+        CardZoneUI oldZoneUI = GetUI(effect.prevZoneID);
+        CardUI cardUI = GetUI(effect.cardIndex);
+        cardUI.SetVisible(true);
+        yield return DoMoveCard(cardUI, oldZoneUI, newZoneUI, dt);
+    }
+    private IEnumerator DisplayEffect_DrawCard(GameEffect e, float speed)
+    {
+        Debug.Assert(e is DrawCardEffect);
+        var effect = (DrawCardEffect)e;
+
+        Debug.Assert(effect.drawnCard != null);
+        float dt = 0.2f/speed;
+        CardZoneUI deckUI = GetUI(effect.deckID);
+        CardZoneUI toZoneUI = GetUI(effect.toZoneID);
+        CardUI cardUI = Spawn(effect.drawnCard, deckUI.transform);
+        if (effect.drawFromEmptyDeck && effect.sourceZoneID.name != CardZoneName.Default)
+        {
+            foreach (CardUI ui in GetUI(effect.sourceZoneID).GetCards())
+            {
+                Destroy(ui);
+            }
+        }
+        cardUI.SetVisible(true);
+        yield return DoMoveCard(cardUI, deckUI, toZoneUI, dt);
+    }
 }

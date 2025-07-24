@@ -35,7 +35,9 @@ MonoBehaviour:
   - stat: 7
     minValue: 0
     maxValue: 2147483647
-  paramValues: []
+  paramValues:
+  - paramName: 1
+    paramValue: 1
   cardStatAssignments:
   - cardType: 1
     stats: 
@@ -52,6 +54,8 @@ MonoBehaviour:
   - cardType: 7
     stats: 
   - cardType: 7
+    stats: 04000000
+  - cardType: 8
     stats: 04000000
   agentStatAssignments:
   - agentType: 1
