@@ -171,7 +171,6 @@ public class GameState
     public Card DrawCard(CardZoneID deckID, CardZoneID toZoneID, int position = 0)
     {
         Deck deck = (Deck)GetCardZone(deckID);
-        Debug.Log(deck.sourceZone);
         if (deck.NumCards() == 0 && deck.sourceZone.name != CardZoneName.Default)
             {
                 CardZone sourceZone = GetCardZone(deck.sourceZone);

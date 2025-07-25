@@ -25,6 +25,7 @@ public class GameStateUI : Singleton<GameStateUI>
     {
         _animationHandlers[typeof(MoveCardEffect)] = (EffectAnimationHandler)DisplayEffect_MoveCard;
         _animationHandlers[typeof(DrawCardEffect)] = (EffectAnimationHandler)DisplayEffect_DrawCard;
+        _animationHandlers[typeof(ChangePhaseEffect)] = (EffectAnimationHandler)DisplayEffect_ChangePhase;
     }
     protected override void Awake()
     {
@@ -145,7 +146,6 @@ public class GameStateUI : Singleton<GameStateUI>
         {
             Debug.Assert(effect != null);
             yield return instance.DisplayEffect(effect, instance.animationSpeed);
-            //yield return effect.Display(instance.animationSpeed);
         }
         animating = false;
     }
@@ -203,7 +203,7 @@ public class GameStateUI : Singleton<GameStateUI>
         var effect = (DrawCardEffect)e;
 
         Debug.Assert(effect.drawnCard != null);
-        float dt = 0.2f/speed;
+        float dt = 0.2f / speed;
         CardZoneUI deckUI = GetUI(effect.deckID);
         CardZoneUI toZoneUI = GetUI(effect.toZoneID);
         CardUI cardUI = Spawn(effect.drawnCard, deckUI.transform);
@@ -216,5 +216,13 @@ public class GameStateUI : Singleton<GameStateUI>
         }
         cardUI.SetVisible(true);
         yield return DoMoveCard(cardUI, deckUI, toZoneUI, dt);
+    }
+    private IEnumerator DisplayEffect_ChangePhase(GameEffect e, float speed)
+    {
+        Debug.Assert(e is ChangePhaseEffect);
+        var effect = (ChangePhaseEffect)e;
+
+        _phaseText.text = "Phase: " + effect.newPhase.ToString();
+        yield return null;
     }
 }

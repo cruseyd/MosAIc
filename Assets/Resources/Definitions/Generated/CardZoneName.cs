@@ -18,4 +18,5 @@ public enum CardZoneName {
     HolySites,
     BuyDeck,
     BuyDiscard,
+    Focus,
 }

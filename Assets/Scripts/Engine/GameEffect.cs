@@ -12,6 +12,7 @@ public abstract class GameEffect
     // Event Callers
     protected void OnExitPhase(PhaseName oldPhase, PhaseName newPhase) { onExitPhase?.Invoke(oldPhase, newPhase); }
     protected void OnEnterPhase(PhaseName oldPhase, PhaseName newPhase) { onEnterPhase?.Invoke(oldPhase, newPhase); }
+
     private GameEffect _simultaneous = null;
     public GameEffect simultaneous { get { return _simultaneous; } }
     public abstract void Execute(GameState state);
@@ -86,16 +87,18 @@ public class IncrementAgentStatEffect : GameEffect
 }
 public class ChangePhaseEffect : GameEffect
 {
-    PhaseName _newPhase;
+    public PhaseName newPhase { get; private set; }
+    public PhaseName prevPhase { get; private set; }
     public ChangePhaseEffect(PhaseName newPhase)
     {
-        _newPhase = newPhase;
+        this.newPhase = newPhase;
     }
 
     public override void Execute(GameState state)
     {
-        OnExitPhase(state.phase, _newPhase);
-        state.ChangePhase(_newPhase);
-        OnEnterPhase(state.phase, _newPhase);
+        prevPhase = state.phase;
+        OnExitPhase(state.phase, newPhase);
+        state.ChangePhase(newPhase);
+        OnEnterPhase(state.phase, newPhase);
     }
 }
