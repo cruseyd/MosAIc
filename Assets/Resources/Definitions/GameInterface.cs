@@ -12,40 +12,31 @@ public class GameInterface : GameManager
             var args = new GameActionArgs();
             if (Targeting())
             {
-                bool success = targeter.add(card);
-                Debug.Log("Tried to add target (success: " + success + ")");
-                if (targeter.finished())
-                {
-                    Debug.Log("Targeter is finished. Playing the card");
-                    args.cards.Add(targeter.source);
-                    foreach (CardIndex ti in targeter.getTargets()) { args.targets.Add(ti); }
-                    targeter = null;
-                    instance.TakeAction(ActionName.PlayCard, state.currentPlayer, args);
-                }
+                AddTarget(card);
             }
-            else {
+            else
+            {
                 switch (card.zone.name)
                 {
                     case CardZoneName.Hand:
                         if (card.GetTargets().Count > 0)
                         {
-                            targeter = new Targeter(card.id, card.GetTargets());
-                            Debug.Log("Begin Targeting");
+                            StartTargeting(card);
                         }
                         else
                         {
                             args.cards.Add(card.id);
-                            instance.TakeAction(ActionName.PlayCard, state.currentPlayer, args);
+                            TakeAction(ActionName.PlayCard, state.currentPlayer, args);
                         }
                         break;
                     case CardZoneName.Buy:
                         args.cards.Add(card.id);
-                        instance.TakeAction(ActionName.BuyCard, state.currentPlayer, args);
+                        TakeAction(ActionName.BuyCard, state.currentPlayer, args);
                         break;
                     default: break;
                 }
             }
-            
+
         }
     }
     public override void HandleSpace()
@@ -68,5 +59,10 @@ public class GameInterface : GameManager
                 break;
             default: break;
         }
+    }
+
+    public override void HandleEscape()
+    {
+        EndTargeting();
     }
 }

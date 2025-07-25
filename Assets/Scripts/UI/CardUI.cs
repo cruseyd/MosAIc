@@ -1,11 +1,8 @@
 using System.Collections.Generic;
-using Mono.Cecil.Cil;
-using Unity.VisualScripting;
 using UnityEngine;
 using TMPro;
 using UnityEngine.EventSystems;
-using System;
-using UnityEngine.Animations;
+using UnityEngine.UI;
 
 public class CardUI : MonoBehaviour, IDoubleClickable, IRightClickable, IPointerEnterHandler, IPointerExitHandler
 {
@@ -13,6 +10,7 @@ public class CardUI : MonoBehaviour, IDoubleClickable, IRightClickable, IPointer
     private bool doHoverZoom = false;
     private bool isVisible = true;
     private bool isMasked = false;
+    private bool hasAura = false;
     private Vector3 baseScale = Vector3.one;
     private Canvas sortingCanvas;
     private int baseSortingOrder;
@@ -26,6 +24,7 @@ public class CardUI : MonoBehaviour, IDoubleClickable, IRightClickable, IPointer
     public Transform front;
     public Transform back;
     public Transform mask;
+    public Transform aura;
     public float width
     {
         get
@@ -80,10 +79,24 @@ public class CardUI : MonoBehaviour, IDoubleClickable, IRightClickable, IPointer
         mask.gameObject.SetActive(flag);
         isMasked = flag;
     }
-    public void OnDoubleClick(PointerEventData eventData)
+    public void SetAura(bool flag)
     {
-        GameManager.HandleDoubleClick(this, eventData);
+        SetAuraColor(flag, Color.red);
     }
+    public void SetAuraColor(bool flag, Color color)
+    {
+        aura.gameObject.SetActive(flag);
+        hasAura = flag;
+        if (flag)
+        {
+            Image image = aura.gameObject.GetComponent<Image>();
+            if (image != null) { image.color = color; }
+        }
+    }
+    public void OnDoubleClick(PointerEventData eventData)
+{
+    GameManager.HandleDoubleClick(this, eventData);
+}
     public void OnRightClick(PointerEventData eventData)
     {
         GameManager.HandleRightClick(this, eventData);
@@ -160,6 +173,7 @@ public class CardUI : MonoBehaviour, IDoubleClickable, IRightClickable, IPointer
             gameObject.AddComponent<UnityEngine.UI.GraphicRaycaster>();
         }
         SetMask(false);
+        SetAura(false);
 
     }
     public void Update()

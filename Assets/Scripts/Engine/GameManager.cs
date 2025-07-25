@@ -8,6 +8,9 @@ using UnityEngine.EventSystems;
 public class GameManager : Singleton<GameManager>
 {
     public static event Action<GameActionWithEffects, GameState, GameState> onTakeAction;
+    public static event Action<Targeter> onStartTargeting;
+    public static event Action<Targeter, CardIndex> onAddTarget;
+    public static event Action<Targeter> onEndTargeting;
     public static GameState state { get; private set; }
     public static GameRules rules { get; private set; }
     public static GameActionArgs currentActionArgs = null;
@@ -29,7 +32,10 @@ public class GameManager : Singleton<GameManager>
         {
             HandleSpace();
         }
-
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            HandleEscape();
+        }
     }
     public void TakeAction(ActionName actionName, int player, GameActionArgs args = null)
     {
@@ -41,10 +47,41 @@ public class GameManager : Singleton<GameManager>
         }
         GameAction action = actionName.GetAssociatedClass(player, args, state) as GameAction;
         var actionWithEffects = action.Resolve();
-        GameStateUI.Animate(actionWithEffects);
         GameState oldState = state;
         state = actionWithEffects.state;
         onTakeAction?.Invoke(actionWithEffects, oldState, state);
+    }
+    public static bool Targeting() { return targeter != null; }
+    public void StartTargeting(Card source)
+    {
+        targeter = new Targeter(source.id, source.GetTargets());
+        onStartTargeting?.Invoke(targeter);
+    }
+
+    public void AddTarget(Card target)
+    {
+        Debug.Assert(Targeting());
+        bool success = targeter.add(target);
+        if (success)
+        {
+            onAddTarget?.Invoke(targeter, target.id);
+        }
+        if (targeter.finished())
+            {
+                Debug.Log("Targeter is finished. Playing the card");
+                var args = new GameActionArgs();
+                args.cards.Add(targeter.source);
+                foreach (CardIndex ti in targeter.getTargets()) { args.targets.Add(ti); }
+                EndTargeting();
+                instance.TakeAction(ActionName.PlayCard, state.currentPlayer, args);
+            }
+    }
+
+    public void EndTargeting()
+    {
+        if (!Targeting()) { return; }
+        onEndTargeting?.Invoke(targeter);
+        targeter = null;
     }
 
     public void TryAction(ActionName action)
@@ -76,6 +113,6 @@ public class GameManager : Singleton<GameManager>
     public virtual void HandleSpace()
     {
     }
-    
-    public static bool Targeting() { return targeter != null; }
+    public virtual void HandleEscape() {}
+
 }

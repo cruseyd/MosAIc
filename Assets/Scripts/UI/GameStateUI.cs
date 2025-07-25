@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.Rendering.Universal;
 using UnityEngine;
 
 public delegate IEnumerator EffectAnimationHandler(GameEffect effect, float speed);
@@ -42,6 +43,9 @@ public class GameStateUI : Singleton<GameStateUI>
         // set events
         RegisterAnimationHandlers();
         GameManager.onTakeAction += DisplayAction;
+        GameManager.onStartTargeting += DisplayTargeter;
+        GameManager.onAddTarget += DisplayAddTarget;
+        GameManager.onEndTargeting += ClearTargeter;
     }
 
     public static void BindState(GameState state)
@@ -131,14 +135,22 @@ public class GameStateUI : Singleton<GameStateUI>
         }
         return zones;
     }
-    public static void Animate(GameActionWithEffects actionWithEffects)
+    public static List<CardUI> GetAllCardUI()
+    {
+        List<CardUI> cards = new List<CardUI>();
+        foreach (CardUI ui in _cards.Values)
+        {
+            cards.Add(ui);
+        }
+        return cards;
+    }
+    public static void DisplayAction(GameActionWithEffects actionWithEffects, GameState prevState, GameState postState)
     {
         Debug.Assert(actionWithEffects != null);
         Debug.Assert(instance != null);
         BindState(actionWithEffects.state);
         instance.StartCoroutine(DoAnimate(actionWithEffects));
     }
-
     private static IEnumerator DoAnimate(GameActionWithEffects actionWithEffects)
     {
         animating = true;
@@ -164,11 +176,6 @@ public class GameStateUI : Singleton<GameStateUI>
         animating = false;
     }
 
-    private void DisplayAction(GameActionWithEffects action, GameState prevState, GameState postState)
-    {
-
-    }
-
     private IEnumerator DisplayEffect(GameEffect effect, float speed)
     {
         Type T = effect.GetType();
@@ -182,7 +189,34 @@ public class GameStateUI : Singleton<GameStateUI>
         }
     }
 
-
+    private static void DisplayTargeter(Targeter targeter)
+    {
+        if (!targeter.finished())
+        {
+            foreach (CardUI card in GetAllCardUI())
+            {
+                card.SetMask(!targeter.next().Compare(card.card));
+            }
+        }
+        _cards[targeter.source].SetAuraColor(true, Color.red);
+    }
+    private static void DisplayAddTarget(Targeter targeter, CardIndex target)
+    {
+        DisplayTargeter(targeter);
+        _cards[target].SetAuraColor(true, Color.yellow);
+    }
+    public static void ClearTargeter(Targeter targeter)
+    {
+        ClearCardHighlighting();
+    }
+    public static void ClearCardHighlighting()
+    {
+        foreach (CardUI card in GetAllCardUI())
+        {
+            card.SetMask(false);
+            card.SetAura(false);
+        }
+    }
     // Individual Effect Logic
     private IEnumerator DisplayEffect_MoveCard(GameEffect e, float speed)
     {
