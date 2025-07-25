@@ -9,7 +9,9 @@ public class GameManager : Singleton<GameManager>
 {
     public static event Action<GameActionWithEffects, GameState, GameState> onTakeAction;
     public static GameState state { get; private set; }
-    public static GameRules rules {get; private set;}
+    public static GameRules rules { get; private set; }
+    public static GameActionArgs currentActionArgs = null;
+    public static Targeter targeter = null;
     protected override void Awake()
     {
         base.Awake();
@@ -27,10 +29,11 @@ public class GameManager : Singleton<GameManager>
         {
             HandleSpace();
         }
-        
+
     }
     public void TakeAction(ActionName actionName, int player, GameActionArgs args = null)
     {
+        if (targeter != null) { return; }
         if (!rules.IsValid(actionName, player, args, state))
         {
             Debug.Log($"Invalid Action: {actionName}");
@@ -73,4 +76,6 @@ public class GameManager : Singleton<GameManager>
     public virtual void HandleSpace()
     {
     }
+    
+    public static bool Targeting() { return targeter != null; }
 }

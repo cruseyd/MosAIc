@@ -19,8 +19,7 @@ public class MainRules : GameRules{
 
         for (int ii = 0; ii < 20; ii++)
         {
-            //Card card = new Card(ResourceManager.GetRandomCardData());
-            Card card = new Card(ResourceManager.GetCardData("Resolve"));
+            Card card = new Card(ResourceManager.GetCardData("Mercy"));
             state.AddCard(card, CardZoneName.PlayerDeck);
         }
         for (int ii = 0; ii < 20; ii++)

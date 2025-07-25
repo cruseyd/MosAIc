@@ -12,6 +12,7 @@ public class CardUI : MonoBehaviour, IDoubleClickable, IRightClickable, IPointer
     private bool isHovered = false;
     private bool doHoverZoom = false;
     private bool isVisible = true;
+    private bool isMasked = false;
     private Vector3 baseScale = Vector3.one;
     private Canvas sortingCanvas;
     private int baseSortingOrder;
@@ -24,9 +25,11 @@ public class CardUI : MonoBehaviour, IDoubleClickable, IRightClickable, IPointer
     public List<TextMeshProUGUI> textRegions = new List<TextMeshProUGUI>();
     public Transform front;
     public Transform back;
-    public float width 
+    public Transform mask;
+    public float width
     {
-        get {
+        get
+        {
             var rect = GetComponent<RectTransform>();
             Debug.Assert(rect != null);
             return rect.rect.width;
@@ -71,6 +74,11 @@ public class CardUI : MonoBehaviour, IDoubleClickable, IRightClickable, IPointer
         front.gameObject.SetActive(flag);
         back.gameObject.SetActive(!flag);
         isVisible = flag;
+    }
+    public void SetMask(bool flag)
+    {
+        mask.gameObject.SetActive(flag);
+        isMasked = flag;
     }
     public void OnDoubleClick(PointerEventData eventData)
     {
@@ -151,6 +159,7 @@ public class CardUI : MonoBehaviour, IDoubleClickable, IRightClickable, IPointer
         {
             gameObject.AddComponent<UnityEngine.UI.GraphicRaycaster>();
         }
+        SetMask(false);
 
     }
     public void Update()

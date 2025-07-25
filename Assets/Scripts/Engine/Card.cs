@@ -94,8 +94,12 @@ public class Card
         Debug.Assert(_ability != null);
         return _ability.Execute(args);
     }
+    public List<CardFilter> GetTargets()
+    {
+        return _ability.targets;
+    }
     public int GetStat(StatName statName)
-    {  
+    {
         Debug.Assert(stats.ContainsKey(statName));
         return stats[statName];
     }
