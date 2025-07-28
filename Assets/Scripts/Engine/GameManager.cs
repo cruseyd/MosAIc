@@ -15,6 +15,15 @@ public class GameManager : Singleton<GameManager>
     public static GameRules rules { get; private set; }
     public static GameActionArgs currentActionArgs = null;
     public static Targeter targeter = null;
+    public static Previewer previewer = null;
+    public static CardIndex previewing
+    {
+        get
+        {
+            CardZone previewZone = state.GetCardZone(CardZoneName.Preview);
+            return previewZone.NumCards() > 0 ? previewZone.Cards()[0] : null;
+        }
+    }
     protected override void Awake()
     {
         base.Awake();
@@ -39,7 +48,7 @@ public class GameManager : Singleton<GameManager>
     }
     public void TakeAction(ActionName actionName, int player, GameActionArgs args = null)
     {
-        if (targeter != null) { return; }
+        if (Targeting()) { return; }
         if (!rules.IsValid(actionName, player, args, state))
         {
             Debug.Log($"Invalid Action: {actionName}");

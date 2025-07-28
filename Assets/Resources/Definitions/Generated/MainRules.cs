@@ -24,8 +24,13 @@ public class MainRules : GameRules{
         }
         for (int ii = 0; ii < 20; ii++)
         {
-            Card card = new Card(ResourceManager.GetRandomCardData());
+            Card card = new Card(ResourceManager.GetRandomCardData(CardType.PlayerAction));
             state.AddCard(card, CardZoneName.BuyDeck);
+        }
+        for (int ii = 0; ii < 20; ii++)
+        {
+            Card card = new Card(ResourceManager.GetRandomCardData(CardType.EnemyAction));
+            state.AddCard(card, CardZoneName.VillainDeck);
         }
 
         return state;

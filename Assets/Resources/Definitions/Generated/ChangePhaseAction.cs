@@ -9,7 +9,6 @@ public class ChangePhaseAction : GameAction {
     }
     protected override void Execute(GameState state)
     {
-        Debug.Log("ChangePhaseAction::Execute");
         PhaseName oldPhase = state.phase;
         ExitPhase(oldPhase, _newPhase, state);
         AddEffect(new ChangePhaseEffect(_newPhase));
@@ -51,7 +50,6 @@ public class ChangePhaseAction : GameAction {
 
     private void ExitPhase(PhaseName oldPhase, PhaseName newPhase, GameState state)
     {
-        Debug.Log($"ChangePhaseAction::ExitPhase {newPhase} from {oldPhase}");
         switch (oldPhase)
         {
             case PhaseName.GameStart:
@@ -60,13 +58,16 @@ public class ChangePhaseAction : GameAction {
                 CyclePlayerHand(state);
                 CycleBuyZone(state);
                 break;
+            case PhaseName.EnemyMain:
+                int enemyBaseCards = state.GetAgent(state.currentPlayer).data.GetBaseStatValue(StatName.VillainCards);
+                AddEffect(new SetAgentStatEffect(state.currentPlayer, StatName.VillainCards, enemyBaseCards));
+                break;
             default: break;
         }
     }
 
     private void EnterPhase(PhaseName oldPhase, PhaseName newPhase, GameState state)
     {
-        Debug.Log($"ChangePhaseAction::EnterPhase {newPhase} from {oldPhase}");
         switch (newPhase)
         {
             case PhaseName.GameStart:
@@ -74,6 +75,11 @@ public class ChangePhaseAction : GameAction {
                 FillBuyZone(state);
                 break;
             case PhaseName.PlayerMain:
+                AddEffect(new ChangeActivePlayerEffect(0));
+                break;
+            case PhaseName.EnemyMain:
+                AddEffect(new ChangeActivePlayerEffect(1));
+                break;
             default: break;
         }
     }

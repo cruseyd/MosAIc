@@ -26,10 +26,14 @@ public class PlayCardAction : GameAction {
         switch (playedCard.type)
         {
             case CardType.PlayerAction:
-                this.AddEffect(new IncrementAgentStatEffect(this.player, StatName.PlayerValor, playedCard.GetStat(StatName.Valor)));
-                this.AddEffect(new IncrementAgentStatEffect(this.player, StatName.PlayerFaith, playedCard.GetStat(StatName.Faith)));
-                this.AddEffect(new IncrementAgentStatEffect(this.player, StatName.PlayerVitality, playedCard.GetStat(StatName.Vitality)));
-                this.AddEffect(new MoveCardEffect(_playedCardIndex, CardZoneName.PlayerDiscard));
+                AddEffect(new IncrementAgentStatEffect(this.player, StatName.PlayerValor, playedCard.GetStat(StatName.Valor)));
+                AddEffect(new IncrementAgentStatEffect(this.player, StatName.PlayerFaith, playedCard.GetStat(StatName.Faith)));
+                AddEffect(new IncrementAgentStatEffect(this.player, StatName.PlayerVitality, playedCard.GetStat(StatName.Vitality)));
+                AddEffect(new MoveCardEffect(_playedCardIndex, CardZoneName.PlayerDiscard));
+                break;
+            case CardType.EnemyAction:
+                AddEffect(new IncrementAgentStatEffect(this.player, StatName.VillainCards, -1));
+                AddEffect(new MoveCardEffect(_playedCardIndex, CardZoneName.VillainDiscard));
                 break;
             default:
                 Debug.LogWarning($"PlayCard action not implemented for card type {playedCard.data.type}");

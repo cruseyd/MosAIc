@@ -19,4 +19,5 @@ public enum CardZoneName {
     BuyDeck,
     BuyDiscard,
     Focus,
+    Preview,
 }

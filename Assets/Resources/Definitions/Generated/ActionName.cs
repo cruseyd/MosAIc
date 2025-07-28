@@ -8,4 +8,6 @@ public enum ActionName {
     BuyCard,
     [ClassMapping(typeof(ChangePhaseAction))]
     ChangePhase,
+    [ClassMapping(typeof(DrawAndPlayAction))]
+    DrawAndPlay,
 }

@@ -15,4 +15,6 @@ MonoBehaviour:
   prefab: {fileID: 0}
   name: Enemy
   type: 2
-  baseStats: []
+  baseStats:
+  - stat: 8
+    value: 2

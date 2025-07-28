@@ -85,6 +85,23 @@ public class IncrementAgentStatEffect : GameEffect
         state.IncrementAgentStat(_player, _stat, _delta);
     }
 }
+public class SetAgentStatEffect : GameEffect
+{
+    private int _player;
+    private StatName _stat;
+    private int _value;
+    public SetAgentStatEffect(int player, StatName stat, int value)
+    {
+        _player = player;
+        _stat = stat;
+        _value = value;
+    }
+
+    public override void Execute(GameState state)
+    {
+        state.SetAgentStat(_player, _stat, _value);
+    }
+}
 public class ChangePhaseEffect : GameEffect
 {
     public PhaseName newPhase { get; private set; }
@@ -100,5 +117,22 @@ public class ChangePhaseEffect : GameEffect
         OnExitPhase(state.phase, newPhase);
         state.ChangePhase(newPhase);
         OnEnterPhase(state.phase, newPhase);
+    }
+}
+
+public class ChangeActivePlayerEffect : GameEffect
+{
+    public int prevPlayer { get; private set; }
+    public int newPlayer { get; private set; }
+
+    public ChangeActivePlayerEffect(int newPlayer)
+    {
+        this.newPlayer = newPlayer;
+    }
+
+    public override void Execute(GameState state)
+    {
+        prevPlayer = state.currentPlayer;
+        state.currentPlayer = newPlayer;
     }
 }

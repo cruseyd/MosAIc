@@ -17,3 +17,4 @@ MonoBehaviour:
   - PlayCard
   - BuyCard
   - ChangePhase
+  - DrawAndPlay

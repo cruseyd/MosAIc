@@ -187,6 +187,12 @@ public class GameState
         agent.IncrementStat(stat, delta);
     }
 
+    public void SetAgentStat(int player, StatName stat, int value)
+    {
+        var agent = GetAgent(player);
+        agent.SetStat(stat, value);
+    }
+
     public void ChangePhase(PhaseName newPhase)
     {
         phase = newPhase;

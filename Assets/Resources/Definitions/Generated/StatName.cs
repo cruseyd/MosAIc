@@ -7,4 +7,5 @@ public enum StatName {
     PlayerValor,
     PlayerFaith,
     PlayerVitality,
+    VillainCards,
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using System;
+using UnityEngine.Assertions.Must;
 
 public class CardFilter
 {
@@ -9,6 +10,13 @@ public class CardFilter
     public int playerID = -1;
     public CardType isType = CardType.Default;
 
+    public static CardFilter InZone(CardZoneID zone)
+    {
+        CardFilter filter = new CardFilter();
+        filter.inZone = zone.name;
+        filter.playerID = zone.player;
+        return filter;
+    }
     public CardFilter() { }
 
     public bool Compare(CardData data)

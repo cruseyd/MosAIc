@@ -4,7 +4,7 @@ using UnityEditor;
 public class GameStateWindow : EditorWindow
 {
     private GameState gameState;
-
+    private Vector2 scrollPosition = Vector2.zero;
     [MenuItem("Window/MosAIc/GameState")]
     public static void ShowWindow()
     {
@@ -44,6 +44,8 @@ public class GameStateWindow : EditorWindow
     }
     void OnGUI()
     {
+        scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, false, true);
         PrintState();
+        EditorGUILayout.EndScrollView();
     }
 }
